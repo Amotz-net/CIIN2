@@ -1,0 +1,35 @@
+:root{
+  --bg:#1C2126;--panel:#2A3138;--line:#3C454E;--ink:#EAF0EF;--mute:#9AA6A3;
+  --teal:#57C4AE;--amber:#E0A94F;--red:#D9736A;--green:#6FC08C;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,'Segoe UI',system-ui,sans-serif;font-size:14px}
+a{color:var(--teal);text-decoration:none;cursor:pointer}
+.center{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.muted{color:var(--mute)}
+.wrap{max-width:920px;margin:0 auto;padding:24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+.card h2{margin:0 0 12px;font-size:18px}
+label{display:block;font-size:12px;color:var(--mute);margin:10px 0 4px}
+input,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--ink);font-size:14px;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--teal)}
+.btn{background:var(--teal);color:#0c1a17;border:none;border-radius:8px;padding:11px 18px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.btn:hover{background:#63d0ba}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn.red{background:transparent;border:1px solid var(--red);color:var(--red)}
+.top{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--line);background:#23292E}
+.logo{font-weight:800;font-size:18px}.logo span{color:var(--teal)}
+.pill{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(87,196,174,.15);color:var(--teal)}
+.pill.amber{background:rgba(224,169,79,.15);color:var(--amber)}
+.pill.red{background:rgba(217,115,106,.15);color:var(--red)}
+.pill.grey{background:rgba(154,166,163,.13);color:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px}
+.err{color:var(--red);font-size:13px;margin-top:8px}
+.ok{color:var(--green);font-size:13px;margin-top:8px}
+.loginbox{width:100%;max-width:400px}
+.logo-lg{font-size:38px;font-weight:800;text-align:center;margin-bottom:4px}
+.logo-lg span{color:var(--teal)}
+.row-actions{display:flex;gap:8px}
