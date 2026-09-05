@@ -30,6 +30,7 @@ export function HotelView({ profile }) {
   const [segments, setSegments] = useState([])
   const [weather, setWeather] = useState(null)
   const [afai, setAfai] = useState(null)
+  const [segAfai, setSegAfai] = useState({})   // segment_id -> live AFAI reading
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -63,10 +64,19 @@ export function HotelView({ profile }) {
       if (withCoords) {
         const w = await getForecast(withCoords.lat, withCoords.lng)
         if (alive) setWeather(w)
-        // LIVE satellite AFAI for the same segment
+        // LIVE satellite AFAI for the same segment (headline panel)
         const a = await getAfai(withCoords.lat, withCoords.lng)
         if (alive) setAfai(a)
       }
+
+      // LIVE AFAI per segment — drives the Incoming panel so it agrees with satellite.
+      const segList = (seg.data ?? []).filter(s => s.lat && s.lng)
+      const perSeg = {}
+      for (const s of segList) {
+        const r = await getAfai(s.lat, s.lng)
+        perSeg[s.id] = r
+      }
+      if (alive) setSegAfai(perSeg)
     }
     load()
     return () => { alive = false }
@@ -76,9 +86,35 @@ export function HotelView({ profile }) {
 
   return (
     <div className="dash-grid">
-      {/* Incoming sargassum */}
+      {/* Incoming sargassum — driven by LIVE satellite AFAI per segment */}
       <div className="card">
-        <h2>Incoming sargassum</h2>
+        <h2>Incoming sargassum <span className="pill" style={{ fontSize: 10 }}>AFAI live</span></h2>
+        {segments.filter(s => s.lat && s.lng).length ? (
+          segments.filter(s => s.lat && s.lng).map(s => {
+            const r = segAfai[s.id]
+            let level = '—', tone = 'grey', detail = 'awaiting satellite read'
+            if (r?.ok && !r.gap) { level = r.level; tone = r.level === 'elevated' ? 'red' : r.level === 'moderate' ? 'amber' : 'green'; detail = `offshore density index ${r.afai?.toExponential(2)}` }
+            else if (r?.ok && r.gap) { level = 'no clear read'; tone = 'grey'; detail = 'cloud / glint / dust — honest gap' }
+            else if (r && !r.ok) { level = 'unavailable'; tone = 'grey'; detail = r.reason || 'feed error' }
+            return (
+              <div key={s.id} className="line-item">
+                <div>
+                  <b style={{ textTransform: 'capitalize' }}>{level}</b>
+                  <div className="muted" style={{ fontSize: 12 }}>{s.name} · {detail}</div>
+                </div>
+                <span className={'pill ' + tone}>{level === 'no clear read' || level === 'unavailable' ? 'live' : 'live'}</span>
+              </div>
+            )
+          })
+        ) : <div className="empty"><span className="muted">No beach segments with coordinates yet.</span></div>}
+        <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
+          Shows live offshore floating-algae density (NOAA AFAI) per segment. A tonnes-and-ETA landing forecast requires a drift/trajectory model (not yet built) — see projected arrivals below.
+        </div>
+      </div>
+
+      {/* Projected arrivals — representative, NOT from the live feed */}
+      <div className="card">
+        <h2>Projected arrivals <span className="pill grey" style={{ fontSize: 10 }}>representative</span></h2>
         {arrivals.length ? arrivals.map(a => (
           <div key={a.id} className="line-item">
             <div>
@@ -87,9 +123,12 @@ export function HotelView({ profile }) {
                 {segments.find(s => s.id === a.segment_id)?.name || 'your frontage'} · {a.severity} severity
               </div>
             </div>
-            <SourceTag source={a.source} />
+            <SourceTag source="representative" />
           </div>
-        )) : <div className="empty"><span className="muted">No incoming sargassum forecast.</span></div>}
+        )) : <div className="empty"><span className="muted">No projected arrivals.</span></div>}
+        <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
+          Representative projection for planning — not yet driven by the live satellite feed. Requires the drift model to become live.
+        </div>
       </div>
 
       {/* Live weather (NOAA) */}
