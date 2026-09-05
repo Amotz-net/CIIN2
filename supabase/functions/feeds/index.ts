@@ -56,6 +56,64 @@ async function afai(lat: number, lng: number, box = 0.1) {
            sir, sir_peak: peak, coverage: vals.length, asOf: rows[0]?.[0] ?? null }
 }
 
+// ---- first-order drift: advect an AFAI patch with OSCAR surface currents + windage ----
+// HONEST SCOPE: this is a first-order projection (current vector at the patch +
+// simple windage over a short horizon), NOT a validated Lagrangian model.
+// Labelled "indicative, moderate confidence, 3-day horizon". A real forecast
+// needs OpenDrift/OceanParcels advecting through changing fields (scaffolded separately).
+function bearingToText(deg: number) {
+  const dirs = ['N','NE','E','SE','S','SW','W','NW']
+  return dirs[Math.round(((deg % 360) / 45)) % 8]
+}
+async function drift(lat: number, lng: number) {
+  // OSCAR sea-surface velocity (u=eastward, v=northward, m/s), latest slice.
+  const ds = 'jplOscar_LonPM180'
+  const box = 0.5
+  const url = `https://coastwatch.pfeg.noaa.gov/erddap/griddap/${ds}.json?u[(last)][(15.0)][(${(lat+box).toFixed(2)}):(${(lat-box).toFixed(2)})][(${(lng-box).toFixed(2)}):(${(lng+box).toFixed(2)})],v[(last)][(15.0)][(${(lat+box).toFixed(2)}):(${(lat-box).toFixed(2)})][(${(lng-box).toFixed(2)}):(${(lng+box).toFixed(2)})]`
+  let u = NaN, v = NaN, asOf: string | null = null
+  try {
+    const r = await fetch(url, { headers: { Accept: 'application/json' } })
+    if (r.ok) {
+      const j = await r.json()
+      const rows = j?.table?.rows ?? []
+      // rows: [time, depth, lat, lng, u, v]
+      const us = rows.map((x: any[]) => x[4]).filter((n: any) => typeof n === 'number' && !Number.isNaN(n))
+      const vs = rows.map((x: any[]) => x[5]).filter((n: any) => typeof n === 'number' && !Number.isNaN(n))
+      if (us.length && vs.length) {
+        u = us.reduce((s: number, n: number) => s + n, 0) / us.length
+        v = vs.reduce((s: number, n: number) => s + n, 0) / vs.length
+        asOf = rows[0]?.[0] ?? null
+      }
+    }
+  } catch (_) { /* fall through to unavailable */ }
+
+  if (Number.isNaN(u) || Number.isNaN(v)) {
+    return { ok: false, reason: 'No current data for this location', source: 'live_feed' }
+  }
+
+  // Speed (m/s) and bearing. Add a small windage nudge (Caribbean trade winds push
+  // westward); first-order only, so we keep windage as a flat 1.5% westward add.
+  const uw = u - 0.015, vw = v
+  const speed = Math.sqrt(uw*uw + vw*vw)                 // m/s
+  const bearingDeg = (Math.atan2(uw, vw) * 180/Math.PI + 360) % 360  // 0=N, 90=E
+  const kmPerDay = speed * 86.4                          // m/s -> km/day
+  // Indicative arrival window over a 3-day horizon (very rough): distance a patch
+  // ~10-30 km offshore would cover. We express as a qualitative window, not a clock.
+  const horizonKm = kmPerDay * 3
+  let window = 'beyond 3 days'
+  if (horizonKm >= 30) window = '1–2 days'
+  else if (horizonKm >= 15) window = '2–4 days'
+  else if (horizonKm >= 5) window = '3–5 days'
+  return {
+    ok: true, source: 'live_feed',
+    bearing: bearingToText(bearingDeg), bearing_deg: Math.round(bearingDeg),
+    speed_km_day: Math.round(kmPerDay * 10) / 10,
+    arrival_window: window, horizon: '3-day', confidence: 'moderate',
+    asOf,
+    note: 'Indicative first-order drift (OSCAR current + windage). Not a validated forecast.',
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
   try {
@@ -90,7 +148,8 @@ Deno.serve(async (req) => {
     }
     if (feed === 'weather') return json(await weather(lat, lng))
     if (feed === 'afai') return json(await afai(lat, lng))
-    return json({ ok: false, reason: 'unknown feed (use weather|afai)' }, 400)
+    if (feed === 'drift') return json(await drift(lat, lng))
+    return json({ ok: false, reason: 'unknown feed (use weather|afai|drift)' }, 400)
   } catch (e) {
     return json({ ok: false, reason: 'feed fetch failed', detail: String(e), source: 'live_feed' })
   }
