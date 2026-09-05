@@ -231,3 +231,38 @@ Notes:
   interpolating. Attribution (USF/NOAA) renders on the panel as required.
 - To edit grading bands later: update rows in the grading_rules table (platform
   admin only) and set status='verified' when confirmed.
+
+---
+
+## Live feeds via Edge Function (fixes browser CORS)
+
+NOAA's servers block direct browser calls (CORS). The correct fix is to fetch
+them server-side. CIIN uses a Supabase **Edge Function** (`supabase/functions/feeds`)
+that the app calls; the function calls NOAA and returns clean JSON. This powers
+both the weather and satellite (AFAI) panels.
+
+**Deploy the Edge Function (one-time, needs the Supabase CLI):**
+
+1. Install the Supabase CLI: https://supabase.com/docs/guides/cli (e.g. `npm i -g supabase` or `brew install supabase/tap/supabase`).
+2. Log in and link your project:
+   ```
+   supabase login
+   supabase link --project-ref YOUR-PROJECT-REF
+   ```
+   (Project ref is the subdomain in your Supabase URL, e.g. `hrfzacbfacxkgxviacyg`.)
+3. Deploy the function (public read-only external feeds, so JWT check off):
+   ```
+   supabase functions deploy feeds --no-verify-jwt
+   ```
+4. That's it. The app already calls `/functions/v1/feeds` — no code change needed.
+   Refresh the dashboard; the weather and satellite panels now load via the function.
+
+Notes:
+- The function holds no secrets and exposes no user data — it only relays public
+  NOAA feeds — so `--no-verify-jwt` is safe here.
+- If a panel still shows unavailable, open the function URL directly in a browser:
+  `https://YOUR-PROJECT.supabase.co/functions/v1/feeds?feed=afai&lat=18.47&lng=-66.10`
+  and read the JSON `reason` field — it names the exact upstream issue.
+- Satellite AFAI covers the whole Caribbean; weather (api.weather.gov) is
+  US/territory-strongest. Both fail honestly ("no clear read" / "unavailable")
+  rather than faking data.

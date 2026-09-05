@@ -1,28 +1,20 @@
 // =====================================================================
 // CIIN Edge Function: feeds
-// Fetches external feeds SERVER-SIDE (Deno on Supabase), where there is no
-// browser CORS wall, then returns clean JSON to the app with permissive CORS.
-// This is the correct production pattern for any third-party feed.
-//
-// Routes (via ?feed= query param):
-//   ?feed=weather&lat=..&lng=..    -> NOAA api.weather.gov forecast
-//   ?feed=afai&lat=..&lng=..       -> NOAA CoastWatch ERDDAP AFAI (sargassum)
-//
-// Deploy: supabase functions deploy feeds --no-verify-jwt
-//   (--no-verify-jwt because these are public, read-only external feeds;
-//    the function holds no secrets and exposes no user data.)
+// Fetches external feeds SERVER-SIDE (no browser CORS wall) and returns JSON.
+// Accepts params from JSON body (supabase.functions.invoke POST) OR query
+// string (direct GET, for browser testing).
+// Deploy: supabase functions deploy feeds --no-verify-jwt   (run from repo root)
 // =====================================================================
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'authorization, content-type, apikey',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'authorization, content-type, apikey, x-client-info',
 }
 const UA = 'CIIN-CaribbeanSargassumNetwork (contact: ops@watersolutions.example)'
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } })
 
-// ---- NOAA weather (two-step: point -> forecast) ----
 async function weather(lat: number, lng: number) {
   const p = await fetch(`https://api.weather.gov/points/${lat.toFixed(4)},${lng.toFixed(4)}`,
     { headers: { 'User-Agent': UA, Accept: 'application/geo+json' } })
@@ -40,7 +32,6 @@ async function weather(lat: number, lng: number) {
   return { ok: true, periods, source: 'live_feed' }
 }
 
-// ---- NOAA CoastWatch ERDDAP AFAI (sargassum floating-algae index) ----
 async function afai(lat: number, lng: number, box = 0.1) {
   const ds = 'noaa_aoml_atlantic_oceanwatch_AFAI_7D'
   const latHi = (lat + box).toFixed(3), latLo = (lat - box).toFixed(3)
@@ -61,10 +52,18 @@ async function afai(lat: number, lng: number, box = 0.1) {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
   try {
-    const u = new URL(req.url)
-    const feed = u.searchParams.get('feed')
-    const lat = parseFloat(u.searchParams.get('lat') ?? '')
-    const lng = parseFloat(u.searchParams.get('lng') ?? '')
+    let feed: string | null = null, lat = NaN, lng = NaN
+    // Prefer JSON body (from invoke); fall back to query string (direct GET).
+    if (req.method === 'POST') {
+      const b = await req.json().catch(() => ({}))
+      feed = b.feed ?? null; lat = parseFloat(b.lat); lng = parseFloat(b.lng)
+    }
+    if (!feed) {
+      const u = new URL(req.url)
+      feed = u.searchParams.get('feed')
+      lat = parseFloat(u.searchParams.get('lat') ?? '')
+      lng = parseFloat(u.searchParams.get('lng') ?? '')
+    }
     if (Number.isNaN(lat) || Number.isNaN(lng)) return json({ ok: false, reason: 'lat/lng required' }, 400)
     if (feed === 'weather') return json(await weather(lat, lng))
     if (feed === 'afai') return json(await afai(lat, lng))

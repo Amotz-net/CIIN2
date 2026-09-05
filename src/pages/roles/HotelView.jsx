@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { getForecast } from '../../lib/noaa'
-import { getAfai, AFAI_ATTRIBUTION } from '../../lib/satellite'
+import { getForecast, getAfai, AFAI_ATTRIBUTION } from '../../lib/feeds'
 
 // Hotel dashboard — wired to the operational data layer (Stage 2).
 // Operational data is org-scoped by RLS; we still filter by org_id client-side
