@@ -202,3 +202,32 @@ plus a live NOAA weather panel.
 Notes:
 - NOAA coverage is strongest for US/US-territory coasts. For a non-US Caribbean beach the weather panel honestly shows "unavailable for this location" rather than faking it.
 - To point weather at a real covered coast for a demo, set a beach segment's lat/lng to a US/territory coordinate (e.g. San Juan PR: 18.47, -66.10).
+
+---
+
+## Stage 2+ — security fix, grading engine, satellite feed
+
+Three additions. Run the new migrations in the Supabase SQL Editor in order:
+
+1. `0009_fix_profile_insert.sql` — **security fix**: closes a privilege-escalation
+   gap where a user accepting an invite could self-grant platform-admin or attach
+   to an org they weren't invited to. A BEFORE INSERT trigger now enforces both.
+2. `0010_grading_config.sql` — the **rules-config table** (grading_rules +
+   grading_policy) with the recommended DRAFT bands seeded, each carrying value,
+   unit, citation, and draft/verified status. The grading engine reads from here,
+   so bands are editable without a code change. Flip status to 'verified' once
+   Kimberly signs off the A/B/C cutoffs.
+3. (code) The **grading engine** (`src/lib/grading.js`) reads that config;
+   grades computed on draft rules are labelled "computed (draft)". The
+   **satellite feed** (`src/lib/satellite.js`) pulls live NOAA CoastWatch AFAI —
+   free, no key — showing sargassum detection, with honest coverage gaps.
+
+After running 0009–0010, push the code (git add/commit/push) so Vercel rebuilds
+with the grading engine and the satellite panel.
+
+Notes:
+- Satellite AFAI is a reflectance index, not ground truth; it saturates under
+  cloud/glint/dust, so the panel shows an honest "no clear read" gap rather than
+  interpolating. Attribution (USF/NOAA) renders on the panel as required.
+- To edit grading bands later: update rows in the grading_rules table (platform
+  admin only) and set status='verified' when confirmed.

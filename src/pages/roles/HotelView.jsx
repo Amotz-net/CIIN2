@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { getForecast } from '../../lib/noaa'
+import { getAfai, AFAI_ATTRIBUTION } from '../../lib/satellite'
 
 // Hotel dashboard — wired to the operational data layer (Stage 2).
 // Operational data is org-scoped by RLS; we still filter by org_id client-side
@@ -29,6 +30,7 @@ export function HotelView({ profile }) {
   const [summary, setSummary] = useState(null)
   const [segments, setSegments] = useState([])
   const [weather, setWeather] = useState(null)
+  const [afai, setAfai] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -62,6 +64,9 @@ export function HotelView({ profile }) {
       if (withCoords) {
         const w = await getForecast(withCoords.lat, withCoords.lng)
         if (alive) setWeather(w)
+        // LIVE satellite AFAI for the same segment
+        const a = await getAfai(withCoords.lat, withCoords.lng)
+        if (alive) setAfai(a)
       }
     }
     load()
@@ -103,6 +108,29 @@ export function HotelView({ profile }) {
             <span className="muted">
               {weather ? `Weather feed unavailable for this location${weather.reason ? ` (${weather.reason})` : ''}.` : 'Fetching live forecast…'}
             </span>
+          </div>
+        )}
+      </div>
+
+      {/* Satellite sargassum (NOAA AFAI) */}
+      <div className="card">
+        <h2>Satellite detection <span className="pill" style={{ fontSize: 10 }}>AFAI live</span></h2>
+        {afai?.ok ? (
+          afai.gap ? (
+            <div className="empty"><span className="muted">{afai.note}</span></div>
+          ) : (
+            <>
+              <div style={{ fontSize: 22, fontWeight: 800, textTransform: 'capitalize' }}>{afai.level}</div>
+              <div className="muted" style={{ fontSize: 12 }}>
+                floating-algae index {afai.afai?.toExponential(2)} · {afai.coverage} clear pixels
+                {afai.asOf ? ` · as of ${new Date(afai.asOf).toLocaleDateString()}` : ''}
+              </div>
+              <div className="muted" style={{ fontSize: 10, marginTop: 8 }}>{AFAI_ATTRIBUTION}</div>
+            </>
+          )
+        ) : (
+          <div className="empty">
+            <span className="muted">{afai ? `Satellite feed unavailable${afai.reason ? ` (${afai.reason})` : ''}.` : 'Fetching satellite read…'}</span>
           </div>
         )}
       </div>
