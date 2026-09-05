@@ -1,14 +1,16 @@
 // =====================================================================
-// Client for the CIIN "feeds" Edge Function via supabase.functions.invoke().
-// Params passed in the BODY (reliable) rather than a query string.
-// invoke() attaches the correct auth + apikey headers automatically.
+// Client for the CIIN "feeds" Edge Function.
+// Sends params BOTH in the query string AND the body, so it works regardless
+// of how the runtime surfaces them. Uses supabase.functions.invoke() for
+// correct auth headers; the query string is appended to the function name.
 // =====================================================================
 import { supabase } from './supabase'
 
 async function callFeed(feed, lat, lng) {
   try {
-    const { data, error } = await supabase.functions.invoke('feeds', {
-      body: { feed, lat, lng },
+    const qs = `feeds?feed=${feed}&lat=${lat}&lng=${lng}`
+    const { data, error } = await supabase.functions.invoke(qs, {
+      body: { feed, lat, lng },   // belt and suspenders
     })
     if (error) return { ok: false, reason: error.message || 'feed error', source: 'live_feed' }
     return data

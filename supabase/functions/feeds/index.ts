@@ -53,18 +53,34 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
   try {
     let feed: string | null = null, lat = NaN, lng = NaN
-    // Prefer JSON body (from invoke); fall back to query string (direct GET).
-    if (req.method === 'POST') {
-      const b = await req.json().catch(() => ({}))
-      feed = b.feed ?? null; lat = parseFloat(b.lat); lng = parseFloat(b.lng)
-    }
-    if (!feed) {
-      const u = new URL(req.url)
+
+    // 1) Try query string first (works for GET and for invoke if it appends).
+    const u = new URL(req.url)
+    if (u.searchParams.get('feed')) {
       feed = u.searchParams.get('feed')
       lat = parseFloat(u.searchParams.get('lat') ?? '')
       lng = parseFloat(u.searchParams.get('lng') ?? '')
     }
-    if (Number.isNaN(lat) || Number.isNaN(lng)) return json({ ok: false, reason: 'lat/lng required' }, 400)
+
+    // 2) If not found, try the request body (POST from invoke). Read as text
+    //    then JSON.parse, so a missing/odd Content-Type can't silently break it.
+    if (!feed && req.method !== 'GET') {
+      const raw = await req.text().catch(() => '')
+      if (raw) {
+        try {
+          const b = JSON.parse(raw)
+          feed = b.feed ?? null
+          lat = typeof b.lat === 'number' ? b.lat : parseFloat(b.lat)
+          lng = typeof b.lng === 'number' ? b.lng : parseFloat(b.lng)
+        } catch (_) { /* leave for the debug echo below */ }
+      }
+    }
+
+    if (Number.isNaN(lat) || Number.isNaN(lng) || !feed) {
+      // Debug echo: show exactly what the function received, so a bad call is diagnosable.
+      return json({ ok: false, reason: 'lat/lng required',
+        debug: { method: req.method, feed, lat, lng, query: u.search, hasBody: req.method !== 'GET' } }, 400)
+    }
     if (feed === 'weather') return json(await weather(lat, lng))
     if (feed === 'afai') return json(await afai(lat, lng))
     return json({ ok: false, reason: 'unknown feed (use weather|afai)' }, 400)
