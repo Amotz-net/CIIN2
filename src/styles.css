@@ -33,3 +33,13 @@ th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px
 .logo-lg{font-size:38px;font-weight:800;text-align:center;margin-bottom:4px}
 .logo-lg span{color:var(--teal)}
 .row-actions{display:flex;gap:8px}
+
+/* role dashboard layout (corrected Stage 1) */
+.dash-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px}
+.dash-head h1{font-size:24px}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:22px;text-align:center;margin-top:6px}
+.pending-card{border-color:var(--amber)}
+
+.line-item{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);gap:10px}
+.line-item:last-child{border-bottom:none}

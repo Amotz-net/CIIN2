@@ -51,6 +51,7 @@ You need **Node.js** (to run the app locally) and **Git** (to push code to GitHu
 2. Open the file `supabase/migrations/0001_init.sql` from this repo, copy **all** of it, paste into the SQL editor, click **Run**. You should see "Success."
 3. Do the same with `0002_rls.sql` (this turns on the security rules). Run it.
 4. Do the same with `0003_seed.sql` (creates the CIIN org). Run it.
+4. Do the same with `0004_approval.sql` (approval audit + live-approval gating). Run it.
 
 If any step errors, read the message — usually it means a previous step didn't run. Re-run them in order 0001 → 0002 → 0003.
 
@@ -168,3 +169,36 @@ production-grade foundation everything else builds on.
 **Doesn't yet:** role dashboards (risk scores, alerts, missions), reporting,
 economics, the regional network, and automated emails. Those are Stages 2–7 in
 the Master Build Specification, and they sit on top of exactly this spine.
+
+---
+
+## Troubleshooting: 404 on an invite link (or any page refresh) after deploying
+
+If a link like `your-app.vercel.app/accept?token=…` shows a **404** on Vercel,
+that's the single-page-app routing issue, not a code bug. The repo includes
+`vercel.json` which tells Vercel to serve `index.html` for every path and let
+the app handle routing. If you deployed *before* that file existed, just push
+again (`git add vercel.json && git commit -m "SPA rewrites" && git push`) —
+Vercel redeploys and the 404 clears. No database or code change needed.
+
+---
+
+## Stage 2 — Hotel dashboard (run after Stage 1 is working)
+
+Stage 2 adds the Hotel operational data layer and wires the hotel dashboard,
+plus a live NOAA weather panel.
+
+1. In the Supabase **SQL Editor**, run these new migrations in order:
+   - `0005_hotel_ops.sql` (operational tables: beach segments, arrivals, missions, hub pools, load summaries)
+   - `0006_hotel_rls.sql` (row-level security — org-scoped, approval-gated)
+   - `0007_hotel_seed.sql` (representative data for your hotel org — it auto-finds the first hotel org; edit the lookup if you have several)
+2. Sign in as a member of an **approved hotel org**. The dashboard now shows:
+   - **Incoming sargassum** (labelled *representative*)
+   - **Weather** — a genuinely **live** NOAA `api.weather.gov` forecast for your beach segment's coordinates (US/territory coasts; other Caribbean coasts may show "unavailable")
+   - **Missions** against the property with the responding hub pool
+   - **Grade & closure**, and **avoided cost**
+3. Every data point is tagged **live / representative / computed** so nothing fixture is mistaken for a live feed.
+
+Notes:
+- NOAA coverage is strongest for US/US-territory coasts. For a non-US Caribbean beach the weather panel honestly shows "unavailable for this location" rather than faking it.
+- To point weather at a real covered coast for a demo, set a beach segment's lat/lng to a US/territory coordinate (e.g. San Juan PR: 18.47, -66.10).

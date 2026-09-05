@@ -27,6 +27,9 @@ export default function AcceptInvite() {
       .then(({ data }) => {
         if (!data || data.status !== 'pending' || new Date(data.expires_at) < new Date()) {
           setStatus('invalid')
+        } else if (!data.org_id) {
+          // A malformed invite with no organization must not create an orphan profile.
+          setStatus('invalid')
         } else {
           // normalize to-one join (object vs 1-element array)
           if (Array.isArray(data.organizations)) data.organizations = data.organizations[0] ?? null
@@ -46,16 +49,30 @@ export default function AcceptInvite() {
     })
     if (suErr) { setErr(suErr.message); return }
     const userId = signUp.user?.id
-    if (!userId) { setErr('Could not create account. Check your email to confirm, then sign in.'); return }
+    if (!userId) { setErr('Could not create account. Please try again.'); return }
 
-    // 2) create the profile row (RLS allows inserting your own id), linked to the org
+    // We can only create the profile row if we have an active session, because
+    // RLS requires the insert to run as this user (id = auth.uid()).
+    // If "Confirm email" is ON in Supabase, signUp does NOT create a session —
+    // the account exists but is unconfirmed. Detect that and guide the user,
+    // rather than silently failing the profile insert.
+    if (!signUp.session) {
+      setStatus('confirm')   // show "check your email to confirm" screen
+      return
+    }
+
+    // 2) create the profile row, linked to the org from the invite
     const { error: pErr } = await supabase.from('profiles').insert({
       id: userId,
       full_name: fullName,
       org_id: invite.org_id,
       level: invite.level,
     })
-    if (pErr) { setErr(pErr.message); return }
+    if (pErr) {
+      setErr('Account created but profile setup failed: ' + pErr.message +
+             ' — please tell your CIIN administrator.')
+      return
+    }
 
     // 3) mark the invite accepted
     await supabase.from('invitations').update({ status: 'accepted' }).eq('id', invite.id)
@@ -73,6 +90,13 @@ export default function AcceptInvite() {
     </div></div>
   )
   if (status === 'done') return <div className="center ok">Account created — taking you in…</div>
+  if (status === 'confirm') return (
+    <div className="center"><div className="loginbox card">
+      <h2>Confirm your email</h2>
+      <p className="muted">Your account was created. Supabase requires email confirmation before you can finish setup. Check <b>{invite?.email}</b> for a confirmation link, click it, then return here and sign in — your profile will finish setting up automatically.</p>
+      <a href="/login">Go to sign in</a>
+    </div></div>
+  )
 
   return (
     <div className="center">

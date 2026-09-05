@@ -2,16 +2,16 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './lib/auth.jsx'
+import { isOrgAdmin } from './lib/scope.js'
 import './styles.css'
 
 import Login from './pages/Login.jsx'
 import AcceptInvite from './pages/AcceptInvite.jsx'
 import Dashboard from './pages/Dashboard.jsx'
+import Manage from './pages/Manage.jsx'
 import AdminOrgs from './pages/AdminOrgs.jsx'
-import Members from './pages/Members.jsx'
 import PublicVerify from './pages/PublicVerify.jsx'
 
-// Gate: require a logged-in user with a profile; otherwise send to login.
 function RequireAuth({ children }) {
   const { loading, user } = useAuth()
   if (loading) return <div className="center muted">Loading…</div>
@@ -19,7 +19,14 @@ function RequireAuth({ children }) {
   return children
 }
 
-// Gate: platform-admin only.
+// Org-admin (or platform admin) only — the management section.
+function RequireOrgAdmin({ children }) {
+  const { loading, profile } = useAuth()
+  if (loading) return <div className="center muted">Loading…</div>
+  if (!isOrgAdmin(profile)) return <Navigate to="/" replace />
+  return children
+}
+
 function RequireAdmin({ children }) {
   const { loading, profile } = useAuth()
   if (loading) return <div className="center muted">Loading…</div>
@@ -32,10 +39,10 @@ function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/accept" element={<AcceptInvite />} />
-      <Route path="/verify" element={<PublicVerify />} />{/* public, no login */}
+      <Route path="/verify" element={<PublicVerify />} />
       <Route path="/" element={<RequireAuth><Dashboard /></RequireAuth>} />
-      <Route path="/members" element={<RequireAuth><Members /></RequireAuth>} />
-      <Route path="/admin/orgs" element={<RequireAdmin><AdminOrgs /></RequireAdmin>} />
+      <Route path="/manage" element={<RequireAuth><RequireOrgAdmin><Manage /></RequireOrgAdmin></RequireAuth>} />
+      <Route path="/admin/orgs" element={<RequireAuth><RequireAdmin><AdminOrgs /></RequireAdmin></RequireAuth>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

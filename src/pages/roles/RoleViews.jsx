@@ -1,0 +1,84 @@
+// =====================================================================
+// Role dashboard views — corrected-Stage-1: real STRUCTURE, empty states.
+// Each renders the panels that role will have, with an "awaiting data" empty
+// state rather than a paragraph explaining what's not built. When the data
+// layer lands (Stage 2), these panels fill from selectOperational(...).
+// =====================================================================
+
+// A shaped empty panel — shows what WILL be here, honestly empty for now.
+function Panel({ title, hint }) {
+  return (
+    <div className="card">
+      <h2>{title}</h2>
+      <div className="empty">
+        <span className="muted">{hint}</span>
+      </div>
+    </div>
+  )
+}
+
+function Grid({ children }) {
+  return <div className="dash-grid">{children}</div>
+}
+
+
+export function HubView() {
+  return (
+    <Grid>
+      <Panel title="Mission queue" hint="Missions matched to this hub by capacity and window." />
+      <Panel title="Capacity & throughput" hint="Daily capacity, spare, and utilization." />
+      <Panel title="Pooling" hint="Collaborations with other hubs on shared loads." />
+      <Panel title="Deliveries" hint="Batches delivered to processors." />
+    </Grid>
+  )
+}
+
+export function ProcessorView() {
+  return (
+    <Grid>
+      <Panel title="Certification status" hint="Your CIIN certificate and what maintains it." />
+      <Panel title="Quality passports" hint="Batch passports — screened / verified, grades." />
+      <Panel title="Closure ledger" hint="Mass-balance reconciliation for your loads." />
+      <Panel title="Usage & limits" hint="Permitted vs excluded destinations per grade." />
+    </Grid>
+  )
+}
+
+export function GovernmentView() {
+  return (
+    <Grid>
+      <Panel title="Coastline status" hint="Beaches managed, coverage, risk trends." />
+      <Panel title="Risk scores" hint="Public health, coastal health, carbon credit risk." />
+      <Panel title="Dispatch & approvals" hint="Missions awaiting approval; coordinated response." />
+      <Panel title="Carbon exposure" hint="Avoided-emissions value and cost of missing the window." />
+    </Grid>
+  )
+}
+
+export function LabView() {
+  return (
+    <Grid>
+      <Panel title="Sample queue" hint="Inbound samples for testing, with inherited origin." />
+      <Panel title="Results" hint="Return confirmed Tier-3 results here." />
+      <Panel title="Validation" hint="Throughput and methods." />
+    </Grid>
+  )
+}
+
+export function BuyerView() {
+  return (
+    <Grid>
+      <Panel title="Verified biomass" hint="Certified, passported biomass matched to your demand." />
+      <Panel title="Matches" hint="Your contracted and proposed matches." />
+    </Grid>
+  )
+}
+
+export function FinanceView() {
+  return (
+    <Grid>
+      <Panel title="Instruments" hint="Credits, performance-based finance, offtake insurance." />
+      <Panel title="Underwriting" hint="Verified missions available to underwrite." />
+    </Grid>
+  )
+}

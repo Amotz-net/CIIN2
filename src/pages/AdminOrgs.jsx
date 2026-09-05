@@ -34,7 +34,7 @@ export default function AdminOrgs() {
     if (oErr) { setErr(oErr.message); return }
     // 2) invite its org-admin
     const { data: inv, error: iErr } = await supabase.from('invitations')
-      .insert({ email: adminEmail, org_id: org.id, level: 'org_admin' })
+      .insert({ email: adminEmail, org_id: org.id, level: 'org_admin', invited_by: null })
       .select('token').single()
     if (iErr) { setErr(iErr.message); return }
     const link = `${window.location.origin}/accept?token=${inv.token}`
