@@ -108,26 +108,36 @@ export function HotelView({ profile }) {
           })
         ) : <div className="empty"><span className="muted">No beach segments with coordinates yet.</span></div>}
         <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
-          Shows live offshore floating-algae density (NOAA AFAI) per segment. A tonnes-and-ETA landing forecast requires a drift/trajectory model (not yet built) — see projected arrivals below.
+          Shows live offshore floating-algae density (NOAA AFAI) per segment. A tonnes-and-ETA landing forecast requires a drift/trajectory model (not yet built); see the live inundation-risk panel for shore-risk.
         </div>
       </div>
 
-      {/* Projected arrivals — representative, NOT from the live feed */}
+      {/* Inundation risk — LIVE, computed from AFAI via NOAA's SIR method */}
       <div className="card">
-        <h2>Projected arrivals <span className="pill grey" style={{ fontSize: 10 }}>representative</span></h2>
-        {arrivals.length ? arrivals.map(a => (
-          <div key={a.id} className="line-item">
-            <div>
-              <b>{a.tonnes} t</b> · lands in {fmtEta(a.eta_at)}
-              <div className="muted" style={{ fontSize: 12 }}>
-                {segments.find(s => s.id === a.segment_id)?.name || 'your frontage'} · {a.severity} severity
+        <h2>Inundation risk <span className="pill" style={{ fontSize: 10 }}>SIR method · live</span></h2>
+        {segments.filter(s => s.lat && s.lng).length ? (
+          segments.filter(s => s.lat && s.lng).map(s => {
+            const r = segAfai[s.id]
+            let risk = '—', tone = 'grey', detail = 'awaiting satellite read'
+            if (r?.ok && !r.gap && r.sir) {
+              risk = r.sir
+              tone = r.sir === 'high' ? 'red' : r.sir === 'medium' ? 'amber' : 'green'
+              detail = `nearby AFAI peak ${r.sir_peak?.toExponential(2)} (NOAA thresholds 0.001 / 0.003)`
+            } else if (r?.ok && r.gap) { risk = 'no clear read'; detail = 'cloud / glint / dust — honest gap' }
+            else if (r && !r.ok) { risk = 'unavailable'; detail = r.reason || 'feed error' }
+            return (
+              <div key={s.id} className="line-item">
+                <div>
+                  <b style={{ textTransform: 'capitalize' }}>{risk}</b>
+                  <div className="muted" style={{ fontSize: 12 }}>{s.name} · {detail}</div>
+                </div>
+                <span className={'pill ' + tone}>live</span>
               </div>
-            </div>
-            <SourceTag source="representative" />
-          </div>
-        )) : <div className="empty"><span className="muted">No projected arrivals.</span></div>}
+            )
+          })
+        ) : <div className="empty"><span className="muted">No beach segments with coordinates yet.</span></div>}
         <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
-          Representative projection for planning — not yet driven by the live satellite feed. Requires the drift model to become live.
+          Live coastal inundation RISK, computed from NOAA/USF AFAI using NOAA CoastWatch's SIR classification (thresholds 0.001 / 0.003). This is a potential-nowcast (risk of sargassum reaching shore) — <b>not</b> a tonnage or landing-time forecast, which requires a drift model. Derived from the live AFAI feed, not the official SIR product object.
         </div>
       </div>
 

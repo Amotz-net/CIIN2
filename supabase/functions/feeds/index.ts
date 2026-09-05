@@ -46,7 +46,14 @@ async function afai(lat: number, lng: number, box = 0.1) {
     note: 'No clear satellite read (cloud, sun glint or dust). Coverage gap shown honestly.' }
   const mean = vals.reduce((s: number, v: number) => s + v, 0) / vals.length
   const level = mean > 0.0008 ? 'elevated' : mean > 0.0002 ? 'moderate' : 'low'
-  return { ok: true, gap: false, source: 'live_feed', afai: mean, level, coverage: vals.length, asOf: rows[0]?.[0] ?? null }
+  // SIR-method inundation risk: NOAA CoastWatch classifies AFAI near the coast
+  // against published thresholds 0.001 and 0.003 -> low / medium / high.
+  // Computed from the same live AFAI input NOAA's SIR uses (not the official
+  // SIR object). Uses the max nearby AFAI (worst-case pixel near the coast).
+  const peak = Math.max(...vals)
+  const sir = peak >= 0.003 ? 'high' : peak >= 0.001 ? 'medium' : 'low'
+  return { ok: true, gap: false, source: 'live_feed', afai: mean, level,
+           sir, sir_peak: peak, coverage: vals.length, asOf: rows[0]?.[0] ?? null }
 }
 
 Deno.serve(async (req) => {
