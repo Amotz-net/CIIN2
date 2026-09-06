@@ -69,3 +69,26 @@ th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px
 .leaflet-popup-content{font-family:inherit;font-size:12.5px}
 .leaflet-container{background:#0f1418;font-family:inherit}
 .leaflet-bar a{background:#2A3138;color:#EAF0EF;border-color:#3C454E}.leaflet-bar a:hover{background:#313941}
+
+/* ---- Landfall watch + live-dashboard motion ---- */
+.pill.green{background:rgba(111,192,140,.15);color:var(--green)}
+.pill.teal{background:rgba(87,196,174,.15);color:var(--teal)}
+.pill.blue{background:rgba(110,168,214,.15);color:#6EA8D6}
+.lf-card{position:relative;overflow:hidden}
+@keyframes lf-pulse{0%,100%{opacity:1;r:4}50%{opacity:.35;r:6}}
+.lf-pulse{animation:lf-pulse 2.4s ease-in-out infinite}
+@keyframes lf-drift{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.lf-drift{animation:lf-drift 6s ease-in-out infinite}
+@keyframes live-blink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(87,196,174,.55)}70%{opacity:.55;box-shadow:0 0 0 7px rgba(87,196,174,0)}}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:1.2;text-transform:uppercase;color:var(--teal);font-weight:700}
+.live .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:live-blink 2s ease-out infinite}
+.live.stale{color:var(--mute)}.live.stale .dot{background:var(--mute);animation:none}
+.bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:9px}
+.bar>i{display:block;height:100%;border-radius:3px;transition:width 900ms cubic-bezier(.4,0,.2,1)}
+@keyframes sheen{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
+.refresh-track{position:relative;height:2px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:10px}
+.refresh-track>i{position:absolute;inset:0;width:33%;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:sheen 2.2s linear infinite}
+@media (prefers-reduced-motion:reduce){
+  .lf-pulse,.lf-drift,.live .dot,.refresh-track>i{animation:none}
+  .bar>i,.lf-card circle{transition:none}
+}

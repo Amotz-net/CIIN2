@@ -1,19 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { getAfai } from '../../lib/feeds'
+import { getAfai, getDrift } from '../../lib/feeds'
 import { computeScores, scoreTone } from '../../lib/riskscores'
+import { computeLandfall } from '../../lib/landfall'
 import { runAgent } from '../../lib/agent'
 import { runCapture, loadKnowledge, loadReviews, decideReview } from '../../lib/capture'
 import { CoastMap } from './CoastMap.jsx'
 import { RoleReports } from './Reports.jsx'
+import { Landfall } from '../../components/Landfall.jsx'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
 // live satellite risk per segment, and shows three risk scores at honest tiers
-// plus a directional carbon exposure figure. Overwrites the empty stub.
+// plus a directional carbon exposure figure.
+//
+// Sections are STRICT: each nav tab renders only its own panels. Overview is
+// the situational picture — map, landfall watch, jurisdiction summary, risk
+// scores, agent. Knowledge Hub, Carbon, Coast Map and Reports live on their
+// own tabs and no longer stack below the agent.
 
 const TIER_PILL = { live: 'teal', 'live-informed': 'blue', directional: 'amber' }
 const CO2E_PER_T = 0.30  // t CO2e per t wet sargassum (directional, published range)
+const REFRESH_MS = 90_000
+
+// Ticking "updated Xs ago" — kept in a leaf so the second-hand doesn't
+// re-render the map or the agent panel.
+function LiveDot({ at, refreshing }) {
+  const [, tick] = useState(0)
+  useEffect(() => {
+    const id = setInterval(() => tick(n => n + 1), 1000)
+    return () => clearInterval(id)
+  }, [])
+  if (!at) return <span className="live stale"><span className="dot" />connecting</span>
+  const secs = Math.floor((Date.now() - at) / 1000)
+  const stale = secs > REFRESH_MS / 1000 + 30
+  const ago = refreshing ? 'refreshing…' : secs < 5 ? 'just now' : secs < 90 ? `${secs}s ago` : `${Math.floor(secs / 60)}m ago`
+  return <span className={'live' + (stale ? ' stale' : '')}><span className="dot" />live · {ago}</span>
+}
 
 function ScoreCard({ title, score }) {
   const tier = score?.tier || 'directional'
@@ -23,8 +46,12 @@ function ScoreCard({ title, score }) {
       <h2>{title} <span className={'pill ' + (TIER_PILL[tier] || 'grey')} style={{ fontSize: 10 }}>{tier}</span></h2>
       {score?.value != null ? (
         <>
-          <div style={{ fontSize: 34, fontWeight: 800, color: `var(--${tone})` }}>{score.value}<span style={{ fontSize: 14, color: 'var(--muted)' }}>/100</span></div>
-          <div className="muted" style={{ fontSize: 12 }}>{score.note}</div>
+          <div style={{ fontSize: 34, fontWeight: 800, color: `var(--${tone})`, fontVariantNumeric: 'tabular-nums' }}>
+            {score.value}<span style={{ fontSize: 14, color: 'var(--mute)' }}>/100</span>
+          </div>
+          {/* the bar animates between reads, so a moving score is visible at a glance */}
+          <div className="bar"><i style={{ width: `${score.value}%`, background: `var(--${tone})` }} /></div>
+          <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>{score.note}</div>
         </>
       ) : <div className="empty"><span className="muted">{score?.note || 'no data'}</span></div>}
     </div>
@@ -35,6 +62,7 @@ export function GovernmentView({ profile, section = 'overview' }) {
   const [segments, setSegments] = useState([])
   const [orgs, setOrgs] = useState([])
   const [segReads, setSegReads] = useState({})
+  const [segDrifts, setSegDrifts] = useState({})
   const [loads, setLoads] = useState([])
   const [agent, setAgent] = useState(null)
   const [decision, setDecision] = useState(null)
@@ -42,10 +70,32 @@ export function GovernmentView({ profile, section = 'overview' }) {
   const [reviews, setReviews] = useState([])
   const [capturing, setCapturing] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [updatedAt, setUpdatedAt] = useState(null)
+  const [refreshing, setRefreshing] = useState(false)
+  const alive = useRef(true)
   const country = profile?.organizations?.country_code
 
+  useEffect(() => { alive.current = true; return () => { alive.current = false } }, [])
+
+  // One pass over the live feeds: AFAI + drift per segment, then the agent.
+  const pollFeeds = useCallback(async (segs) => {
+    const withCoords = segs.filter(s => s.lat && s.lng)
+    if (!withCoords.length) { setUpdatedAt(Date.now()); return }
+    setRefreshing(true)
+    const reads = {}, drifts = {}
+    for (const s of withCoords) {
+      const [a, d] = await Promise.all([getAfai(s.lat, s.lng), getDrift(s.lat, s.lng)])
+      reads[s.id] = a; drifts[s.id] = d
+    }
+    if (!alive.current) return
+    setSegReads(reads); setSegDrifts(drifts); setUpdatedAt(Date.now()); setRefreshing(false)
+
+    const a = await runAgent({ segments: segs, segReads: reads, hubs: [{ name: 'NEG01', spare_t: 90 }, { name: 'Bloody Bay', spare_t: 60 }] })
+    if (alive.current) setAgent(a)
+  }, [])
+
   useEffect(() => {
-    let alive = true
+    let timer
     async function load() {
       // Cross-org reads (RLS 0011 permits Government to see its whole country).
       const [seg, org, ls] = await Promise.all([
@@ -53,30 +103,21 @@ export function GovernmentView({ profile, section = 'overview' }) {
         supabase.from('organizations').select('id, name, role, country_code'),
         supabase.from('load_summaries').select('*'),
       ])
-      if (!alive) return
+      if (!alive.current) return
       const segs = seg.data ?? []
-      setSegments(segs)
-      setOrgs(org.data ?? [])
-      setLoads(ls.data ?? [])
-      setLoading(false)
+      setSegments(segs); setOrgs(org.data ?? []); setLoads(ls.data ?? []); setLoading(false)
 
-      // live AFAI/SIR per segment with coordinates
-      const withCoords = segs.filter(s => s.lat && s.lng)
-      const reads = {}
-      for (const s of withCoords) reads[s.id] = await getAfai(s.lat, s.lng)
-      if (alive) setSegReads(reads)
+      await pollFeeds(segs)
 
-      // Run the agent orchestrator over the grounded live reads.
-      const a = await runAgent({ segments: segs, segReads: reads, hubs: [{ name: 'NEG01', spare_t: 90 }, { name: 'Bloody Bay', spare_t: 60 }] })
-      if (alive) setAgent(a)
+      // Keep the picture live — the satellite and current feeds move under us.
+      timer = setInterval(() => { if (alive.current) pollFeeds(segs) }, REFRESH_MS)
 
-      // Load the knowledge hub (aggregate public good) + rule reviews.
       const [kn, rv] = await Promise.all([loadKnowledge(), loadReviews()])
-      if (alive) { setKnowledge(kn); setReviews(rv) }
+      if (alive.current) { setKnowledge(kn); setReviews(rv) }
     }
     load()
-    return () => { alive = false }
-  }, [])
+    return () => clearInterval(timer)
+  }, [pollFeeds])
 
   async function doCapture() {
     setCapturing(true)
@@ -92,8 +133,9 @@ export function GovernmentView({ profile, section = 'overview' }) {
   if (loading) return <div className="card"><span className="muted">Loading jurisdiction dashboard…</span></div>
 
   const scores = computeScores(segReads)
+  const landfall = computeLandfall({ segments, reads: segReads, drifts: segDrifts })
   const isAdmin = !!profile?.is_platform_admin
-  const S = (sec) => section === 'overview' || section === sec
+  const S = (sec) => section === sec           // strict: a tab renders only its own panels
   const hotels = orgs.filter(o => o.role === 'hotel').length
   const hubs = orgs.filter(o => o.role === 'recovery_hub').length
   const processors = orgs.filter(o => o.role === 'processor').length
@@ -103,11 +145,21 @@ export function GovernmentView({ profile, section = 'overview' }) {
 
   return (
     <div className="dash-grid">
-      {S('overview') && <CoastMap />}
       {S('overview') && <>
+      <CoastMap />
+
+      {/* Countdown to the next projected inundation window */}
+      <Landfall landfall={landfall} />
+
       {/* Jurisdiction summary */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
-        <h2>Coast management — {country}</h2>
+        <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          Coast management — {country}
+          <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <LiveDot at={updatedAt} refreshing={refreshing} />
+            <button className="btn ghost sm" disabled={refreshing} onClick={() => pollFeeds(segments)}>Refresh</button>
+          </span>
+        </h2>
         <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))' }}>
           <div><div style={{ fontSize: 26, fontWeight: 800 }}>{segments.length}</div><div className="muted" style={{ fontSize: 12 }}>coast segments</div></div>
           <div><div style={{ fontSize: 26, fontWeight: 800 }}>{hotels}</div><div className="muted" style={{ fontSize: 12 }}>hotels</div></div>
@@ -115,16 +167,14 @@ export function GovernmentView({ profile, section = 'overview' }) {
           <div><div style={{ fontSize: 26, fontWeight: 800 }}>{processors}</div><div className="muted" style={{ fontSize: 12 }}>processors</div></div>
           <div><div style={{ fontSize: 26, fontWeight: 800 }}>{recovered} t</div><div className="muted" style={{ fontSize: 12 }}>recovered</div></div>
         </div>
+        {refreshing && <div className="refresh-track"><i /></div>}
       </div>
 
-      </>}
-      {S('overview') && <>
       {/* Three risk scores — each at its honest tier */}
       <ScoreCard title="Coastal Health Risk" score={scores.coastal_health} />
       <ScoreCard title="Public Health Risk" score={scores.public_health} />
       <ScoreCard title="Carbon Credit Risk" score={scores.carbon_credit} />
-      </>}
-      {S('overview') && <>
+
       {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>CIIN Agent <span className="pill" style={{ fontSize: 10 }}>{agent?.ai ? 'AI + rules' : 'rules'}</span></h2>
@@ -168,9 +218,8 @@ export function GovernmentView({ profile, section = 'overview' }) {
           </>
         )}
       </div>
-
       </>}
-      {S('overview') && <RoleReports role="government" profile={profile} />}
+
       {S('knowledge') && <>
       {/* Knowledge Hub — cross-org patterns (aggregate, k-anon) + standards audit */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
@@ -210,10 +259,10 @@ export function GovernmentView({ profile, section = 'overview' }) {
           </div>
         )}
       </div>
-
       </>}
-      {S('carbon') && <>
-      {/* Carbon exposure — directional */}
+
+      {S('carbon') && (
+      /* Carbon exposure — directional */
       <div className="card">
         <h2>Carbon exposure <span className="pill amber" style={{ fontSize: 10 }}>directional</span></h2>
         <div style={{ fontSize: 30, fontWeight: 800, color: 'var(--green)' }}>{avoidedCO2e} t</div>
@@ -222,38 +271,9 @@ export function GovernmentView({ profile, section = 'overview' }) {
           Directional estimate (≈0.30 t CO₂e per tonne wet sargassum cleared before decomposition). Basis for planning; confirmed figures attach on verification.
         </div>
       </div>
+      )}
 
-      </>}
       {S('coast') && <CoastMap />}
-      {false && <>
-      {/* Coast segments with live risk (now shown via CoastMap) */}
-      <div className="card" style={{ gridColumn: '1 / -1' }}>
-        <h2>Coast segments</h2>
-        {segments.length ? (
-          <table>
-            <thead><tr><th>Segment</th><th>Organization</th><th>Inundation risk</th><th>Source</th></tr></thead>
-            <tbody>
-              {segments.map(s => {
-                const r = segReads[s.id]
-                const org = orgs.find(o => o.id === s.org_id)
-                let risk = '—', tone = 'grey', src = 'awaiting read'
-                if (r?.ok && !r.gap && r.sir) { risk = r.sir; tone = r.sir === 'high' ? 'red' : r.sir === 'medium' ? 'amber' : 'green'; src = 'live' }
-                else if (r?.ok && r.gap) { risk = 'no clear read'; src = 'cloud/glint gap' }
-                else if (r && !r.ok) { risk = 'unavailable'; src = r.reason || 'feed error' }
-                return (
-                  <tr key={s.id}>
-                    <td>{s.name}</td>
-                    <td>{org?.name || '—'}</td>
-                    <td><span className={'pill ' + tone} style={{ textTransform: 'capitalize' }}>{risk}</span></td>
-                    <td className="muted" style={{ fontSize: 11 }}>{src}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        ) : <div className="empty"><span className="muted">No coast segments registered in this jurisdiction yet.</span></div>}
-      </div>
-      </>}
       {S('reports') && <RoleReports role="government" profile={profile} />}
     </div>
   )
