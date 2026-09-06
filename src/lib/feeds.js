@@ -21,6 +21,7 @@ async function callFeed(feed, lat, lng) {
 
 export const getForecast = (lat, lng) => callFeed('weather', lat, lng)
 export const getAfai = (lat, lng) => callFeed('afai', lat, lng)
+export const getDrift = (lat, lng) => callFeed('drift', lat, lng)
 
 export const AFAI_ATTRIBUTION =
   'USF Optical Oceanography Lab (AFAI), redistributed by NOAA CoastWatch–AOML. ' +
