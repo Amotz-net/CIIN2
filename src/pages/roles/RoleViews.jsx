@@ -23,16 +23,6 @@ function Grid({ children }) {
 
 
 
-export function ProcessorView() {
-  return (
-    <Grid>
-      <Panel title="Certification status" hint="Your CIIN certificate and what maintains it." />
-      <Panel title="Quality passports" hint="Batch passports — screened / verified, grades." />
-      <Panel title="Closure ledger" hint="Mass-balance reconciliation for your loads." />
-      <Panel title="Usage & limits" hint="Permitted vs excluded destinations per grade." />
-    </Grid>
-  )
-}
 
 
 export function LabView() {

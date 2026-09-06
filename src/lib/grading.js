@@ -104,6 +104,22 @@ export function gradeBatch(batch, ruleset) {
   }
 }
 
+// Grade -> permitted vs excluded destination channels (usage & limits).
+// Master-spec channel logic: hard-ceiling (agri/food) needs A + confirmed;
+// B may use B-channels; C is controlled disposal; FAIL is quarantined.
+const HARD_CEILING = ['biofertiliser', 'compost_for_sale', 'soil_amendment']
+const B_CHANNELS = ['alginate_extraction', 'anaerobic_digestion', 'biochar_pyrolysis', 'construction_materials', 'non_food_bioplastics']
+export function permittedUses(grade, confirmed) {
+  if (grade === 'FAIL') return { permitted: [], excluded: [...HARD_CEILING, ...B_CHANNELS], note: 'quarantined — chain/signature invalid' }
+  if (grade === 'C') return { permitted: ['controlled_disposal'], excluded: [...HARD_CEILING, ...B_CHANNELS], note: 'grade C — disposal only' }
+  if (grade === 'B') return { permitted: B_CHANNELS, excluded: HARD_CEILING, note: 'B — non-food channels; agri excluded' }
+  if (grade === 'A') {
+    if (confirmed) return { permitted: [...HARD_CEILING, ...B_CHANNELS], excluded: [], note: 'A verified — all channels' }
+    return { permitted: B_CHANNELS, excluded: HARD_CEILING, note: 'A screened — agri needs lab confirmation' }
+  }
+  return { permitted: [], excluded: [], note: 'ungraded' }
+}
+
 // Closure banding (config policy). streams: [{share, manifested}], route.
 export function closeLedger(streams, ruleset) {
   const { policy } = ruleset
