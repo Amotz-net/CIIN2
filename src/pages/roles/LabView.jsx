@@ -5,7 +5,7 @@ import { loadRuleset, gradeBatch } from '../../lib/grading'
 // Lab dashboard — own-org. Sample queue: batches awaiting or holding lab results.
 // The lab MEASURES (returns inorganic-arsenic result); the RULES grade. Screened
 // batches (no inorganic yet) are the queue; confirmed ones show the re-graded result.
-export function LabView({ profile }) {
+export function LabView({ profile, section = 'queue' }) {
   const orgId = profile?.org_id
   const [rows, setRows] = useState([])
   const [ruleset, setRuleset] = useState(null)
@@ -41,8 +41,10 @@ export function LabView({ profile }) {
     chain_valid: b.chain_valid, signature_valid: b.signature_valid,
   }, ruleset) : null
 
+  const S = (sec) => section === sec
   return (
     <div className="dash-grid">
+      {S('queue') && <>
       <div className="card">
         <h2>Sample queue</h2>
         <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
@@ -66,6 +68,8 @@ export function LabView({ profile }) {
         <div className="muted" style={{ fontSize: 11, marginTop: 8 }}>The lab measures inorganic arsenic (EN 16802). Returning a result re-grades the batch on the confirmed value — the lab never sets the grade.</div>
       </div>
 
+      </>}
+      {S('results') && <>
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Confirmed results</h2>
         {done.length ? (
@@ -87,6 +91,7 @@ export function LabView({ profile }) {
           </table>
         ) : <div className="empty"><span className="muted">No confirmed results yet.</span></div>}
       </div>
+    </>}
     </div>
   )
 }

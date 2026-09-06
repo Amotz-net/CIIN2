@@ -9,7 +9,7 @@ import { loadRuleset, gradeBatch, permittedUses, closeLedger } from '../../lib/g
 
 const CHANNEL_LABEL = (c) => c.replace(/_/g, ' ')
 
-export function ProcessorView({ profile }) {
+export function ProcessorView({ profile, section = 'certification' }) {
   const orgId = profile?.org_id
   const [batches, setBatches] = useState([])
   const [loading, setLoading] = useState(true)
@@ -57,8 +57,10 @@ export function ProcessorView({ profile }) {
   if (anyC) blockers.push('Grade-C batch requires corrective action')
   if (anyDraft) blockers.push('Grades rest on a draft ruleset (pending sign-off)')
 
+  const S = (sec) => section === sec
   return (
     <div className="dash-grid">
+      {S('certification') && <>
       {/* Certification status — derived from evidence */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Certification status <span className={'pill ' + certTone}>{certStatus}</span> <span className="pill" style={{ fontSize: 10 }}>computed from evidence</span></h2>
@@ -76,6 +78,8 @@ export function ProcessorView({ profile }) {
         )}
       </div>
 
+      </>}
+      {S('passports') && <>
       {/* Quality passports with usage & limits */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Quality passports <span className="pill" style={{ fontSize: 10 }}>computed</span></h2>
@@ -108,12 +112,16 @@ export function ProcessorView({ profile }) {
         </div>
       </div>
 
+      </>}
+      {S('closure') && <>
       {/* Closure ledger (illustrative streams for the demo batch) */}
       <div className="card">
         <h2>Closure ledger</h2>
         <ClosureCard />
       </div>
 
+      </>}
+      {S('certificate') && <>
       {/* Printable certificate */}
       <div className="card">
         <h2>Certificate</h2>
@@ -126,6 +134,7 @@ export function ProcessorView({ profile }) {
         <button className="btn ghost sm" style={{ marginTop: 10 }} onClick={() => window.print()}>Print / save PDF</button>
         <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>Certificate reflects live evidence; it is not valid while status is Suspended.</div>
       </div>
+      </>}
     </div>
   )
 }

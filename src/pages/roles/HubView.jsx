@@ -11,7 +11,7 @@ const LINE_STEPS = [
   'Baling', 'Storage', 'Quality certification', 'Shipment',
 ]
 
-export function HubView({ profile }) {
+export function HubView({ profile, section = 'overview' }) {
   const orgId = profile?.org_id
   const [missions, setMissions] = useState([])
   const [graded, setGraded] = useState([])
@@ -58,8 +58,10 @@ export function HubView({ profile }) {
   const queued = missions.filter(m => m.line_step === 0)
   const dayCap = 180, used = active ? Math.round((active.line_step / 9) * 100) : 0
 
+  const S = (sec) => section === 'overview' || section === sec
   return (
     <div className="dash-grid">
+      {S('overview') && <>
       {/* Capacity */}
       <div className="card">
         <h2>Capacity</h2>
@@ -70,6 +72,8 @@ export function HubView({ profile }) {
         </div>
       </div>
 
+      </>}
+      {S('queue') && <>
       {/* Mission queue */}
       <div className="card">
         <h2>Mission queue</h2>
@@ -84,6 +88,8 @@ export function HubView({ profile }) {
         )) : <div className="empty"><span className="muted">No missions waiting. {active ? 'One in progress →' : ''}</span></div>}
       </div>
 
+      </>}
+      {S('line') && <>
       {/* Active recovery line */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Active recovery line</h2>
@@ -112,6 +118,8 @@ export function HubView({ profile }) {
         ) : <div className="empty"><span className="muted">No active cleanup. Acknowledge a mission to start the line.</span></div>}
       </div>
 
+      </>}
+      {S('batches') && <>
       {/* Deliveries with computed grades */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Batches &amp; grades <span className="pill" style={{ fontSize: 10 }}>computed</span></h2>
@@ -137,6 +145,7 @@ export function HubView({ profile }) {
           Grades computed by CIIN's rule engine from batch measurements. Ruleset is editable configuration.
         </div>
       </div>
+    </>}
     </div>
   )
 }

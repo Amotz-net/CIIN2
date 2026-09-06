@@ -22,7 +22,7 @@ function fmtEta(iso) {
   return h < 48 ? `${h} h` : `${Math.round(h / 24)} d`
 }
 
-export function HotelView({ profile }) {
+export function HotelView({ profile, section = 'overview' }) {
   const orgId = profile?.org_id
   const [arrivals, setArrivals] = useState([])
   const [missions, setMissions] = useState([])
@@ -112,8 +112,11 @@ export function HotelView({ profile }) {
 
   if (loading) return <div className="card"><span className="muted">Loading your dashboard…</span></div>
 
+  // section visibility: overview shows everything; others filter.
+  const S = (sec) => section === 'overview' || section === sec
   return (
     <div className="dash-grid">
+      {S('incoming') && <>
       {/* Incoming sargassum — driven by LIVE satellite AFAI per segment */}
       <div className="card">
         <h2>Incoming sargassum <span className="pill" style={{ fontSize: 10 }}>AFAI live</span></h2>
@@ -231,6 +234,8 @@ export function HotelView({ profile }) {
         )}
       </div>
 
+      </>}
+      {S('missions') && <>
       {/* Missions + hub pools */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Missions against your property</h2>
@@ -257,6 +262,8 @@ export function HotelView({ profile }) {
         ) : <div className="empty"><span className="muted">No missions raised against your property.</span></div>}
       </div>
 
+      </>}
+      {S('grades') && <>
       {/* Batch grades — COMPUTED by the config-driven engine */}
       <div className="card">
         <h2>Batch grades <span className="pill" style={{ fontSize: 10 }}>computed</span></h2>
@@ -297,6 +304,7 @@ export function HotelView({ profile }) {
           </>
         ) : <div className="empty"><span className="muted">No avoided-cost figure yet.</span></div>}
       </div>
+      </>}
     </div>
   )
 }

@@ -4,6 +4,8 @@ import { getAfai } from '../../lib/feeds'
 import { computeScores, scoreTone } from '../../lib/riskscores'
 import { runAgent } from '../../lib/agent'
 import { runCapture, loadKnowledge, loadReviews, decideReview } from '../../lib/capture'
+import { CoastMap } from './CoastMap.jsx'
+import { RoleReports } from './Reports.jsx'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
@@ -29,7 +31,7 @@ function ScoreCard({ title, score }) {
   )
 }
 
-export function GovernmentView({ profile }) {
+export function GovernmentView({ profile, section = 'overview' }) {
   const [segments, setSegments] = useState([])
   const [orgs, setOrgs] = useState([])
   const [segReads, setSegReads] = useState({})
@@ -91,6 +93,7 @@ export function GovernmentView({ profile }) {
 
   const scores = computeScores(segReads)
   const isAdmin = !!profile?.is_platform_admin
+  const S = (sec) => section === 'overview' || section === sec
   const hotels = orgs.filter(o => o.role === 'hotel').length
   const hubs = orgs.filter(o => o.role === 'recovery_hub').length
   const processors = orgs.filter(o => o.role === 'processor').length
@@ -100,6 +103,8 @@ export function GovernmentView({ profile }) {
 
   return (
     <div className="dash-grid">
+      {S('overview') && <CoastMap lite />}
+      {S('overview') && <>
       {/* Jurisdiction summary */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Coast management — {country}</h2>
@@ -112,6 +117,8 @@ export function GovernmentView({ profile }) {
         </div>
       </div>
 
+      </>}
+      {S('overview') && <>
       {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>CIIN Agent <span className="pill" style={{ fontSize: 10 }}>{agent?.ai ? 'AI + rules' : 'rules'}</span></h2>
@@ -156,6 +163,8 @@ export function GovernmentView({ profile }) {
         )}
       </div>
 
+      </>}
+      {S('knowledge') && <>
       {/* Knowledge Hub — cross-org patterns (aggregate, k-anon) + standards audit */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Knowledge Hub <span className="pill" style={{ fontSize: 10 }}>cross-org · aggregate</span>
@@ -195,11 +204,15 @@ export function GovernmentView({ profile }) {
         )}
       </div>
 
+      </>}
+      {S('overview') && <>
       {/* Three risk scores — each at its honest tier */}
       <ScoreCard title="Coastal Health Risk" score={scores.coastal_health} />
       <ScoreCard title="Public Health Risk" score={scores.public_health} />
       <ScoreCard title="Carbon Credit Risk" score={scores.carbon_credit} />
 
+      </>}
+      {S('carbon') && <>
       {/* Carbon exposure — directional */}
       <div className="card">
         <h2>Carbon exposure <span className="pill amber" style={{ fontSize: 10 }}>directional</span></h2>
@@ -210,7 +223,10 @@ export function GovernmentView({ profile }) {
         </div>
       </div>
 
-      {/* Coast segments with live risk */}
+      </>}
+      {S('coast') && <CoastMap />}
+      {false && <>
+      {/* Coast segments with live risk (now shown via CoastMap) */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Coast segments</h2>
         {segments.length ? (
@@ -237,6 +253,8 @@ export function GovernmentView({ profile }) {
           </table>
         ) : <div className="empty"><span className="muted">No coast segments registered in this jurisdiction yet.</span></div>}
       </div>
+      </>}
+      {S('reports') && <RoleReports role="government" profile={profile} />}
     </div>
   )
 }

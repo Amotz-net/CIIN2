@@ -6,7 +6,7 @@ import { loadRuleset, gradeBatch } from '../../lib/grading'
 // performance: only verified, passing batches count as underwritable tonnage.
 // Turns a graded, closure-verified record into an underwritable asset.
 const CO2E_PER_T = 0.30
-export function FinanceView({ profile }) {
+export function FinanceView({ profile, section = 'book' }) {
   const orgId = profile?.org_id
   const [batches, setBatches] = useState([])
   const [loading, setLoading] = useState(true)
@@ -46,8 +46,10 @@ export function FinanceView({ profile }) {
     { key: 'insurance', name: 'Offtake insurance', basis: 'priced on passport quality signal' },
   ]
 
+  const S = (sec) => section === sec
   return (
     <div className="dash-grid">
+      {S('book') && <>
       <div className="card">
         <h2>Underwriting book</h2>
         <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
@@ -57,6 +59,8 @@ export function FinanceView({ profile }) {
         </div>
       </div>
 
+      </>}
+      {S('instruments') && <>
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Instruments <span className="pill" style={{ fontSize: 10 }}>on verified performance</span></h2>
         {instruments.map(inst => (
@@ -72,6 +76,8 @@ export function FinanceView({ profile }) {
         <div className="muted" style={{ fontSize: 11, marginTop: 8 }}>Instruments price off the verified, graded, closure-checked record — not promises. Only lab-verified A/B tonnage is underwritable. Carbon figures are directional (≈0.30 t CO₂e per tonne wet cleared in-window).</div>
       </div>
 
+      </>}
+      {S('record') && <>
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Verified performance record</h2>
         {verified.length ? (
@@ -89,6 +95,7 @@ export function FinanceView({ profile }) {
           </table>
         ) : <div className="empty"><span className="muted">No verified performance to underwrite yet.</span></div>}
       </div>
+    </>}
     </div>
   )
 }

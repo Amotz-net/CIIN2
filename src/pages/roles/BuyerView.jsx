@@ -5,7 +5,7 @@ import { loadRuleset, gradeBatch, permittedUses } from '../../lib/grading'
 // Buyer / Exchange dashboard — own-org. Verified-biomass marketplace: only
 // batches that pass (A/B, not FAIL/C) and are confirmed appear as matchable,
 // with the passport (grade + permitted uses) as the assurance.
-export function BuyerView({ profile }) {
+export function BuyerView({ profile, section = 'market' }) {
   const orgId = profile?.org_id
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -40,8 +40,10 @@ export function BuyerView({ profile }) {
   const matchable = listings.filter(b => (b.result.grade === 'A' || b.result.grade === 'B') && b.measurement_conf === 'confirmed')
   const blocked = listings.filter(b => !matchable.includes(b))
 
+  const S = (sec) => section === sec
   return (
     <div className="dash-grid">
+      {S('market') && <>
       <div className="card">
         <h2>Marketplace</h2>
         <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
@@ -78,7 +80,8 @@ export function BuyerView({ profile }) {
         <div className="muted" style={{ fontSize: 11, marginTop: 8 }}>Only certified, lab-verified biomass (Grade A/B) appears here. The quality passport is your assurance; grade C, failed, or unverified batches are not offered.</div>
       </div>
 
-      {blocked.length > 0 && (
+      </>}
+      {S('notoffered') && blocked.length > 0 && (
         <div className="card" style={{ gridColumn: '1 / -1' }}>
           <h2>Not offered</h2>
           {blocked.map(b => (
