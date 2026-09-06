@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { getForecast, getAfai, AFAI_ATTRIBUTION } from '../../lib/feeds'
+import { getForecast, getAfai, getDrift, AFAI_ATTRIBUTION } from '../../lib/feeds'
 
 // Hotel dashboard — wired to the operational data layer (Stage 2).
 // Operational data is org-scoped by RLS; we still filter by org_id client-side
@@ -31,6 +31,7 @@ export function HotelView({ profile }) {
   const [weather, setWeather] = useState(null)
   const [afai, setAfai] = useState(null)
   const [segAfai, setSegAfai] = useState({})   // segment_id -> live AFAI reading
+  const [drift, setDrift] = useState(null)     // first-order drift for headline segment
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -67,6 +68,9 @@ export function HotelView({ profile }) {
         // LIVE satellite AFAI for the same segment (headline panel)
         const a = await getAfai(withCoords.lat, withCoords.lng)
         if (alive) setAfai(a)
+        // first-order drift for the headline segment
+        const d = await getDrift(withCoords.lat, withCoords.lng)
+        if (alive) setDrift(d)
       }
 
       // LIVE AFAI per segment — drives the Incoming panel so it agrees with satellite.
@@ -141,7 +145,27 @@ export function HotelView({ profile }) {
         </div>
       </div>
 
-      {/* Live weather (NOAA) */}
+      {/* Drift outlook — first-order, honestly labelled */}
+      <div className="card">
+        <h2>Drift outlook <span className="pill amber" style={{ fontSize: 10 }}>indicative</span></h2>
+        {drift?.ok ? (
+          <>
+            <div className="line-item">
+              <div>
+                <b>Drifting {drift.bearing}</b>
+                <div className="muted" style={{ fontSize: 12 }}>~{drift.speed_km_day} km/day · arrival window {drift.arrival_window}</div>
+              </div>
+              <span className="pill amber">{drift.confidence}</span>
+            </div>
+            <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
+              Indicative first-order drift (OSCAR surface current + windage), {drift.horizon} horizon, moderate confidence. <b>Not</b> a validated forecast and <b>not</b> a tonnage estimate — direction and rough timing only. A validated trajectory needs a full drift model (OpenDrift/OceanParcels), scaffolded for later.
+            </div>
+          </>
+        ) : (
+          <div className="empty"><span className="muted">{drift ? `Drift outlook unavailable${drift.reason ? ` (${drift.reason})` : ''}.` : 'Computing drift outlook…'}</span></div>
+        )}
+      </div>
+
       <div className="card">
         <h2>Weather <span className="pill" style={{ fontSize: 10 }}>NOAA live</span></h2>
         {weather?.ok ? (

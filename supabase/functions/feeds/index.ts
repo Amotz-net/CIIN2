@@ -66,39 +66,42 @@ function bearingToText(deg: number) {
   return dirs[Math.round(((deg % 360) / 45)) % 8]
 }
 async function drift(lat: number, lng: number) {
-  // OSCAR sea-surface velocity (u=eastward, v=northward, m/s), latest slice.
-  const ds = 'jplOscar_LonPM180'
+  // Near-Real-Time Geostrophic Currents (NOAA AOML CoastWatch Caribbean node) —
+  // same server as AFAI. Global 0.2°, u/v in m/s, dims [time][lat][lon] (no depth).
+  const ds = 'miamicurrents'
   const box = 0.5
-  const url = `https://coastwatch.pfeg.noaa.gov/erddap/griddap/${ds}.json?u[(last)][(15.0)][(${(lat+box).toFixed(2)}):(${(lat-box).toFixed(2)})][(${(lng-box).toFixed(2)}):(${(lng+box).toFixed(2)})],v[(last)][(15.0)][(${(lat+box).toFixed(2)}):(${(lat-box).toFixed(2)})][(${(lng-box).toFixed(2)}):(${(lng+box).toFixed(2)})]`
-  let u = NaN, v = NaN, asOf: string | null = null
+  const q = `[(last)][(${(lat+box).toFixed(2)}):(${(lat-box).toFixed(2)})][(${(lng-box).toFixed(2)}):(${(lng+box).toFixed(2)})]`
+  const url = `https://cwcgom.aoml.noaa.gov/erddap/griddap/${ds}.json?u_current${q},v_current${q}`
+  let u = NaN, v = NaN, asOf: string | null = null, debug = ''
   try {
     const r = await fetch(url, { headers: { Accept: 'application/json' } })
-    if (r.ok) {
+    if (!r.ok) {
+      debug = `currents ${r.status}`
+    } else {
       const j = await r.json()
       const rows = j?.table?.rows ?? []
-      // rows: [time, depth, lat, lng, u, v]
-      const us = rows.map((x: any[]) => x[4]).filter((n: any) => typeof n === 'number' && !Number.isNaN(n))
-      const vs = rows.map((x: any[]) => x[5]).filter((n: any) => typeof n === 'number' && !Number.isNaN(n))
+      const cols = j?.table?.columnNames ?? []
+      const ui = cols.indexOf('u_current'), vi = cols.indexOf('v_current')
+      const us = rows.map((x: any[]) => x[ui]).filter((n: any) => typeof n === 'number' && !Number.isNaN(n))
+      const vs = rows.map((x: any[]) => x[vi]).filter((n: any) => typeof n === 'number' && !Number.isNaN(n))
       if (us.length && vs.length) {
         u = us.reduce((s: number, n: number) => s + n, 0) / us.length
         v = vs.reduce((s: number, n: number) => s + n, 0) / vs.length
         asOf = rows[0]?.[0] ?? null
+      } else {
+        debug = `rows=${rows.length} cols=${JSON.stringify(cols)}`
       }
     }
-  } catch (_) { /* fall through to unavailable */ }
+  } catch (e) { debug = 'fetch failed: ' + String(e) }
 
   if (Number.isNaN(u) || Number.isNaN(v)) {
-    return { ok: false, reason: 'No current data for this location', source: 'live_feed' }
+    return { ok: false, reason: 'No current data for this location', debug, source: 'live_feed' }
   }
 
-  // Speed (m/s) and bearing. Add a small windage nudge (Caribbean trade winds push
-  // westward); first-order only, so we keep windage as a flat 1.5% westward add.
   const uw = u - 0.015, vw = v
-  const speed = Math.sqrt(uw*uw + vw*vw)                 // m/s
-  const bearingDeg = (Math.atan2(uw, vw) * 180/Math.PI + 360) % 360  // 0=N, 90=E
-  const kmPerDay = speed * 86.4                          // m/s -> km/day
-  // Indicative arrival window over a 3-day horizon (very rough): distance a patch
-  // ~10-30 km offshore would cover. We express as a qualitative window, not a clock.
+  const speed = Math.sqrt(uw*uw + vw*vw)
+  const bearingDeg = (Math.atan2(uw, vw) * 180/Math.PI + 360) % 360
+  const kmPerDay = speed * 86.4
   const horizonKm = kmPerDay * 3
   let window = 'beyond 3 days'
   if (horizonKm >= 30) window = '1–2 days'
@@ -110,7 +113,7 @@ async function drift(lat: number, lng: number) {
     speed_km_day: Math.round(kmPerDay * 10) / 10,
     arrival_window: window, horizon: '3-day', confidence: 'moderate',
     asOf,
-    note: 'Indicative first-order drift (OSCAR current + windage). Not a validated forecast.',
+    note: 'Indicative first-order drift (NOAA geostrophic current + windage). Not a validated forecast.',
   }
 }
 
