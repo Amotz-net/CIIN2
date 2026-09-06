@@ -1,8 +1,8 @@
 // =====================================================================
-// Role dashboard views — corrected-Stage-1: real STRUCTURE, empty states.
+// Role dashboard views — real structure with shaped empty states.
 // Each renders the panels that role will have, with an "awaiting data" empty
 // state rather than a paragraph explaining what's not built. When the data
-// layer lands (Stage 2), these panels fill from selectOperational(...).
+// these panels fill from selectOperational(...) once wired per role.
 // =====================================================================
 
 // A shaped empty panel — shows what WILL be here, honestly empty for now.

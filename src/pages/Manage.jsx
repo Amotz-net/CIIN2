@@ -50,7 +50,7 @@ export default function Manage() {
     load()
   }
   async function resend(inv) {
-    // "resend" = surface the link again (email automation is a later stage)
+    // "resend" = surface the invite link again
     const { data } = await supabase.from('invitations').select('token').eq('id', inv.id).single()
     if (data) setMsg(`Invite link for ${inv.email}: ${window.location.origin}/accept?token=${data.token}`)
   }

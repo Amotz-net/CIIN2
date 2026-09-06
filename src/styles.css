@@ -34,7 +34,7 @@ th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px
 .logo-lg span{color:var(--teal)}
 .row-actions{display:flex;gap:8px}
 
-/* role dashboard layout (corrected Stage 1) */
+/* role dashboard layout */
 .dash-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px}
 .dash-head h1{font-size:24px}
 .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}

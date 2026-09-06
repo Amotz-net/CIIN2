@@ -1,5 +1,5 @@
 // Role view registry (Master Spec §11.1). Landing = the role view.
-// Hotel is now a wired dashboard (Stage 2); the rest remain shaped empty states
+// Hotel is a wired dashboard; other roles render shaped empty states
 // until their vertical slice is built.
 import { HotelView } from '../pages/roles/HotelView.jsx'
 import { HubView, ProcessorView, GovernmentView, LabView, BuyerView, FinanceView } from '../pages/roles/RoleViews.jsx'

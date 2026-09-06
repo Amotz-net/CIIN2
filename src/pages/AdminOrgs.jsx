@@ -78,7 +78,7 @@ export default function AdminOrgs() {
             {err && <div className="err">{err}</div>}
           </form>
           <p className="muted" style={{ fontSize:12 }}>
-            In Stage 1 the invite link is shown here to copy. Automated email sending is wired at the notifications stage.
+            Copy the invite link and send it to the new organization admin. Automated email invitations are configured separately.
           </p>
         </div>
 

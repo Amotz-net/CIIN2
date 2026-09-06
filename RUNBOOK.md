@@ -266,3 +266,27 @@ Notes:
 - Satellite AFAI covers the whole Caribbean; weather (api.weather.gov) is
   US/territory-strongest. Both fail honestly ("no clear read" / "unavailable")
   rather than faking data.
+
+---
+
+## Drift outlook (first-order) + inundation risk
+
+The Hotel dashboard now shows, all live from the `feeds` Edge Function:
+- **Incoming sargassum** — offshore AFAI density per segment
+- **Inundation risk** — SIR-method risk (AFAI vs NOAA thresholds 0.001/0.003)
+- **Drift outlook** — first-order drift direction + arrival window from OSCAR
+  surface currents + windage. Labelled INDICATIVE, moderate confidence, 3-day
+  horizon. NOT a validated forecast, NOT a tonnage estimate.
+
+No new migration. Just redeploy the function and push the app:
+```
+supabase functions deploy feeds --no-verify-jwt   # from repo root
+git add -A && git commit -m "Add first-order drift outlook feed" && git push
+```
+
+**Honest scope on drift:** the Edge Function does a first-order projection
+(current vector at the patch + windage). It is NOT a validated Lagrangian model.
+The real model (OpenDrift/OceanParcels, a scheduled Python job) is scaffolded in
+`drift-model/README.md` for when you can run a Python worker — it's a drop-in
+upgrade behind the same Drift panel. Tonnage-with-a-clock is deliberately NOT
+produced: it needs an AFAI→biomass conversion (large error) + a beaching model.

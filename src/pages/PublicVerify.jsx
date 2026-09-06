@@ -1,5 +1,5 @@
 // Public certificate verification — NO login required.
-// Stage 1 placeholder: the search UI and the public, read-only path.
+// Public certificate verification — read-only, no login.
 // Later stages wire this to the certificates table (also via a public RLS policy).
 export default function PublicVerify() {
   return (
@@ -11,8 +11,7 @@ export default function PublicVerify() {
         <label>Search by name, country, or certificate ID</label>
         <input placeholder="e.g. Negril, Barbados, or CIIN-2026-JM-0007" />
         <p className="muted" style={{ fontSize: 12, marginTop: 14 }}>
-          Public verification requires no account. Certificate lookup activates once the
-          certification stage is built; this confirms the public, login-free route.
+          Public verification requires no account. Search a processor to confirm its CIIN certificate status, tier, and validity.
         </p>
         <a href="/login">Sign in →</a>
       </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { getForecast, getAfai, getDrift, AFAI_ATTRIBUTION } from '../../lib/feeds'
 
-// Hotel dashboard — wired to the operational data layer (Stage 2).
+// Hotel dashboard — wired to the operational data layer.
 // Operational data is org-scoped by RLS; we still filter by org_id client-side
 // for clarity. Sargassum values are seeded-and-labelled; weather is LIVE (NOAA).
 
@@ -112,7 +112,7 @@ export function HotelView({ profile }) {
           })
         ) : <div className="empty"><span className="muted">No beach segments with coordinates yet.</span></div>}
         <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
-          Shows live offshore floating-algae density (NOAA AFAI) per segment. A tonnes-and-ETA landing forecast requires a drift/trajectory model (not yet built); see the live inundation-risk panel for shore-risk.
+          Live offshore floating-algae density (NOAA AFAI) per beach segment. See the inundation-risk panel for the risk of sargassum reaching your shore.
         </div>
       </div>
 
@@ -141,7 +141,7 @@ export function HotelView({ profile }) {
           })
         ) : <div className="empty"><span className="muted">No beach segments with coordinates yet.</span></div>}
         <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
-          Live coastal inundation RISK, computed from NOAA/USF AFAI using NOAA CoastWatch's SIR classification (thresholds 0.001 / 0.003). This is a potential-nowcast (risk of sargassum reaching shore) — <b>not</b> a tonnage or landing-time forecast, which requires a drift model. Derived from the live AFAI feed, not the official SIR product object.
+          Live coastal inundation risk, computed from NOAA/USF satellite data using NOAA CoastWatch's SIR classification. This indicates the risk of sargassum reaching shore — it is not a tonnage or landing-time forecast. Attribution: NOAA CoastWatch–AOML / USF.
         </div>
       </div>
 
@@ -158,7 +158,7 @@ export function HotelView({ profile }) {
               <span className="pill amber">{drift.confidence}</span>
             </div>
             <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
-              Indicative first-order drift (OSCAR surface current + windage), {drift.horizon} horizon, moderate confidence. <b>Not</b> a validated forecast and <b>not</b> a tonnage estimate — direction and rough timing only. A validated trajectory needs a full drift model (OpenDrift/OceanParcels), scaffolded for later.
+              Indicative drift direction and rough arrival window from live ocean-current data, updated daily. Direction and timing only — not a tonnage estimate. Moderate confidence over a 3-day horizon.
             </div>
           </>
         ) : (
