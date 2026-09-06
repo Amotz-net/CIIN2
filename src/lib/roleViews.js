@@ -3,7 +3,8 @@
 // until their vertical slice is built.
 import { HotelView } from '../pages/roles/HotelView.jsx'
 import { GovernmentView } from '../pages/roles/GovernmentView.jsx'
-import { HubView, ProcessorView, LabView, BuyerView, FinanceView } from '../pages/roles/RoleViews.jsx'
+import { HubView } from '../pages/roles/HubView.jsx'
+import { ProcessorView, LabView, BuyerView, FinanceView } from '../pages/roles/RoleViews.jsx'
 
 export const ROLE_VIEWS = {
   hotel:          HotelView,

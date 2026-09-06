@@ -22,16 +22,6 @@ function Grid({ children }) {
 }
 
 
-export function HubView() {
-  return (
-    <Grid>
-      <Panel title="Mission queue" hint="Missions matched to this hub by capacity and window." />
-      <Panel title="Capacity & throughput" hint="Daily capacity, spare, and utilization." />
-      <Panel title="Pooling" hint="Collaborations with other hubs on shared loads." />
-      <Panel title="Deliveries" hint="Batches delivered to processors." />
-    </Grid>
-  )
-}
 
 export function ProcessorView() {
   return (

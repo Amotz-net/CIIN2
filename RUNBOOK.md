@@ -290,3 +290,67 @@ The real model (OpenDrift/OceanParcels, a scheduled Python job) is scaffolded in
 `drift-model/README.md` for when you can run a Python worker — it's a drop-in
 upgrade behind the same Drift panel. Tonnage-with-a-clock is deliberately NOT
 produced: it needs an AFAI→biomass conversion (large error) + a beaching model.
+
+---
+
+## Stage 3 — Government (jurisdiction) dashboard
+
+The Government role gets a country-wide view: it reads operational data across
+ALL orgs sharing its country_code, overlays live satellite risk per segment,
+and shows three risk scores at honest tiers plus directional carbon exposure.
+
+Run the new migrations in the Supabase SQL Editor, in order:
+1. `0011_gov_scope.sql` — cross-org read policy for Government (first cross-org
+   read in the system; scoped to Government role + same country, read-only).
+2. `0012_gov_seed.sql` — seeds a "Jamaica Coastal Authority" Government org.
+
+Then push the code (`git add -A && commit && push`) so Vercel rebuilds. No
+Edge Function change this stage.
+
+To sign in as Government: as platform admin, create an invite for "Jamaica
+Coastal Authority" (AdminOrgs), OR promote a test user in SQL (see 0012 comments).
+
+Risk-score honesty (shown as tier pills on each card):
+- Coastal Health = LIVE (from AFAI/SIR inundation)
+- Carbon Credit = LIVE-INFORMED (inundation live; carbon value directional)
+- Public Health = DIRECTIONAL (no live H₂S/population feed — estimated, labelled)
+Carbon exposure = directional (≈0.30 t CO₂e per tonne wet cleared in-window).
+
+---
+
+## Grading engine wired (grades now COMPUTED)
+
+The Hotel dashboard's grade panel now computes grades from real batch
+measurements through the config-driven engine (grading.js), instead of showing
+a seeded value. New: a `batches` table holds the measurements (arsenic total/
+inorganic, foreign matter, age, chain/signature); the app runs them through
+gradeBatch() against the editable grading_rules config.
+
+Run the new migration, then push the code:
+1. `0013_batches.sql` — batches table + RLS (own-org, Government cross-org) +
+   seeds two demo batches for the hotel org.
+2. `git add -A && git commit -m "Wire grading engine to compute batch grades" && git push`
+
+No Edge Function change. Grades show a "computed" tag and a "draft ruleset"
+badge (they rest on draft bands until Kimberly flips grading_rules to verified).
+The demo batch CP-JAM-NEG01-0007 (inorganic 11.8) grades B on the EU-anchored bands.
+
+---
+
+## Recovery Hub dashboard
+
+The Recovery Hub role gets its own operational view (own-org scoping):
+mission queue → acknowledge & start → the 9-step recovery line (advanceable,
+sample submitted at step 8) → capacity → batches with engine-computed grades.
+Completes the loop: hotel sees inbound, hub acts here.
+
+Run the new migrations in order, then push:
+1. `0013_batches.sql` (if not already run) — batches table + RLS + seed.
+2. `0014_hub_seed.sql` — adds line_step to missions; seeds "NEG01 Recovery Hub"
+   org with its own mission + batches.
+3. `git add -A && git commit -m "Recovery Hub dashboard" && git push`
+
+No Edge Function change. To sign in as the Hub: as platform admin invite the
+"NEG01 Recovery Hub" org, or promote a test user to it in SQL. The recovery
+line's Advance/Acknowledge buttons write line_step back to the missions table
+(real state, persists).
