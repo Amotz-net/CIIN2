@@ -5,7 +5,9 @@ import { HotelView } from '../pages/roles/HotelView.jsx'
 import { GovernmentView } from '../pages/roles/GovernmentView.jsx'
 import { HubView } from '../pages/roles/HubView.jsx'
 import { ProcessorView } from '../pages/roles/ProcessorView.jsx'
-import { LabView, BuyerView, FinanceView } from '../pages/roles/RoleViews.jsx'
+import { LabView } from '../pages/roles/LabView.jsx'
+import { BuyerView } from '../pages/roles/BuyerView.jsx'
+import { FinanceView } from '../pages/roles/FinanceView.jsx'
 
 export const ROLE_VIEWS = {
   hotel:          HotelView,
