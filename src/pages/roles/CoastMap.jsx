@@ -1,63 +1,116 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { getAfai } from '../../lib/feeds'
 
-// Filterable coast map (SVG, dependency-free). Plots beach segments + orgs by
-// coordinate, colours segments by live inundation risk, with type filters.
-// `lite` = compact version for the Overview tab.
+// Real Leaflet + OpenStreetMap coast map (CDN-loaded, no API key, no build dep).
+// Segments plot at their real coordinates, coloured by live inundation risk.
+// Orgs (no coords in schema) plot at approximate positions near a segment,
+// clearly labelled "approx". `lite` = compact map for the Overview tab.
+
 const TYPES = [
-  { key: 'segment',      label: 'Beaches',    color: '#57C4AE' },
-  { key: 'hotel',        label: 'Hotels',     color: '#6EA8D6' },
-  { key: 'processor',    label: 'Processors', color: '#9B8BD6' },
-  { key: 'recovery_hub', label: 'Hubs',       color: '#E0A94F' },
-  { key: 'university_lab',label: 'Labs',      color: '#6FC08C' },
+  { key: 'segment',       label: 'Beaches',    color: '#57C4AE' },
+  { key: 'hotel',         label: 'Hotels',     color: '#6EA8D6' },
+  { key: 'processor',     label: 'Processors', color: '#9B8BD6' },
+  { key: 'recovery_hub',  label: 'Hubs',       color: '#E0A94F' },
+  { key: 'university_lab',label: 'Labs',       color: '#6FC08C' },
 ]
+const riskColor = (sir) => sir === 'high' ? '#D9736A' : sir === 'medium' ? '#E0A94F' : '#6FC08C'
+
+// Load Leaflet from CDN once (CSS + JS), resolve when window.L is ready.
+let _leafletPromise = null
+function loadLeaflet() {
+  if (window.L) return Promise.resolve(window.L)
+  if (_leafletPromise) return _leafletPromise
+  _leafletPromise = new Promise((resolve, reject) => {
+    const css = document.createElement('link')
+    css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+    document.head.appendChild(css)
+    const js = document.createElement('script')
+    js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+    js.onload = () => resolve(window.L)
+    js.onerror = () => reject(new Error('Leaflet failed to load'))
+    document.head.appendChild(js)
+  })
+  return _leafletPromise
+}
 
 export function CoastMap({ lite = false }) {
+  const mapEl = useRef(null)
+  const mapRef = useRef(null)
+  const layerRef = useRef(null)
   const [segments, setSegments] = useState([])
   const [orgs, setOrgs] = useState([])
   const [reads, setReads] = useState({})
   const [on, setOn] = useState(() => Object.fromEntries(TYPES.map(t => [t.key, true])))
-  const [loading, setLoading] = useState(true)
+  const [status, setStatus] = useState('loading')
 
+  // fetch data
   useEffect(() => {
     let alive = true
-    async function load() {
+    ;(async () => {
       const [{ data: seg }, { data: org }] = await Promise.all([
         supabase.from('beach_segments').select('*'),
         supabase.from('organizations').select('id, name, role, country_code'),
       ])
       if (!alive) return
-      setSegments(seg ?? []); setOrgs(org ?? []); setLoading(false)
-      if (!lite) {
+      setSegments(seg ?? []); setOrgs(org ?? [])
+      const withCoords = (seg ?? []).filter(s => s.lat && s.lng)
+      if (!lite && withCoords.length) {
         const r = {}
-        for (const s of (seg ?? []).filter(x => x.lat && x.lng)) r[s.id] = await getAfai(s.lat, s.lng)
+        for (const s of withCoords) r[s.id] = await getAfai(s.lat, s.lng)
         if (alive) setReads(r)
       }
-    }
-    load()
+      if (alive) setStatus('data')
+    })()
     return () => { alive = false }
   }, [lite])
 
-  if (loading) return <div className="card"><span className="muted">Loading coast map…</span></div>
+  // init map + draw markers whenever data/filters change
+  useEffect(() => {
+    if (status !== 'data') return
+    const segPts = segments.filter(s => s.lat && s.lng)
+    if (!segPts.length) { setStatus('nogeo'); return }
+    let cancelled = false
+    loadLeaflet().then(L => {
+      if (cancelled || !mapEl.current) return
+      // init once
+      if (!mapRef.current) {
+        const c = [segPts.reduce((a, s) => a + s.lat, 0) / segPts.length,
+                   segPts.reduce((a, s) => a + s.lng, 0) / segPts.length]
+        mapRef.current = L.map(mapEl.current, { zoomControl: !lite, attributionControl: true, scrollWheelZoom: !lite }).setView(c, 11)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(mapRef.current)
+      }
+      // redraw markers
+      if (layerRef.current) layerRef.current.remove()
+      layerRef.current = L.layerGroup().addTo(mapRef.current)
 
-  // Build points: segments (with coords) + orgs (jittered near segment centroid,
-  // since org rows have no coords — placed illustratively by type).
-  const segPts = segments.filter(s => s.lat && s.lng)
-  if (!segPts.length) return <div className="card"><h2>Coast map</h2><div className="empty"><span className="muted">No geo-located coast segments yet.</span></div></div>
+      if (on.segment) segPts.forEach(s => {
+        const r = reads[s.id]
+        const col = r?.ok && !r.gap ? riskColor(r.sir) : '#57C4AE'
+        L.circleMarker([s.lat, s.lng], { radius: lite ? 6 : 9, color: col, fillColor: col, fillOpacity: 0.8, weight: 2 })
+          .addTo(layerRef.current)
+          .bindPopup(`<b>${s.name}</b><br/>${r?.ok && !r.gap ? 'Inundation risk: ' + r.sir : 'awaiting live read'}`)
+      })
 
-  const lats = segPts.map(s => s.lat), lngs = segPts.map(s => s.lng)
-  const minLat = Math.min(...lats) - 0.05, maxLat = Math.max(...lats) + 0.05
-  const minLng = Math.min(...lngs) - 0.05, maxLng = Math.max(...lngs) + 0.05
-  const W = 640, H = lite ? 180 : 320, PAD = 24
-  const x = (lng) => PAD + ((lng - minLng) / (maxLng - minLng || 1)) * (W - 2 * PAD)
-  const y = (lat) => PAD + (1 - (lat - minLat) / (maxLat - minLat || 1)) * (H - 2 * PAD)
-  const riskColor = (sir) => sir === 'high' ? '#D9736A' : sir === 'medium' ? '#E0A94F' : '#6FC08C'
+      // orgs — approximate positions near the first segment (no real coords)
+      const anchor = segPts[0]
+      orgs.filter(o => ['hotel','processor','recovery_hub','university_lab'].includes(o.role) && on[o.role])
+        .forEach((o, i) => {
+          const lat = anchor.lat + 0.015 * Math.cos(i * 1.7)
+          const lng = anchor.lng + 0.015 * Math.sin(i * 1.7)
+          const t = TYPES.find(t => t.key === o.role)
+          L.marker([lat, lng], {
+            icon: L.divIcon({ className: '', html: `<div style="width:12px;height:12px;background:${t?.color||'#888'};border:2px solid #1a2024;border-radius:2px"></div>`, iconSize: [12,12] }),
+          }).addTo(layerRef.current).bindPopup(`<b>${o.name}</b><br/>${t?.label} · approx location`)
+        })
 
-  // place org markers illustratively around the first segment (no real coords)
-  const anchor = segPts[0]
-  const orgPts = orgs.filter(o => o.role !== 'government' && o.role !== 'buyer' && o.role !== 'finance')
-    .map((o, i) => ({ ...o, lat: anchor.lat + 0.02 * Math.cos(i), lng: anchor.lng + 0.02 * Math.sin(i) }))
+      setStatus('ready')
+    }).catch(() => setStatus('cdnfail'))
+    return () => { cancelled = true }
+  }, [status, segments, orgs, reads, on, lite])
 
   return (
     <div className="card" style={{ gridColumn: lite ? undefined : '1 / -1' }}>
@@ -66,33 +119,17 @@ export function CoastMap({ lite = false }) {
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
           {TYPES.map(t => (
             <button key={t.key} className={'btn sm ' + (on[t.key] ? '' : 'ghost')}
-              style={{ borderColor: t.color, ...(on[t.key] ? { background: t.color, color: '#0c1a17' } : { color: t.color }) }}
+              style={on[t.key] ? { background: t.color, color: '#0c1a17', borderColor: t.color } : { color: t.color, borderColor: t.color }}
               onClick={() => setOn(v => ({ ...v, [t.key]: !v[t.key] }))}>{t.label}</button>
           ))}
         </div>
       )}
-      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', background: '#1a2024', borderRadius: 8, border: '1px solid var(--line)' }}>
-        {/* coastline suggestion */}
-        <path d={`M0 ${H*0.7} Q ${W*0.3} ${H*0.5} ${W*0.6} ${H*0.65} T ${W} ${H*0.6}`} fill="none" stroke="#2f3a40" strokeWidth="2" />
-        {/* segments */}
-        {on.segment && segPts.map(s => {
-          const r = reads[s.id]
-          const col = r?.ok && !r.gap ? riskColor(r.sir) : '#57C4AE'
-          return <g key={s.id}>
-            <circle cx={x(s.lng)} cy={y(s.lat)} r={lite ? 4 : 6} fill={col} />
-            {!lite && <text x={x(s.lng) + 9} y={y(s.lat) + 4} fill="#9AA6A3" fontSize="10">{s.name}</text>}
-          </g>
-        })}
-        {/* orgs by type */}
-        {orgPts.filter(o => on[o.role]).map((o, i) => {
-          const t = TYPES.find(t => t.key === o.role)
-          return <g key={i}>
-            <rect x={x(o.lng) - 4} y={y(o.lat) - 4} width="8" height="8" fill={t?.color || '#888'} rx="1" />
-            {!lite && <text x={x(o.lng) + 8} y={y(o.lat) + 3} fill="#9AA6A3" fontSize="9">{o.name}</text>}
-          </g>
-        })}
-      </svg>
-      {!lite && <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>Segments coloured by live inundation risk (green/amber/red). Org markers placed illustratively — precise geolocation attaches when orgs register coordinates.</div>}
+      {status === 'nogeo'
+        ? <div className="empty"><span className="muted">No geo-located coast segments yet.</span></div>
+        : status === 'cdnfail'
+        ? <div className="empty"><span className="muted">Map tiles unavailable (offline). Segment data is still shown in the other panels.</span></div>
+        : <div ref={mapEl} style={{ height: lite ? 200 : 400, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--line)' }} />}
+      {!lite && <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>Beaches at real coordinates, coloured by live inundation risk. Org markers are approximate (precise geolocation attaches when orgs register coordinates). © OpenStreetMap contributors.</div>}
     </div>
   )
 }
