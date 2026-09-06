@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { getAfai } from '../../lib/feeds'
 import { computeScores, scoreTone } from '../../lib/riskscores'
+import { runAgent } from '../../lib/agent'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
@@ -32,6 +33,8 @@ export function GovernmentView({ profile }) {
   const [orgs, setOrgs] = useState([])
   const [segReads, setSegReads] = useState({})
   const [loads, setLoads] = useState([])
+  const [agent, setAgent] = useState(null)
+  const [decision, setDecision] = useState(null)
   const [loading, setLoading] = useState(true)
   const country = profile?.organizations?.country_code
 
@@ -56,6 +59,10 @@ export function GovernmentView({ profile }) {
       const reads = {}
       for (const s of withCoords) reads[s.id] = await getAfai(s.lat, s.lng)
       if (alive) setSegReads(reads)
+
+      // Run the agent orchestrator over the grounded live reads.
+      const a = await runAgent({ segments: segs, segReads: reads, hubs: [{ name: 'NEG01', spare_t: 90 }, { name: 'Bloody Bay', spare_t: 60 }] })
+      if (alive) setAgent(a)
     }
     load()
     return () => { alive = false }
@@ -83,6 +90,50 @@ export function GovernmentView({ profile }) {
           <div><div style={{ fontSize: 26, fontWeight: 800 }}>{processors}</div><div className="muted" style={{ fontSize: 12 }}>processors</div></div>
           <div><div style={{ fontSize: 26, fontWeight: 800 }}>{recovered} t</div><div className="muted" style={{ fontSize: 12 }}>recovered</div></div>
         </div>
+      </div>
+
+      {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>CIIN Agent <span className="pill" style={{ fontSize: 10 }}>{agent?.ai ? 'AI + rules' : 'rules'}</span></h2>
+        {!agent ? <div className="empty"><span className="muted">Agent analysing live signals…</span></div>
+         : !agent.ok ? <div className="empty"><span className="muted">Agent unavailable{agent.reason ? ` (${agent.reason})` : ''}.</span></div>
+         : (
+          <>
+            {/* named agent contributions, each grounded */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, marginBottom: 12 }}>
+              {(agent.agents || []).map((a, i) => (
+                <div key={i} style={{ border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px' }}>
+                  <div style={{ fontWeight: 700, fontSize: 12 }}>{a.agent}</div>
+                  <div className="muted" style={{ fontSize: 12 }}>{a.says}</div>
+                  <div className="muted" style={{ fontSize: 10, marginTop: 2 }}>{a.source}</div>
+                </div>
+              ))}
+            </div>
+            {/* recommendation — AI-narrated if a Groq key is set, else deterministic */}
+            <div style={{ background: 'var(--panel2, #23292E)', border: '1px solid var(--line)', borderRadius: 8, padding: 12 }}>
+              <div style={{ fontSize: 11, letterSpacing: 1, color: 'var(--teal)', textTransform: 'uppercase' }}>
+                Recommendation · confidence {agent.confidence}
+              </div>
+              <div style={{ marginTop: 6, fontSize: 14 }}>{agent.narration || agent.recommendation}</div>
+              {agent.ai && <div className="muted" style={{ fontSize: 10, marginTop: 6 }}>AI-reasoned over grounded facts above. Verify against the data; a human decides.</div>}
+            </div>
+            {/* human-in-the-loop gate */}
+            <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+              {decision ? (
+                <span className={'pill ' + (decision === 'approved' ? 'green' : decision === 'rejected' ? 'red' : 'amber')}>
+                  {decision === 'approved' ? '✓ Approved & dispatched' : decision === 'rejected' ? '✕ Rejected' : '✎ Sent back to re-plan'}
+                </span>
+              ) : (
+                <>
+                  <button className="btn" onClick={() => setDecision('approved')}>Approve &amp; dispatch</button>
+                  <button className="btn ghost" onClick={() => setDecision('modified')}>Modify</button>
+                  <button className="btn" style={{ background: 'transparent', border: '1px solid var(--red)', color: 'var(--red)' }} onClick={() => setDecision('rejected')}>Reject</button>
+                  <span className="muted" style={{ fontSize: 11 }}>The agent proposes; you decide. Nothing dispatches without approval.</span>
+                </>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Three risk scores — each at its honest tier */}
