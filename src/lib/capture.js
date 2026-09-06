@@ -18,8 +18,14 @@ export async function runCapture() {
 
 export async function loadKnowledge() {
   const { data } = await supabase.from('knowledge_items')
-    .select('*').order('created_at', { ascending: false }).limit(20)
-  return data ?? []
+    .select('*').order('created_at', { ascending: false }).limit(40)
+  // Dedupe by topic+headline (guards against any legacy duplicate rows).
+  const seen = new Set()
+  return (data ?? []).filter(k => {
+    const key = k.topic + '|' + k.headline
+    if (seen.has(key)) return false
+    seen.add(key); return true
+  })
 }
 
 export async function loadReviews() {

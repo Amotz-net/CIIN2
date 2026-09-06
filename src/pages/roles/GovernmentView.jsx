@@ -103,7 +103,7 @@ export function GovernmentView({ profile, section = 'overview' }) {
 
   return (
     <div className="dash-grid">
-      {S('overview') && <CoastMap lite />}
+      {S('overview') && <CoastMap />}
       {S('overview') && <>
       {/* Jurisdiction summary */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
@@ -117,6 +117,12 @@ export function GovernmentView({ profile, section = 'overview' }) {
         </div>
       </div>
 
+      </>}
+      {S('overview') && <>
+      {/* Three risk scores — each at its honest tier */}
+      <ScoreCard title="Coastal Health Risk" score={scores.coastal_health} />
+      <ScoreCard title="Public Health Risk" score={scores.public_health} />
+      <ScoreCard title="Carbon Credit Risk" score={scores.carbon_credit} />
       </>}
       {S('overview') && <>
       {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
@@ -164,6 +170,7 @@ export function GovernmentView({ profile, section = 'overview' }) {
       </div>
 
       </>}
+      {S('overview') && <RoleReports role="government" profile={profile} />}
       {S('knowledge') && <>
       {/* Knowledge Hub — cross-org patterns (aggregate, k-anon) + standards audit */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
@@ -203,13 +210,6 @@ export function GovernmentView({ profile, section = 'overview' }) {
           </div>
         )}
       </div>
-
-      </>}
-      {S('overview') && <>
-      {/* Three risk scores — each at its honest tier */}
-      <ScoreCard title="Coastal Health Risk" score={scores.coastal_health} />
-      <ScoreCard title="Public Health Risk" score={scores.public_health} />
-      <ScoreCard title="Carbon Credit Risk" score={scores.carbon_credit} />
 
       </>}
       {S('carbon') && <>

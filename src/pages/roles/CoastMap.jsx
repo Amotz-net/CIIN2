@@ -70,6 +70,11 @@ export function CoastMap({ lite = false }) {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(mapRef.current)
+        // Fix blank tiles: the map often initialises before its card has final
+        // dimensions, so Leaflet doesn't request tiles for the visible area.
+        // invalidateSize() after layout settles forces a correct tile load.
+        setTimeout(() => mapRef.current && mapRef.current.invalidateSize(), 200)
+        setTimeout(() => mapRef.current && mapRef.current.invalidateSize(), 800)
       }
       if (layerRef.current) layerRef.current.remove()
       layerRef.current = L.layerGroup().addTo(mapRef.current)
@@ -88,6 +93,7 @@ export function CoastMap({ lite = false }) {
           .addTo(layerRef.current).bindPopup(`<b>${o.name}</b><br/>${t?.label} · <span style="color:#9AA6A3">approx location</span>`)
       })
       setStatus('ready')
+      setTimeout(() => mapRef.current && mapRef.current.invalidateSize(), 100)
     }).catch(() => setStatus('cdnfail'))
     return () => { cancelled = true }
   }, [status, segments, orgs, reads, on, lite])
