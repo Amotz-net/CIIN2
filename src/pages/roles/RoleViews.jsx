@@ -44,16 +44,6 @@ export function ProcessorView() {
   )
 }
 
-export function GovernmentView() {
-  return (
-    <Grid>
-      <Panel title="Coastline status" hint="Beaches managed, coverage, risk trends." />
-      <Panel title="Risk scores" hint="Public health, coastal health, carbon credit risk." />
-      <Panel title="Dispatch & approvals" hint="Missions awaiting approval; coordinated response." />
-      <Panel title="Carbon exposure" hint="Avoided-emissions value and cost of missing the window." />
-    </Grid>
-  )
-}
 
 export function LabView() {
   return (
