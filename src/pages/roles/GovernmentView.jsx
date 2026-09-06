@@ -3,6 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { getAfai } from '../../lib/feeds'
 import { computeScores, scoreTone } from '../../lib/riskscores'
 import { runAgent } from '../../lib/agent'
+import { runCapture, loadKnowledge, loadReviews, decideReview } from '../../lib/capture'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
@@ -35,6 +36,9 @@ export function GovernmentView({ profile }) {
   const [loads, setLoads] = useState([])
   const [agent, setAgent] = useState(null)
   const [decision, setDecision] = useState(null)
+  const [knowledge, setKnowledge] = useState([])
+  const [reviews, setReviews] = useState([])
+  const [capturing, setCapturing] = useState(false)
   const [loading, setLoading] = useState(true)
   const country = profile?.organizations?.country_code
 
@@ -63,14 +67,30 @@ export function GovernmentView({ profile }) {
       // Run the agent orchestrator over the grounded live reads.
       const a = await runAgent({ segments: segs, segReads: reads, hubs: [{ name: 'NEG01', spare_t: 90 }, { name: 'Bloody Bay', spare_t: 60 }] })
       if (alive) setAgent(a)
+
+      // Load the knowledge hub (aggregate public good) + rule reviews.
+      const [kn, rv] = await Promise.all([loadKnowledge(), loadReviews()])
+      if (alive) { setKnowledge(kn); setReviews(rv) }
     }
     load()
     return () => { alive = false }
   }, [])
 
+  async function doCapture() {
+    setCapturing(true)
+    await runCapture()
+    const [kn, rv] = await Promise.all([loadKnowledge(), loadReviews()])
+    setKnowledge(kn); setReviews(rv); setCapturing(false)
+  }
+  async function doDecide(id, state) {
+    await decideReview(id, state)
+    setReviews(await loadReviews())
+  }
+
   if (loading) return <div className="card"><span className="muted">Loading jurisdiction dashboard…</span></div>
 
   const scores = computeScores(segReads)
+  const isAdmin = !!profile?.is_platform_admin
   const hotels = orgs.filter(o => o.role === 'hotel').length
   const hubs = orgs.filter(o => o.role === 'recovery_hub').length
   const processors = orgs.filter(o => o.role === 'processor').length
@@ -133,6 +153,45 @@ export function GovernmentView({ profile }) {
               )}
             </div>
           </>
+        )}
+      </div>
+
+      {/* Knowledge Hub — cross-org patterns (aggregate, k-anon) + standards audit */}
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>Knowledge Hub <span className="pill" style={{ fontSize: 10 }}>cross-org · aggregate</span>
+          <button className="btn ghost sm" style={{ marginLeft: 'auto' }} disabled={capturing} onClick={doCapture}>{capturing ? 'Mining…' : 'Run capture'}</button>
+        </h2>
+        <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>
+          Patterns the agent finds across organisations (which no single participant can see, by RLS design). Published only as aggregates above a k-anonymity floor — never a single org's record.
+        </div>
+        {knowledge.length ? knowledge.map(k => (
+          <div key={k.id} style={{ padding: '9px 0', borderBottom: '1px solid var(--line)' }}>
+            <div style={{ fontSize: 13 }}>{k.headline}</div>
+            <div className="muted" style={{ fontSize: 11, marginTop: 2 }}>
+              {k.provenance.replace(/_/g, '-')} · {k.org_count} orgs · {k.sample_n} records
+            </div>
+          </div>
+        )) : <div className="empty"><span className="muted">No cross-org patterns yet. Run capture once there are batches across multiple orgs.</span></div>}
+
+        {reviews.length > 0 && (
+          <div style={{ marginTop: 14 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>Standards-audit — proposed rule reviews</div>
+            {reviews.map(r => (
+              <div key={r.id} style={{ border: '1px solid var(--line)', borderRadius: 8, padding: 10, marginBottom: 8 }}>
+                <div style={{ fontSize: 13 }}><b>{r.dimension}{r.band ? ` · band ${r.band}` : ''}</b> <span className={'pill ' + (r.state === 'accepted' ? 'green' : r.state === 'rejected' ? 'red' : 'amber')}>{r.state}</span></div>
+                <div className="muted" style={{ fontSize: 12, marginTop: 3 }}>{r.finding}</div>
+                <div style={{ fontSize: 12, marginTop: 3 }}>Proposal: {r.proposal}</div>
+                <div className="muted" style={{ fontSize: 11, marginTop: 3 }}>{r.evidence_n} records · {r.org_count} orgs</div>
+                {isAdmin && r.state === 'proposed' && (
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <button className="btn sm" onClick={() => doDecide(r.id, 'accepted')}>Accept for review</button>
+                    <button className="btn ghost sm" onClick={() => doDecide(r.id, 'rejected')}>Decline</button>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="muted" style={{ fontSize: 11 }}>The agent proposes; a standards owner (Kimberly / platform admin) decides. Accepting flags the rule for review — it does not auto-edit the grading config.</div>
+          </div>
         )}
       </div>
 
