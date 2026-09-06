@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { getForecast, getAfai, getDrift, AFAI_ATTRIBUTION } from '../../lib/feeds'
+import { loadRuleset, gradeBatch } from '../../lib/grading'
 
 // Hotel dashboard — wired to the operational data layer.
 // Operational data is org-scoped by RLS; we still filter by org_id client-side
@@ -27,6 +28,7 @@ export function HotelView({ profile }) {
   const [missions, setMissions] = useState([])
   const [pools, setPools] = useState({})       // mission_id -> [hubs]
   const [summary, setSummary] = useState(null)
+  const [graded, setGraded] = useState([])     // batches run through the engine
   const [segments, setSegments] = useState([])
   const [weather, setWeather] = useState(null)
   const [afai, setAfai] = useState(null)
@@ -49,6 +51,28 @@ export function HotelView({ profile }) {
       setArrivals(arr.data ?? [])
       setMissions(mis.data ?? [])
       setSummary((loads.data ?? [])[0] ?? null)
+
+      // Load batches and COMPUTE grades through the config-driven engine.
+      const [{ data: batchRows }, ruleset] = await Promise.all([
+        supabase.from('batches').select('*').eq('org_id', orgId).order('created_at', { ascending: false }),
+        loadRuleset(),
+      ])
+      if (alive && batchRows) {
+        const g = batchRows.map(b => ({
+          ref: b.batch_ref,
+          mass: b.wet_mass_t,
+          conf: b.measurement_conf,
+          result: gradeBatch({
+            arsenic_total: b.arsenic_total,
+            arsenic_inorganic: b.arsenic_inorganic,
+            foreign_matter: b.foreign_matter,
+            age_hours: b.age_hours,
+            chain_valid: b.chain_valid,
+            signature_valid: b.signature_valid,
+          }, ruleset),
+        }))
+        setGraded(g)
+      }
 
       // hub pools for the missions
       const ids = (mis.data ?? []).map(m => m.id)
@@ -233,16 +257,30 @@ export function HotelView({ profile }) {
         ) : <div className="empty"><span className="muted">No missions raised against your property.</span></div>}
       </div>
 
-      {/* Grade + closure + avoided cost */}
+      {/* Batch grades — COMPUTED by the config-driven engine */}
       <div className="card">
-        <h2>Latest grade & closure</h2>
-        {summary ? (
-          <table><tbody>
-            <tr><th>Grade</th><td><span className="pill">{summary.grade}</span> <SourceTag source={summary.source} /></td></tr>
-            <tr><th>Closure</th><td>±{summary.closure_pct}% <span className="pill">{summary.closure_state?.replace(/_/g, ' ')}</span></td></tr>
-            <tr><th>Recovered</th><td>{summary.recovered_t} t</td></tr>
-          </tbody></table>
-        ) : <div className="empty"><span className="muted">No completed loads yet.</span></div>}
+        <h2>Batch grades <span className="pill" style={{ fontSize: 10 }}>computed</span></h2>
+        {graded.length ? (
+          <table>
+            <thead><tr><th>Batch</th><th>Grade</th><th>Basis</th></tr></thead>
+            <tbody>
+              {graded.map((g, i) => {
+                const gr = g.result?.grade
+                const tone = gr === 'A' ? 'green' : gr === 'B' ? 'amber' : gr === 'C' ? 'red' : gr === 'FAIL' ? 'red' : 'grey'
+                return (
+                  <tr key={i}>
+                    <td>{g.ref}<div className="muted" style={{ fontSize: 11 }}>{g.mass} t · {g.conf}</div></td>
+                    <td><span className={'pill ' + tone}>{gr || '—'}</span> <span className="pill" style={{ fontSize: 9 }}>{g.result?.draft ? 'draft ruleset' : 'verified'}</span></td>
+                    <td className="muted" style={{ fontSize: 11 }}>binding: {g.result?.binding || 'clean'}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        ) : <div className="empty"><span className="muted">No batches to grade yet.</span></div>}
+        <div className="muted" style={{ fontSize: 11, marginTop: 10, borderTop: '1px solid var(--line)', paddingTop: 8 }}>
+          Grades computed from batch measurements by CIIN's rule engine (arsenic, foreign matter, age; worst dimension binds). Ruleset is editable configuration.
+        </div>
       </div>
 
       {/* Avoided cost */}
