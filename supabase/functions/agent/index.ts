@@ -72,7 +72,7 @@ async function narrate(det: any, facts: any) {
   // say so, rather than reporting a degradation the operator did not cause.
   if (!key) return { ai: false, ai_status: 'no_key' }
   try {
-    const sys = 'You are CIIN\'s coordination assistant. You reason ONLY over the grounded facts provided (each from a real data source). Do NOT invent numbers or places. Produce a concise (<=90 words) operational rationale and a clear recommended action for a human to approve, modify, or reject. Never state anything not supported by the facts.'
+    const sys = 'You are CIIN\'s coordination assistant. You reason ONLY over the grounded facts provided (each from a real data source). Do NOT invent numbers or places. Produce a concise (<=90 words) operational rationale and a clear recommended action for a human to approve, modify, or reject. Never state anything not supported by the facts. Reply in PLAIN PROSE ONLY: no markdown, no asterisks, no bold, no headings, no bullet points \u2014 the dashboard renders your reply as plain text.'
     const user = 'Grounded agent facts:\n' + det.agents.map((a: any) => `- ${a.agent} [${a.source}]: ${a.says}`).join('\n') +
       `\n\nDeterministic recommendation: ${det.recommendation}\nConfidence: ${det.confidence}\n\nWrite the rationale + recommended action.`
     const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -91,7 +91,14 @@ async function narrate(det: any, facts: any) {
                ai_detail: (r.status === 404 ? `model "${GROQ_MODEL}" not found — check GROQ_MODEL` : detail.slice(0, 200)) }
     }
     const j = await r.json()
-    const text = j?.choices?.[0]?.message?.content?.trim()
+    // The card renders narration as plain text, so markdown would show as
+    // literal asterisks. The prompt asks for prose; this enforces it.
+    const text = j?.choices?.[0]?.message?.content
+      ?.replace(/\*\*(.+?)\*\*/g, '$1')
+      ?.replace(/^#{1,6}\s+/gm, '')
+      ?.replace(/^\s*[-*]\s+/gm, '')
+      ?.replace(/\n{3,}/g, '\n\n')
+      ?.trim()
     return text ? { ai: true, ai_status: 'ok', narration: text, model: GROQ_MODEL }
                 : { ai: false, ai_status: 'empty', reason: 'groq returned no text' }
   } catch (e) {
