@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { CoastMap } from './CoastMap.jsx'
+import { RoleReports } from './Reports.jsx'
 import { getForecast, getAfai, getDrift, AFAI_ATTRIBUTION } from '../../lib/feeds'
 import { loadRuleset, gradeBatch } from '../../lib/grading'
 
@@ -22,6 +24,8 @@ function fmtEta(iso) {
   return h < 48 ? `${h} h` : `${Math.round(h / 24)} d`
 }
 
+const money = (n) => '$' + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
 export function HotelView({ profile, section = 'overview' }) {
   const orgId = profile?.org_id
   const [arrivals, setArrivals] = useState([])
@@ -34,6 +38,9 @@ export function HotelView({ profile, section = 'overview' }) {
   const [afai, setAfai] = useState(null)
   const [segAfai, setSegAfai] = useState({})   // segment_id -> live AFAI reading
   const [drift, setDrift] = useState(null)     // first-order drift for headline segment
+  const [invoices, setInvoices] = useState([])
+  const [rates, setRates] = useState([])
+  const [granting, setGranting] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -110,13 +117,52 @@ export function HotelView({ profile, section = 'overview' }) {
     return () => { alive = false }
   }, [orgId])
 
+  // Invoices (0025) are visible to both parties, so the hotel reads the ones it
+  // must pay. Rate cards are published within the country so an estimate can be
+  // checked against the rate it came from.
+  useEffect(() => {
+    if (!orgId) return
+    let alive = true
+    ;(async () => {
+      const [inv, rt] = await Promise.all([
+        supabase.from('invoices').select('*').eq('payer_org_id', orgId).order('issued_at', { ascending: false }),
+        supabase.from('cost_rates').select('*').is('effective_to', null),
+      ])
+      if (!alive) return
+      setInvoices(inv.data ?? []); setRates(rt.data ?? [])
+    })()
+    return () => { alive = false }
+  }, [orgId])
+
+  // Granting access is a real write the hotel is entitled to make: it owns the
+  // mission row, so mission_write (org_id = current_org_id()) permits it.
+  async function grantAccess(missionId, state) {
+    setGranting(missionId)
+    const { error } = await supabase.from('missions').update({ access_state: state }).eq('id', missionId)
+    if (!error) setMissions(ms => ms.map(m => (m.id === missionId ? { ...m, access_state: state } : m)))
+    setGranting(null)
+  }
+
   if (loading) return <div className="card"><span className="muted">Loading your dashboard…</span></div>
 
-  // section visibility: overview shows everything; others filter.
-  const S = (sec) => section === 'overview' || section === sec
+  // Strict: a tab renders only its own panels. Overview previously matched
+  // every section, so every panel stacked onto it.
+  const S = (sec) => section === sec
+
+  // Missions the hotel must act on vs those it has already cleared.
+  const awaitingAccess = missions.filter(m => m.access_state === 'pending' && m.status !== 'rejected')
+  const cleared = missions.filter(m => m.access_state === 'granted' || m.access_state === 'granted_conditions')
+  const outstanding = invoices.filter(i => i.status === 'sent')
+  const paid = invoices.filter(i => i.status === 'paid')
+  const outstandingTotal = outstanding.reduce((s, i) => s + Number(i.total || 0), 0)
+  const paidTotal = paid.reduce((s, i) => s + Number(i.total || 0), 0)
+  const avoided = Number(summary?.avoided_cost || 0)
+  const truckRate = rates.find(r => r.unit === 'truck')
+  const tonneRate = rates.find(r => r.unit === 'tonne')
   return (
     <div className="dash-grid">
-      {S('incoming') && <>
+      {S('overview') && <CoastMap lite />}
+      {S('overview') && <>
       {/* Incoming sargassum — driven by LIVE satellite AFAI per segment */}
       <div className="card">
         <h2>Incoming sargassum <span className="pill" style={{ fontSize: 10 }}>AFAI live</span></h2>
@@ -235,8 +281,65 @@ export function HotelView({ profile, section = 'overview' }) {
       </div>
 
       </>}
-      {S('missions') && <>
-      {/* Missions + hub pools */}
+      {S('management') && <>
+      {/* Approval queue — cleanups awaiting THIS property's access grant */}
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>Approval queue <span className={'pill ' + (awaitingAccess.length ? 'amber' : 'green')} style={{ fontSize: 10 }}>
+          {awaitingAccess.length} awaiting you</span></h2>
+        <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>
+          A mission is raised from the satellite reading and authorised by the coastal authority.
+          Access to your frontage is yours to grant — nothing happens on the property until you do.
+        </div>
+        {awaitingAccess.length ? awaitingAccess.map(m => {
+          const hubs = pools[m.id] || []
+          const trucks = truckRate ? Math.ceil(Number(m.tonnes || 0) / 12) : null
+          return (
+            <div key={m.id} style={{ border: '1px solid var(--line)', borderRadius: 8, padding: 12, marginBottom: 10 }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'baseline', flexWrap: 'wrap' }}>
+                <b>{m.title}</b>
+                <span className="pill" style={{ fontSize: 10 }}>{m.status.replace(/_/g, ' ')}</span>
+                <span className="muted" style={{ fontSize: 12 }}>{m.tonnes} t · lands {fmtEta(m.eta_at)}</span>
+              </div>
+              <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+                {hubs.length ? `Responding: ${hubs.map(h => h.hub_name + ' ' + h.share_tonnes + 't').join(' + ')}` : 'No hub has acknowledged yet.'}
+              </div>
+              {trucks != null && (
+                <div style={{ fontSize: 12, marginTop: 6 }}>
+                  Estimated removal cost <b>{money(trucks * Number(truckRate.amount))}</b>
+                  <span className="muted"> · {trucks} truck loads at {money(truckRate.amount)} each
+                    {m.tonnes_basis === 'indicative_length_heuristic' ? ' · tonnage indicative, not measured' : ''}</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+                <button className="btn sm" disabled={granting === m.id} onClick={() => grantAccess(m.id, 'granted')}>Grant access</button>
+                <button className="btn ghost sm" disabled={granting === m.id} onClick={() => grantAccess(m.id, 'granted_conditions')}>Grant with conditions</button>
+                <button className="btn sm" style={{ background: 'transparent', border: '1px solid var(--red)', color: 'var(--red)' }}
+                        disabled={granting === m.id} onClick={() => grantAccess(m.id, 'declined')}>Decline</button>
+              </div>
+            </div>
+          )
+        }) : <div className="empty"><span className="muted">Nothing awaiting your approval.</span></div>}
+      </div>
+
+      {/* Completed approvals */}
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>Completed approvals <span className="pill grey" style={{ fontSize: 10 }}>{cleared.length}</span></h2>
+        {cleared.length ? (
+          <table>
+            <thead><tr><th>Mission</th><th>Load</th><th>Access</th><th>Status</th></tr></thead>
+            <tbody>{cleared.map(m => (
+              <tr key={m.id}>
+                <td>{m.title}</td>
+                <td>{m.tonnes} t</td>
+                <td><span className="pill green">{m.access_state.replace(/_/g, ' ')}</span></td>
+                <td><span className="pill">{m.status.replace(/_/g, ' ')}</span></td>
+              </tr>
+            ))}</tbody>
+          </table>
+        ) : <div className="empty"><span className="muted">No access grants yet.</span></div>}
+      </div>
+
+      {/* Full mission board + hub pools */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Missions against your property</h2>
         {missions.length ? (
@@ -263,7 +366,7 @@ export function HotelView({ profile, section = 'overview' }) {
       </div>
 
       </>}
-      {S('grades') && <>
+      {S('reports') && <>
       {/* Batch grades — COMPUTED by the config-driven engine */}
       <div className="card">
         <h2>Batch grades <span className="pill" style={{ fontSize: 10 }}>computed</span></h2>
@@ -305,6 +408,89 @@ export function HotelView({ profile, section = 'overview' }) {
         ) : <div className="empty"><span className="muted">No avoided-cost figure yet.</span></div>}
       </div>
       </>}
+
+      {S('invoices') && <>
+      {/* Invoices the hub has raised against this property. The hotel is the
+          payer: it can see them (0025 lets both parties read) but not mark them
+          paid — settlement confirmation belongs to whoever issued the invoice. */}
+      <div className="card">
+        <h2>Outstanding <span className={'pill ' + (outstanding.length ? 'amber' : 'green')} style={{ fontSize: 10 }}>{outstanding.length}</span></h2>
+        <div style={{ fontSize: 30, fontWeight: 800, color: outstanding.length ? 'var(--amber)' : 'var(--green)', fontVariantNumeric: 'tabular-nums' }}>{money(outstandingTotal)}</div>
+        <div className="muted" style={{ fontSize: 12 }}>Issued and unpaid</div>
+      </div>
+      <div className="card">
+        <h2>Paid <span className="pill green" style={{ fontSize: 10 }}>{paid.length}</span></h2>
+        <div style={{ fontSize: 30, fontWeight: 800, color: 'var(--green)', fontVariantNumeric: 'tabular-nums' }}>{money(paidTotal)}</div>
+        <div className="muted" style={{ fontSize: 12 }}>Settled to date</div>
+      </div>
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>Invoice ledger</h2>
+        {invoices.length ? (
+          <table>
+            <thead><tr><th>Reference</th><th>For</th><th>Issued</th><th>Due</th><th>Status</th><th style={{ textAlign: 'right' }}>Total</th></tr></thead>
+            <tbody>{invoices.map(i => (
+              <tr key={i.id}>
+                <td>{i.invoice_ref}</td>
+                <td className="muted">{i.purpose.replace(/_/g, ' ')}</td>
+                <td>{fmtEta(i.issued_at)}</td>
+                <td>{fmtEta(i.due_at)}</td>
+                <td><span className={'pill ' + (i.status === 'paid' ? 'green' : i.status === 'sent' ? 'amber' : 'grey')}>{i.status}</span></td>
+                <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{money(i.total)}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        ) : <div className="empty"><span className="muted">No invoices raised against this property yet. They appear here once a hub issues one.</span></div>}
+      </div>
+      </>}
+
+      {S('finance') && <>
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>Financial trends</h2>
+        <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))' }}>
+          <div>
+            <div style={{ fontSize: 26, fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>{money(paidTotal)}</div>
+            <div className="muted" style={{ fontSize: 12 }}>paid for recovery</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--amber)', fontVariantNumeric: 'tabular-nums' }}>{money(outstandingTotal)}</div>
+            <div className="muted" style={{ fontSize: 12 }}>outstanding</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'var(--green)', fontVariantNumeric: 'tabular-nums' }}>{money(avoided)}</div>
+            <div className="muted" style={{ fontSize: 12 }}>cost avoided</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 26, fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
+              {paidTotal > 0 ? (avoided / paidTotal).toFixed(2) + '×' : '—'}
+            </div>
+            <div className="muted" style={{ fontSize: 12 }}>avoided per $ spent</div>
+          </div>
+        </div>
+        <div className="muted" style={{ fontSize: 11, marginTop: 12, borderTop: '1px solid var(--line)', paddingTop: 9 }}>
+          Paid and outstanding are invoiced amounts (USD). Cost avoided comes from
+          <code> load_summaries.avoided_cost</code> and is a modelled figure, not an invoiced one —
+          the ratio compares a measured spend against an estimate, so read it as direction rather
+          than a return.
+        </div>
+      </div>
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>Removal rate card <span className="pill" style={{ fontSize: 10 }}>published</span></h2>
+        {rates.length ? (
+          <table>
+            <thead><tr><th>Unit</th><th>Description</th><th style={{ textAlign: 'right' }}>Rate (USD)</th></tr></thead>
+            <tbody>{rates.map(r => (
+              <tr key={r.id}>
+                <td>{r.unit.replace(/_/g, ' ')}</td>
+                <td className="muted">{r.label || '—'}</td>
+                <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{money(r.amount)}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        ) : <div className="empty"><span className="muted">No rates published in your country yet.</span></div>}
+      </div>
+      </>}
+
+      {S('reports') && <RoleReports role="hotel" profile={profile} />}
     </div>
   )
 }

@@ -11,10 +11,11 @@ export const ROLE_NAV = {
     { key: 'reports',   label: 'Reports',       icon: '§' },
   ],
   hotel: [
-    { key: 'overview',  label: 'Overview',   icon: '▦' },
-    { key: 'incoming',  label: 'Incoming',   icon: '≈' },
-    { key: 'missions',  label: 'Missions',   icon: '⇉' },
-    { key: 'grades',    label: 'Grades',     icon: '✦' },
+    { key: 'overview',   label: 'Overview',    icon: '▦' },
+    { key: 'management', label: 'Sargassum',   icon: '⇉' },
+    { key: 'invoices',   label: 'Invoices',    icon: '§' },
+    { key: 'finance',    label: 'Financials',  icon: '◷' },
+    { key: 'reports',    label: 'Reports',     icon: '✦' },
   ],
   recovery_hub: [
     { key: 'overview',  label: 'Overview',   icon: '▦' },
