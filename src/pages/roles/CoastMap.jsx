@@ -50,7 +50,11 @@ function loadLeaflet() {
   return _leaflet
 }
 
-export function CoastMap({ lite = false }) {
+// `orgId` scopes the map to one organisation's coast. Without it the map shows
+// every segment the caller may read — which for a platform admin is all of them,
+// so a hotel viewed through the admin switcher would otherwise open on the whole
+// Caribbean instead of its own frontage.
+export function CoastMap({ lite = false, orgId = null, height = null, title = 'Coast map' }) {
   const mapEl = useRef(null), mapRef = useRef(null), layerRef = useRef(null)
   const [segments, setSegments] = useState([])
   const [orgs, setOrgs] = useState([])
@@ -62,8 +66,9 @@ export function CoastMap({ lite = false }) {
   useEffect(() => {
     let alive = true
     ;(async () => {
+      const segQuery = supabase.from('beach_segments').select('*')
       const [{ data: seg }, { data: org }] = await Promise.all([
-        supabase.from('beach_segments').select('*'),
+        orgId ? segQuery.eq('org_id', orgId) : segQuery,
         supabase.from('organizations').select('id, name, role, country_code'),
       ])
       if (!alive) return
@@ -80,7 +85,7 @@ export function CoastMap({ lite = false }) {
       if (alive) setStatus('data')
     })()
     return () => { alive = false }
-  }, [])
+  }, [orgId])
 
   useEffect(() => {
     if (status !== 'data') return
@@ -190,12 +195,12 @@ export function CoastMap({ lite = false }) {
   const toggle = (k) => setOn(v => ({ ...v, [k]: !v[k] }))
 
   return (
-    <div className="card" style={{ gridColumn: lite ? undefined : '1 / -1' }}>
-      <h2>Coast map {!lite && <span className="pill" style={{ fontSize: 10 }}>live risk</span>}</h2>
+    <div className="card" style={{ gridColumn: '1 / -1' }}>
+      <h2>{title} {!lite && <span className="pill" style={{ fontSize: 10 }}>live risk</span>}</h2>
       <div style={{ position: 'relative' }}>
         {status === 'nogeo' ? <div className="empty"><span className="muted">No geo-located coast segments yet.</span></div>
          : status === 'cdnfail' ? <div className="empty"><span className="muted">Map tiles unavailable (offline). Segment data is shown in the other panels.</span></div>
-         : <div ref={mapEl} className="coastmap" style={{ height: lite ? 200 : 420 }} />}
+         : <div ref={mapEl} className="coastmap" style={{ height: height ?? (lite ? 200 : 420) }} />}
 
         {/* floating layer panel (command-center style) */}
         {!lite && status === 'ready' && (

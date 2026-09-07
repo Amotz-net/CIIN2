@@ -161,7 +161,10 @@ export function HotelView({ profile, section = 'overview' }) {
   const tonneRate = rates.find(r => r.unit === 'tonne')
   return (
     <div className="dash-grid">
-      {S('overview') && <CoastMap lite />}
+      {/* Full-width and tall: the hotel's own frontage in relation to the
+          responding network, scoped to this property so it opens on its coast
+          rather than the whole region. */}
+      {S('overview') && <CoastMap orgId={orgId} height={460} title="Your coast" />}
       {S('overview') && <>
       {/* Incoming sargassum — driven by LIVE satellite AFAI per segment */}
       <div className="card">
