@@ -117,12 +117,23 @@ export function CoastMap({ lite = false }) {
         const path = Array.isArray(s.path) && s.path.length > 1 ? s.path : null
 
         if (path) {
-          L.polyline(path, { color: '#0f1418', weight: 9, opacity: .55 }).addTo(layerRef.current)  // casing
-          const ribbon = L.polyline(path, { color: col, weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round' })
-            .addTo(layerRef.current)
-            .bindPopup(`<b>${s.name}</b><br/>${risk}${frontage}<br/><span style="color:#9AA6A3">shoreline traced from OpenStreetMap</span>`)
+          // OSM maps a beach as an AREA. A closed ring renders as the beach's
+          // real footprint; an open way renders as a ribbon along its length.
+          const closed = path.length > 3
+            && path[0][0] === path[path.length - 1][0] && path[0][1] === path[path.length - 1][1]
+          const popup = `<b>${s.name}</b><br/>${risk}${frontage}`
+            + `<br/><span style="color:#9AA6A3">beach footprint from OpenStreetMap</span>`
+          let shape
+          if (closed) {
+            shape = L.polygon(path, { color: col, weight: 2.5, opacity: .95, fillColor: col, fillOpacity: .35 })
+          } else {
+            L.polyline(path, { color: '#0f1418', weight: 9, opacity: .55 }).addTo(layerRef.current)  // casing
+            shape = L.polyline(path, { color: col, weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round' })
+          }
+          shape.addTo(layerRef.current).bindPopup(popup)
           if (!lite) L.tooltip({ permanent: true, direction: 'right', offset: [8, 0], className: 'mapcallout' })
-            .setLatLng(ribbon.getCenter()).setContent(s.name).addTo(layerRef.current)
+            .setLatLng(closed ? shape.getBounds().getCenter() : shape.getCenter())
+            .setContent(s.name).addTo(layerRef.current)
         } else {
           // Radius carries length_m — a longer frontage reads as a bigger stake.
           const base = lite ? 5 : 8
@@ -143,7 +154,9 @@ export function CoastMap({ lite = false }) {
         if (!d?.ok || d.bearing_deg == null) return
         // Aim the arrow at the middle of the traced shoreline when we have one.
         const pth = Array.isArray(s.path) && s.path.length > 1 ? s.path : null
-        const tip = pth ? pth[Math.floor(pth.length / 2)] : [s.lat, s.lng]
+        const tip = pth
+          ? [pth.reduce((a, c) => a + c[0], 0) / pth.length, pth.reduce((a, c) => a + c[1], 0) / pth.length]
+          : [s.lat, s.lng]
         const km = Math.max(1.5, Math.min(25, d.speed_km_day || 0))   // 24h of travel
         const col = r?.ok && !r.gap ? riskColor(r.sir) : '#D9736A'
         const from = offset(tip[0], tip[1], d.bearing_deg + 180, km)   // upstream origin
@@ -213,7 +226,7 @@ export function CoastMap({ lite = false }) {
         )}
       </div>
       {!lite && <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>
-        Beaches at real coordinates, coloured by live inundation risk; marker size reflects frontage length. Dashed arrows show 24h of observed drift (first-order projection, not a validated forecast). Org markers approximate. © OpenStreetMap contributors.
+        Beach footprints from OpenStreetMap (natural=beach), coloured by live inundation risk; untraced segments show as points sized by frontage. Dashed arrows show 24h of observed drift (first-order projection, not a validated forecast). Org markers approximate. © OpenStreetMap contributors, ODbL.
       </div>}
     </div>
   )
