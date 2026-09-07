@@ -108,3 +108,20 @@ th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px
 /* A disabled fieldset disables every control inside; reset its default chrome. */
 .viewas-lock{border:0;margin:0;padding:0;min-width:0}
 .viewas-lock:disabled{opacity:.92}
+
+/* ---- guided tour ---- */
+.tour{position:fixed;inset:0;z-index:4000;pointer-events:none}
+.tour-dim,.tour-hole{position:fixed;pointer-events:auto}
+.tour-dim{inset:0;background:rgba(10,14,17,.72)}
+/* One element, one huge shadow: the hole IS the spotlight. */
+.tour-hole{border-radius:12px;box-shadow:0 0 0 9999px rgba(10,14,17,.72),0 0 0 2px var(--teal);
+  transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+.tour-card{position:fixed;width:380px;max-width:calc(100vw - 32px);pointer-events:auto;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+  box-shadow:0 18px 50px rgba(0,0,0,.55)}
+.tour-card h3{margin:6px 0 6px;font-size:16px}
+.tour-card p{margin:0;font-size:13.5px;line-height:1.55;color:var(--mute)}
+.tour-count{font-size:10px;letter-spacing:1.4;text-transform:uppercase;color:var(--teal);font-weight:700}
+.tour-missing{margin-top:8px!important;font-size:12px!important;color:var(--amber)!important}
+.tour-actions{display:flex;align-items:center;gap:8px;margin-top:14px}
+@media (prefers-reduced-motion:reduce){.tour-hole{transition:none}}

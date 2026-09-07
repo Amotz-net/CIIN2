@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ViewAs, ViewAsBanner } from '../components/ViewAs.jsx'
+import { Tour } from '../components/Tour.jsx'
+import { hasTour } from '../lib/tour.js'
 import { useAuth } from '../lib/auth.jsx'
 import { ROLE_VIEWS, ROLE_LABELS } from '../lib/roleViews.js'
 import { ROLE_NAV, defaultSection } from '../lib/nav.js'
@@ -34,6 +36,25 @@ export default function RoleLayout() {
       })
     return () => { alive = false }
   }, [isPlatformAdmin, viewAsId])
+
+  // The tour runs once, on first landing. Never while impersonating: it would
+  // walk a platform admin through someone else's dashboard and then mark the
+  // admin's own onboarding complete.
+  const [tourOpen, setTourOpen] = useState(false)
+  const [tourReady, setTourReady] = useState(false)
+  useEffect(() => {
+    if (!profile || tourReady) return
+    setTourReady(true)
+    if (!profile.onboarded_at && !viewAsId && hasTour(profile.organizations?.role)) setTourOpen(true)
+  }, [profile, viewAsId, tourReady])
+
+  async function endTour() {
+    setTourOpen(false)
+    if (!profile?.id || profile.onboarded_at) return
+    // Best effort: a failed write means the tour offers itself again, which is
+    // a far better failure than blocking the dashboard behind it.
+    await supabase.from('profiles').update({ onboarded_at: new Date().toISOString() }).eq('id', profile.id)
+  }
 
   function chooseViewAs(id) {
     setViewAsId(id)
@@ -87,6 +108,11 @@ export default function RoleLayout() {
           </a>
         ))}
         <div style={{ flex: 1 }} />
+        {hasTour(role) && !impersonating && (
+          <a className="rail-item" onClick={() => setTourOpen(true)}>
+            <span className="rail-ic">?</span><span className="rail-lbl">Take the tour</span>
+          </a>
+        )}
         {admin && <a className="rail-item" onClick={() => nav('/manage')}><span className="rail-ic">⚙</span><span className="rail-lbl">Settings</span></a>}
         {profile?.is_platform_admin && <a className="rail-item" onClick={() => nav('/admin/orgs')}><span className="rail-ic">◱</span><span className="rail-lbl">Orgs</span></a>}
         <a className="rail-item" onClick={async () => { await signOut(); nav('/login') }}><span className="rail-ic">⏻</span><span className="rail-lbl">Sign out</span></a>
@@ -113,6 +139,15 @@ export default function RoleLayout() {
               <RoleView profile={effective} section={active} />
             </fieldset>
            ) : <RoleView profile={effective} section={active} />}
+
+          {tourOpen && !impersonating && (
+            <Tour
+              role={role}
+              section={active}
+              onNavigate={(sec) => nav('/app/' + sec)}
+              onFinish={endTour}
+            />
+          )}
         </div>
       </main>
     </div>
