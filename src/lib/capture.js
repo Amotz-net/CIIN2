@@ -17,15 +17,12 @@ export async function runCapture() {
 }
 
 export async function loadKnowledge() {
+  // No client-side dedupe: 0020 makes (topic, country_code) unique and the
+  // capture agent upserts, so duplicates can no longer reach the table. Hiding
+  // them here only masked a table that kept growing.
   const { data } = await supabase.from('knowledge_items')
     .select('*').order('created_at', { ascending: false }).limit(40)
-  // Dedupe by topic+headline (guards against any legacy duplicate rows).
-  const seen = new Set()
-  return (data ?? []).filter(k => {
-    const key = k.topic + '|' + k.headline
-    if (seen.has(key)) return false
-    seen.add(key); return true
-  })
+  return data ?? []
 }
 
 export async function loadReviews() {

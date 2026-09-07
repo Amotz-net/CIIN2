@@ -106,13 +106,24 @@ Deno.serve(async (req) => {
     }
 
     // Write knowledge_items (skip anything below the k floor — belt & suspenders).
+    // Upsert on the pattern's identity, so a re-run refreshes the numbers on the
+    // one row rather than stacking another copy (0020).
     const toWrite = knowledge.filter(k => k.org_count >= K)
-    if (toWrite.length) await admin.from('knowledge_items').insert(toWrite)
-    // Insert new rule_reviews only if a matching open one doesn't already exist.
-    for (const rv of reviews) {
-      const { data: existing } = await admin.from('rule_reviews')
-        .select('id').eq('dimension', rv.dimension).eq('state', 'proposed').limit(1)
-      if (!existing || !existing.length) await admin.from('rule_reviews').insert(rv)
+      .map(k => ({ ...k, country_code: k.country_code ?? 'ALL' }))
+    if (toWrite.length) {
+      await admin.from('knowledge_items').upsert(toWrite, { onConflict: 'topic,country_code' })
+    }
+
+    // Rule reviews: one standing review per dimension+band. The payload carries
+    // ONLY evidence columns — state, decided_by and decided_at are deliberately
+    // absent, so an upsert refreshes what the evidence says without reopening or
+    // overwriting a decision a human already made. Previously this keyed off
+    // state='proposed', so deciding a review caused the next run to re-propose it.
+    if (reviews.length) {
+      await admin.from('rule_reviews').upsert(
+        reviews.map(rv => ({ ...rv, band: rv.band ?? '*' })),
+        { onConflict: 'dimension,band' },
+      )
     }
 
     return json({
