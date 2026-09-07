@@ -1,11 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
-import { getAfai } from '../../lib/feeds'
+import { getAfai, getDrift } from '../../lib/feeds'
 
 // Production Coast Map — Leaflet + OSM, styled to match the command-center map:
 // dark theme, floating layer panel (on-map toggles w/ swatches), legend, dark
 // popups. Segments at real coords coloured by live inundation risk; orgs at
 // approximate positions, clearly labelled. `lite` = compact (no panel/legend).
+//
+// Arrival vectors are drawn from the live drift feed: each dashed arrow runs
+// from where a patch is now to where 24h of the observed current + windage
+// would carry it, arrowhead at the segment. The LENGTH is therefore real
+// (speed_km_day), not decorative. Everything stays georeferenced — we draw no
+// coastline of our own, because beach_segments holds a point and a length, not
+// a line, and an invented shoreline would read as survey data.
 
 const TYPES = [
   { key: 'segment',        label: 'Beaches',    color: '#57C4AE' },
@@ -16,6 +23,16 @@ const TYPES = [
 ]
 const RISK = { high: '#D9736A', medium: '#E0A94F', low: '#6FC08C' }
 const riskColor = (sir) => RISK[sir] || '#57C4AE'
+
+const KM_PER_DEG = 111.32
+// Offset a point by `km` along a compass bearing (degrees clockwise from north).
+function offset(lat, lng, bearingDeg, km) {
+  const t = (bearingDeg * Math.PI) / 180
+  return [
+    lat + (km * Math.cos(t)) / KM_PER_DEG,
+    lng + (km * Math.sin(t)) / (KM_PER_DEG * Math.cos((lat * Math.PI) / 180)),
+  ]
+}
 
 let _leaflet = null
 function loadLeaflet() {
@@ -38,7 +55,8 @@ export function CoastMap({ lite = false }) {
   const [segments, setSegments] = useState([])
   const [orgs, setOrgs] = useState([])
   const [reads, setReads] = useState({})
-  const [on, setOn] = useState(() => Object.fromEntries(TYPES.map(t => [t.key, true])))
+  const [drifts, setDrifts] = useState({})
+  const [on, setOn] = useState(() => ({ ...Object.fromEntries(TYPES.map(t => [t.key, true])), vector: true }))
   const [status, setStatus] = useState('loading')
 
   useEffect(() => {
@@ -51,7 +69,14 @@ export function CoastMap({ lite = false }) {
       if (!alive) return
       setSegments(seg ?? []); setOrgs(org ?? [])
       const wc = (seg ?? []).filter(s => s.lat && s.lng)
-      if (wc.length) { const r = {}; for (const s of wc) r[s.id] = await getAfai(s.lat, s.lng); if (alive) setReads(r) }
+      if (wc.length) {
+        const r = {}, d = {}
+        for (const s of wc) {
+          const [a, dr] = await Promise.all([getAfai(s.lat, s.lng), getDrift(s.lat, s.lng)])
+          r[s.id] = a; d[s.id] = dr
+        }
+        if (alive) { setReads(r); setDrifts(d) }
+      }
       if (alive) setStatus('data')
     })()
     return () => { alive = false }
@@ -65,8 +90,12 @@ export function CoastMap({ lite = false }) {
     loadLeaflet().then(L => {
       if (cancelled || !mapEl.current) return
       if (!mapRef.current) {
-        const c = [segPts.reduce((a, s) => a + s.lat, 0) / segPts.length, segPts.reduce((a, s) => a + s.lng, 0) / segPts.length]
-        mapRef.current = L.map(mapEl.current, { zoomControl: !lite, attributionControl: true, scrollWheelZoom: !lite }).setView(c, 11)
+        mapRef.current = L.map(mapEl.current, { zoomControl: !lite, attributionControl: true, scrollWheelZoom: !lite })
+        // Fit to what exists rather than centring on the mean: segments spread
+        // across countries (Jamaica + Puerto Rico) average to open ocean, which
+        // opened the map on empty sea with every marker off-screen.
+        const bounds = L.latLngBounds(segPts.map(s => [s.lat, s.lng]))
+        mapRef.current.fitBounds(bounds.pad(0.35), { maxZoom: 13 })
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(mapRef.current)
@@ -81,9 +110,54 @@ export function CoastMap({ lite = false }) {
 
       if (on.segment) segPts.forEach(s => {
         const r = reads[s.id]; const col = r?.ok && !r.gap ? riskColor(r.sir) : '#57C4AE'
-        L.circleMarker([s.lat, s.lng], { radius: lite ? 6 : 9, color: col, fillColor: col, fillOpacity: .85, weight: 2 })
+        const risk = r?.ok && !r.gap ? `Inundation risk: <b style="color:${col}">${r.sir}</b>` : 'awaiting live read'
+        const frontage = s.length_m ? `<br/><span style="color:#9AA6A3">${s.length_m} m frontage</span>` : ''
+        // A traced shoreline (migration 0018) draws as a risk-coloured ribbon;
+        // an untraced segment stays a point, because we will not invent a coast.
+        const path = Array.isArray(s.path) && s.path.length > 1 ? s.path : null
+
+        if (path) {
+          L.polyline(path, { color: '#0f1418', weight: 9, opacity: .55 }).addTo(layerRef.current)  // casing
+          const ribbon = L.polyline(path, { color: col, weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round' })
+            .addTo(layerRef.current)
+            .bindPopup(`<b>${s.name}</b><br/>${risk}${frontage}<br/><span style="color:#9AA6A3">shoreline traced from OpenStreetMap</span>`)
+          if (!lite) L.tooltip({ permanent: true, direction: 'right', offset: [8, 0], className: 'mapcallout' })
+            .setLatLng(ribbon.getCenter()).setContent(s.name).addTo(layerRef.current)
+        } else {
+          // Radius carries length_m — a longer frontage reads as a bigger stake.
+          const base = lite ? 5 : 8
+          const rad = base + Math.min(7, Math.sqrt(Math.max(0, s.length_m || 0)) / 14)
+          L.circleMarker([s.lat, s.lng], { radius: rad, color: col, fillColor: col, fillOpacity: .85, weight: 2 })
+            .addTo(layerRef.current)
+            .bindPopup(`<b>${s.name}</b><br/>${risk}${frontage}<br/><span style="color:#9AA6A3">no traced shoreline — shown as a point</span>`)
+          if (!lite) L.tooltip({ permanent: true, direction: 'right', offset: [rad + 3, 0], className: 'mapcallout' })
+            .setLatLng([s.lat, s.lng]).setContent(s.name).addTo(layerRef.current)
+        }
+      })
+
+      // ---- live arrival vectors (drift feed) ----
+      // Arrow runs from the patch's present position to where 24h of the
+      // observed current + windage carries it; the head lands on the segment.
+      if (on.vector && !lite) segPts.forEach(s => {
+        const d = drifts[s.id], r = reads[s.id]
+        if (!d?.ok || d.bearing_deg == null) return
+        // Aim the arrow at the middle of the traced shoreline when we have one.
+        const pth = Array.isArray(s.path) && s.path.length > 1 ? s.path : null
+        const tip = pth ? pth[Math.floor(pth.length / 2)] : [s.lat, s.lng]
+        const km = Math.max(1.5, Math.min(25, d.speed_km_day || 0))   // 24h of travel
+        const col = r?.ok && !r.gap ? riskColor(r.sir) : '#D9736A'
+        const from = offset(tip[0], tip[1], d.bearing_deg + 180, km)   // upstream origin
+        L.polyline([from, tip], { color: col, weight: 2, opacity: .85, dashArray: '6 5' })
           .addTo(layerRef.current)
-          .bindPopup(`<b>${s.name}</b><br/>${r?.ok && !r.gap ? 'Inundation risk: <b style="color:${col}">' + r.sir + '</b>' : 'awaiting live read'}`)
+          .bindPopup(`<b>Arrival vector — ${s.name}</b><br/>Drifting ${d.bearing} at ${d.speed_km_day} km/day`
+            + `<br/>Arrival window: ${d.arrival_window}`
+            + `<br/><span style="color:#9AA6A3">Arrow = 24h of travel. First-order projection, not a validated forecast.</span>`)
+        // arrowhead: two short barbs swept back from the bearing
+        const barb = Math.max(0.8, km * 0.22)
+        ;[150, -150].forEach(a => {
+          L.polyline([offset(tip[0], tip[1], d.bearing_deg + a, barb), tip],
+            { color: col, weight: 2, opacity: .9 }).addTo(layerRef.current)
+        })
       })
       const anchor = segPts[0]
       orgs.filter(o => ['hotel','processor','recovery_hub','university_lab'].includes(o.role) && on[o.role]).forEach((o, i) => {
@@ -91,12 +165,14 @@ export function CoastMap({ lite = false }) {
         const t = TYPES.find(t => t.key === o.role)
         L.marker([lat, lng], { icon: L.divIcon({ className: '', html: `<div style="width:13px;height:13px;background:${t?.color};border:2px solid #141a1f;border-radius:3px;box-shadow:0 0 0 1px ${t?.color}55"></div>`, iconSize: [13,13] }) })
           .addTo(layerRef.current).bindPopup(`<b>${o.name}</b><br/>${t?.label} · <span style="color:#9AA6A3">approx location</span>`)
+        if (!lite && o.role === 'recovery_hub') L.tooltip({ permanent: true, direction: 'right', offset: [9, 0], className: 'mapcallout hub' })
+          .setLatLng([lat, lng]).setContent(o.name).addTo(layerRef.current)
       })
       setStatus('ready')
       setTimeout(() => mapRef.current && mapRef.current.invalidateSize(), 100)
     }).catch(() => setStatus('cdnfail'))
     return () => { cancelled = true }
-  }, [status, segments, orgs, reads, on, lite])
+  }, [status, segments, orgs, reads, drifts, on, lite])
 
   const toggle = (k) => setOn(v => ({ ...v, [k]: !v[k] }))
 
@@ -119,6 +195,11 @@ export function CoastMap({ lite = false }) {
                 {t.label}
               </button>
             ))}
+            <button className={'lyrbtn' + (on.vector ? '' : ' off')} onClick={() => toggle('vector')}>
+              <span className="chk">{on.vector ? '✓' : ''}</span>
+              <span className="sw dashed" />
+              Arrival vectors
+            </button>
           </div>
         )}
         {/* legend */}
@@ -127,10 +208,13 @@ export function CoastMap({ lite = false }) {
             <div><span className="sw" style={{ background: RISK.high }} /> High risk</div>
             <div><span className="sw" style={{ background: RISK.medium }} /> Medium</div>
             <div><span className="sw" style={{ background: RISK.low }} /> Low</div>
+            <div><span className="sw dashed" /> Arrival vector · 24h drift</div>
           </div>
         )}
       </div>
-      {!lite && <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>Beaches at real coordinates, coloured by live inundation risk. Org markers approximate. © OpenStreetMap contributors.</div>}
+      {!lite && <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>
+        Beaches at real coordinates, coloured by live inundation risk; marker size reflects frontage length. Dashed arrows show 24h of observed drift (first-order projection, not a validated forecast). Org markers approximate. © OpenStreetMap contributors.
+      </div>}
     </div>
   )
 }
