@@ -106,6 +106,11 @@ Deno.serve(async (req) => {
 
       // Ask the agent to reason over the grounded facts — same orchestrator the
       // dashboard uses, so the narration a human approves is the same shape.
+      // INDICATIVE ONLY: frontage length over ten, times a factor at high SIR.
+      // This is not derived from AFAI density or any published mass relationship
+      // — it is a shape-of-the-problem figure. missions.tonnes_basis (0024)
+      // carries that provenance so an approver is not shown an invented number
+      // dressed as a measurement.
       const tonnes = Math.round((Number(seg.length_m ?? 400) / 10) * (afai.sir === 'high' ? 1.5 : 1))
       const agentRes = await fetch(`${base}/functions/v1/agent`, {
         method: 'POST',
@@ -130,6 +135,7 @@ Deno.serve(async (req) => {
           ? new Date(Date.now() + 36 * 3600_000).toISOString()
           : new Date(Date.now() + 24 * 3600_000).toISOString(),
         source: 'live_feed',
+        tonnes_basis: 'indicative_length_heuristic',
       }).select('id').single()
       if (mErr) { skipped.push({ segment: seg.name, why: `mission insert: ${mErr.message}` }); continue }
 
