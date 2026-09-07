@@ -177,7 +177,19 @@ export function GovernmentView({ profile, section = 'overview' }) {
 
       {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
-        <h2>CIIN Agent <span className="pill" style={{ fontSize: 10 }}>{agent?.ai ? 'AI + rules' : 'rules'}</span></h2>
+        <h2>CIIN Agent
+          <span className={'pill ' + (agent?.ai ? 'teal' : agent?.ai_status === 'error' ? 'amber' : 'grey')} style={{ fontSize: 10, marginLeft: 8 }}>
+            {agent?.ai ? 'AI + rules' : 'rules'}
+          </span>
+          {/* A silent AI outage previously read as a deliberate rules-only run:
+              the badge said "rules" either way and the reason was swallowed.
+              An operator needs to know the difference. */}
+          {agent?.ai_status === 'error' && (
+            <span className="muted" style={{ fontSize: 11, fontWeight: 400, marginLeft: 8 }}>
+              AI narration unavailable ({agent.reason}{agent.ai_detail ? ` — ${agent.ai_detail}` : ''}). Deterministic rules shown.
+            </span>
+          )}
+        </h2>
         {!agent ? <div className="empty"><span className="muted">Agent analysing live signals…</span></div>
          : !agent.ok ? <div className="empty"><span className="muted">Agent unavailable{agent.reason ? ` (${agent.reason})` : ''}.</span></div>
          : (

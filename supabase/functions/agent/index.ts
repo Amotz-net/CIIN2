@@ -11,6 +11,9 @@
 //
 // Groq: set GROQ_API_KEY as a Supabase secret to enable AI narration.
 //   supabase secrets set GROQ_API_KEY=gsk_...
+// The model id is overridable without a redeploy, because Groq retires models
+// on a schedule and a retired id fails as a 404:
+//   supabase secrets set GROQ_MODEL=openai/gpt-oss-120b
 // Without the key, the function returns the deterministic recommendation +
 // rule-based rationale (fully honest, no LLM) — the AI layer is an enhancement.
 //
@@ -59,9 +62,15 @@ function reason(facts: any) {
   return { agents, recommendation, confidence, top: top?.name ?? null }
 }
 
+// llama-3.3-70b-versatile was decommissioned 2026-08-16 and returned 404,
+// which silently downgraded the agent to rules-only. Overridable via GROQ_MODEL.
+const GROQ_MODEL = Deno.env.get('GROQ_MODEL') ?? 'openai/gpt-oss-120b'
+
 async function narrate(det: any, facts: any) {
   const key = Deno.env.get('GROQ_API_KEY')
-  if (!key) return { ai: false }   // graceful fallback — deterministic only
+  // No key is a deliberate configuration, not a fault: stay deterministic and
+  // say so, rather than reporting a degradation the operator did not cause.
+  if (!key) return { ai: false, ai_status: 'no_key' }
   try {
     const sys = 'You are CIIN\'s coordination assistant. You reason ONLY over the grounded facts provided (each from a real data source). Do NOT invent numbers or places. Produce a concise (<=90 words) operational rationale and a clear recommended action for a human to approve, modify, or reject. Never state anything not supported by the facts.'
     const user = 'Grounded agent facts:\n' + det.agents.map((a: any) => `- ${a.agent} [${a.source}]: ${a.says}`).join('\n') +
@@ -70,18 +79,23 @@ async function narrate(det: any, facts: any) {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: GROQ_MODEL,
         temperature: 0.2,
         max_tokens: 220,
         messages: [{ role: 'system', content: sys }, { role: 'user', content: user }],
       }),
     })
-    if (!r.ok) return { ai: false, reason: `groq ${r.status}` }
+    if (!r.ok) {
+      const detail = await r.text().catch(() => '')
+      return { ai: false, ai_status: 'error', reason: `groq ${r.status}`,
+               ai_detail: (r.status === 404 ? `model "${GROQ_MODEL}" not found — check GROQ_MODEL` : detail.slice(0, 200)) }
+    }
     const j = await r.json()
     const text = j?.choices?.[0]?.message?.content?.trim()
-    return text ? { ai: true, narration: text } : { ai: false }
+    return text ? { ai: true, ai_status: 'ok', narration: text, model: GROQ_MODEL }
+                : { ai: false, ai_status: 'empty', reason: 'groq returned no text' }
   } catch (e) {
-    return { ai: false, reason: 'groq unreachable' }
+    return { ai: false, ai_status: 'error', reason: 'groq unreachable' }
   }
 }
 
