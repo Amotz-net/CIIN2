@@ -19,7 +19,8 @@ export const ROLE_NAV = {
   ],
   recovery_hub: [
     { key: 'overview',  label: 'Overview',   icon: '▦' },
-    { key: 'queue',     label: 'Queue',      icon: '☰' },
+    { key: 'queue',     label: 'Sargassum',  icon: '☰' },
+    { key: 'invoices',  label: 'Invoices',   icon: '§' },
     { key: 'line',      label: 'Line',       icon: '◎' },
     { key: 'batches',   label: 'Batches',    icon: '✦' },
   ],
