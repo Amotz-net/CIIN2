@@ -103,9 +103,11 @@ export function CoastMap({ lite = false, orgId = null, height = null, title = 'C
         // not just the segment's single coordinate — and keep them clear of the
         // floating layer panel on the left.
         const pts = segPts.flatMap(s => (Array.isArray(s.path) && s.path.length > 1 ? s.path : [[s.lat, s.lng]]))
-        const bounds = L.latLngBounds(pts).pad(0.35)
+        // A short run of beach padded by a third still opened on mostly sea;
+        // a small pad and a zoom floor keep the footprints readable.
+        const bounds = L.latLngBounds(pts).pad(0.12)
         const fit = () => mapRef.current && mapRef.current.fitBounds(bounds, {
-          maxZoom: 14, paddingTopLeft: lite ? [10, 10] : [230, 20], paddingBottomRight: [20, 20], animate: false,
+          maxZoom: 15, paddingTopLeft: lite ? [10, 10] : [230, 20], paddingBottomRight: [20, 20], animate: false,
         })
         fit()
         // The map is created before its card has its final width, so the first
@@ -195,7 +197,7 @@ export function CoastMap({ lite = false, orgId = null, height = null, title = 'C
         const t = TYPES.find(t => t.key === o.role)
         L.marker([lat, lng], { icon: L.divIcon({ className: '', html: `<div style="width:13px;height:13px;background:${t?.color};border:2px solid #141a1f;border-radius:3px;box-shadow:0 0 0 1px ${t?.color}55"></div>`, iconSize: [13,13] }) })
           .addTo(layerRef.current).bindPopup(`<b>${o.name}</b><br/>${t?.label} · <span style="color:#9AA6A3">approx location</span>`)
-        if (!lite && o.role === 'recovery_hub') L.tooltip({ permanent: true, direction: 'right', offset: [9, 0], className: 'mapcallout hub' })
+        if (!lite && o.role === 'recovery_hub') L.tooltip({ permanent: true, direction: 'left', offset: [-9, 0], className: 'mapcallout hub' })
           .setLatLng([lat, lng]).setContent(o.name).addTo(layerRef.current)
       })
       setStatus('ready')
@@ -208,7 +210,7 @@ export function CoastMap({ lite = false, orgId = null, height = null, title = 'C
 
   return (
     <div className="card" style={{ gridColumn: '1 / -1' }}>
-      <h2>{title} {!lite && <span className="pill" style={{ fontSize: 10 }}>live risk</span>}</h2>
+      <h2>{title} {!lite && <span className="pill" style={{ fontSize: 10 }}>daily satellite</span>}</h2>
       <div style={{ position: 'relative' }}>
         {status === 'nogeo' ? <div className="empty"><span className="muted">No geo-located coast segments yet.</span></div>
          : status === 'cdnfail' ? <div className="empty"><span className="muted">Map tiles unavailable (offline). Segment data is shown in the other panels.</span></div>

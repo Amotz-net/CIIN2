@@ -38,7 +38,42 @@ function csv(t: string) {
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
   const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
-  const country = new URL(req.url).searchParams.get('country') ?? 'Jamaica'
+  const params = new URL(req.url).searchParams
+  const country = params.get('country') ?? 'Jamaica'
+
+  // Per-country daily history. SATsum serves one day per request, so CIIN
+  // builds the series from its own stored daily copies and fills gaps a few
+  // at a time, to stay a polite client of a service it does not run.
+  if (params.get('action') === 'history') {
+    try {
+      const days = Math.max(7, Math.min(120, Number(params.get('days') ?? 60)))
+      const iso = (p: string) => `${p.slice(0, 4)}-${p.slice(4, 6)}-${p.slice(6, 8)}`
+      const periods = csv(await text(`${API}/satsum-eez/?nivel=periodos`)).filter(p => p.nivel === '1d').slice(-days).map(p => p.periodo)
+      const { data: have } = await admin.from('regional_snapshots').select('as_of').eq('kind', 'eez').gte('as_of', iso(periods[0]))
+      const stored = new Set((have ?? []).map(h => h.as_of))
+      const missing = periods.filter(p => !stored.has(iso(p)))
+      const batch = missing.slice(-30)
+      for (let i = 0; i < batch.length; i += 5) {
+        await Promise.all(batch.slice(i, i + 5).map(async p => {
+          // The date goes in `fecha` (YYYY-MM-DD). Any other parameter name is
+          // silently ignored and the LATEST day comes back, so the date the
+          // server reports is checked against the date asked for before storing.
+          const raw = csv(await text(`${API}/satsum-eez/?nivel=1d&fecha=${iso(p)}`))
+          if (!raw.length || raw[0].mes !== iso(p)) return
+          const rows = raw.map(r => ({ zone: r.zee, kind: r.tipo, sovereign: r.soberano, t: Number(r.biomasa_t), km2: Number(r.area_km2) }))
+          await admin.from('regional_snapshots').upsert({ kind: 'eez', as_of: iso(p), payload: rows }, { onConflict: 'kind,as_of' })
+        }))
+      }
+      const { data: all } = await admin.from('regional_snapshots').select('as_of, payload').eq('kind', 'eez')
+        .gte('as_of', iso(periods[0])).order('as_of')
+      const zones: Record<string, { d: string, t: number, km2: number }[]> = {}
+      for (const row of all ?? []) for (const z of row.payload as any[]) (zones[z.zone] ??= []).push({ d: row.as_of, t: z.t, km2: z.km2 })
+      return json({ ok: true, days, remaining: Math.max(0, missing.length - batch.length), zones,
+                    source: 'SATsum / SIMAR, CONABIO (CC BY 4.0)' })
+    } catch (e) {
+      return json({ ok: false, reason: String(e).slice(0, 160) })
+    }
+  }
   const out: any = { ok: true, source: 'SATsum / SIMAR, CONABIO (CC BY 4.0)', source_url: SITE + '/', country, stale: [] }
   const year = new Date().getUTCFullYear()
 
@@ -57,19 +92,17 @@ Deno.serve(async (req) => {
 
   // 1. Regional daily series (whole Greater Caribbean, and the Caribbean Sea)
   const series = await part('series', async () => {
-    const [gc, cs] = await Promise.all(['gran_caribe', 'caribbean'].map(async reg =>
+    const [gc, cs, gm, mx] = await Promise.all(['gran_caribe', 'caribbean', 'gulf', 'zee_caribbean'].map(async reg =>
       csv(await text(`${API}/satsum-daily/?satsum_region=${reg}&year=${year}&download=csv`))
         .map(r => ({ d: r.fecha, t: Number(r.weight), km2: Number(r.area), t1d: Number(r.dia) }))))
-    return { as_of: gc[gc.length - 1].d, payload: { greater_caribbean: gc, caribbean_sea: cs } }
+    return { as_of: gc[gc.length - 1].d, payload: { greater_caribbean: gc, caribbean_sea: cs, gulf_of_mexico: gm, mexican_caribbean: mx } }
   })
 
   // 2. Per-country figures for the latest published day
   const eez = await part('eez', async () => {
-    const periods = csv(await text(`${API}/satsum-eez/?nivel=periodos`)).filter(p => p.nivel === '1d')
-    const last = periods[periods.length - 1].periodo
-    const rows = csv(await text(`${API}/satsum-eez/?nivel=1d&periodo=${last}`))
-      .map(r => ({ zone: r.zee, kind: r.tipo, sovereign: r.soberano, t: Number(r.biomasa_t), km2: Number(r.area_km2) }))
-    return { as_of: `${last.slice(0, 4)}-${last.slice(4, 6)}-${last.slice(6, 8)}`, payload: rows }
+    const raw = csv(await text(`${API}/satsum-eez/?nivel=1d`))     // no date = latest published day
+    const rows = raw.map(r => ({ zone: r.zee, kind: r.tipo, sovereign: r.soberano, t: Number(r.biomasa_t), km2: Number(r.area_km2) }))
+    return { as_of: raw[0].mes, payload: rows }
   })
 
   // 3. Alert thresholds per country (from SATsum's monthly record)
@@ -103,6 +136,8 @@ Deno.serve(async (req) => {
   out.series = series; out.eez = eez; out.forecast = forecast
   const th = thresholds?.payload?.zee?.[country]
   out.thresholds = th ? { as_of: thresholds!.as_of, base: thresholds!.payload.base, ...th } : null
+  out.thresholds_all = thresholds?.payload?.zee ?? null
+  out.fetched_at = new Date().toISOString()
   if (!series && !eez && !forecast) return json({ ok: false, reason: 'SATsum unreachable and no stored copy', stale: out.stale })
   return json(out)
 })

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { LEVELS } from '../../lib/alert'
+import { SeriesChart } from '../../components/SeriesChart'
 
 // Regional picture — the Caribbean-wide view, from SATsum (CONABIO, Mexico).
 // CIIN does not produce these figures. Every panel names its source and date,
@@ -20,38 +21,51 @@ const Big = ({ v, unit, label, tone }) => (
   </div>
 )
 
-function SeriesChart({ rows }) {
-  const W = 760, H = 170, P = { l: 44, r: 8, t: 8, b: 20 }
-  if (!rows?.length) return null
-  const top = Math.max(...rows.map(r => r.t)) * 1.05
-  const x = i => P.l + (i / (rows.length - 1)) * (W - P.l - P.r), y = v => P.t + (1 - v / top) * (H - P.t - P.b)
-  const line = k => rows.map((r, i) => `${x(i).toFixed(1)},${y(r[k]).toFixed(1)}`).join(' ')
-  const months = rows.map((r, i) => [r.d, i]).filter(([d]) => d.slice(8) === '01')
-  return (
-    <div style={{ overflowX: 'auto' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ minWidth: 420, display: 'block' }} role="img"
-           aria-label="Daily wet sargassum biomass in the Greater Caribbean this year">
-        {[0, 0.5, 1].map(f => <g key={f}>
-          <line x1={P.l} x2={W - P.r} y1={y(top * f)} y2={y(top * f)} stroke="#3C454E" strokeWidth=".6" />
-          <text x={P.l - 5} y={y(top * f) + 3} textAnchor="end" fontSize="9" fill="#9AA6A3">{(top * f / 1e6).toFixed(1)}M</text></g>)}
-        <polyline points={line('t1d')} fill="none" stroke="#9AA6A3" strokeWidth=".8" opacity=".6" />
-        <polyline points={line('t')} fill="none" stroke="#57C4AE" strokeWidth="1.6" strokeLinejoin="round" />
-        {months.map(([d, i]) => <text key={d} x={x(i)} y={H - 5} fontSize="9" fill="#9AA6A3" textAnchor="middle">
-          {new Date(d + 'T12:00:00Z').toLocaleDateString(undefined, { month: 'short', timeZone: 'UTC' })}</text>)}
-      </svg>
-    </div>
-  )
-}
+const REGIONS = [
+  ['greater_caribbean', 'Greater Caribbean'], ['caribbean_sea', 'Caribbean Sea'],
+  ['gulf_of_mexico', 'Gulf of Mexico'], ['mexican_caribbean', 'Mexican Caribbean'],
+]
+const RANGES = [['30', '30 days'], ['90', '90 days'], ['all', 'This year']]
+const HOUR = 60 * 60 * 1000
 
 export function Regional({ profile }) {
   const country = { JM: 'Jamaica', PR: 'Puerto Rico', BB: 'Barbados', DO: 'Dominican Republic' }[profile?.organizations?.country_code] || 'Jamaica'
   const [d, setD] = useState(null)
+  const [region, setRegion] = useState('greater_caribbean')
+  const [range, setRange] = useState('90')
+  const [zone, setZone] = useState(country)
+  const [hist, setHist] = useState(null)       // { zones, remaining } — daily history per country
+  const [busy, setBusy] = useState(false)
+  const [tick, setTick] = useState(0)
+
+  // SATsum publishes once a day; asking hourly picks the new day up soon after
+  // it appears. A failed refresh keeps what is already on screen.
   useEffect(() => {
     let alive = true
+    setBusy(true)
     supabase.functions.invoke('regional?country=' + encodeURIComponent(country), { body: {} })
-      .then(({ data, error }) => { if (alive) setD(error ? { ok: false, reason: error.message } : data) })
+      .then(({ data, error }) => {
+        if (!alive) return
+        setBusy(false)
+        if (error || !data?.ok) setD(prev => prev?.ok ? prev : (error ? { ok: false, reason: error.message } : data))
+        else setD(data)
+      })
     return () => { alive = false }
-  }, [country])
+  }, [country, tick])
+  useEffect(() => { const id = setInterval(() => setTick(t => t + 1), HOUR); return () => clearInterval(id) }, [])
+
+  // Per-country history is filled in 30 days per call; keep asking until complete.
+  useEffect(() => {
+    let alive = true
+    const pull = async (left = 4) => {
+      const { data } = await supabase.functions.invoke('regional?action=history&days=60', { body: {} })
+      if (!alive || !data?.ok) return
+      setHist(data)
+      if (data.remaining > 0 && left > 0) pull(left - 1)
+    }
+    pull()
+    return () => { alive = false }
+  }, [tick])
 
   if (!d) return <div className="card"><span className="muted">Loading the regional picture…</span></div>
   if (!d.ok) return <div className="card"><div className="empty"><span className="muted">Regional data unavailable ({d.reason}).</span></div></div>
@@ -67,6 +81,12 @@ export function Regional({ profile }) {
   const maxZone = zones[0]?.t || 1, maxDaily = Math.max(...daily, 1)
   const change = last && prev ? ((last.t - prev.t) / prev.t) * 100 : null
   const stale = (d.stale ?? []).length > 0
+  const all = d.series?.payload?.[region] ?? []
+  const shownRows = range === 'all' ? all : all.slice(-Number(range))
+  const regionName = REGIONS.find(r => r[0] === region)[1]
+  const zoneRows = hist?.zones?.[zone] ?? []
+  const zth = d.thresholds_all?.[zone]
+  const zoneBands = zth?.umbrales && zth?.area_km2 ? zth.umbrales.map(u => u * zth.area_km2) : null
 
   return (
     <div className="dash-grid">
@@ -83,23 +103,51 @@ export function Regional({ profile }) {
           <Big v={fmt(mine?.t)} unit="t" label={`${country} waters · ranked ${rank} of ${zones.length}`} />
           <Big v={lvl ? lvl.label : '—'} tone={lvl?.tone} label={density == null ? 'no scale' : `${density.toFixed(3)} t/km² across ${country}'s zone`} />
         </div>
-        <SeriesChart rows={gc} />
-        <div className="muted" style={{ fontSize: 11 }}>Green: multi-day composite. Grey: each day alone, which dips when cloud hides the sea.</div>
+        <div className="muted" style={{ fontSize: 11, marginTop: 8 }}>
+          Satellite figures are issued once a day. CIIN checks for a new issue every hour
+          {d.fetched_at && <> · last checked {new Date(d.fetched_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>}{' '}
+          <button className="btn ghost sm" style={{ padding: '3px 9px', fontSize: 11 }} disabled={busy} onClick={() => setTick(t => t + 1)}>
+            {busy ? 'Checking…' : 'Check now'}</button>
+        </div>
         <Src>Wet sargassum biomass from MODIS at 1 km, {d.series?.as_of}. The {country} level compares today's density with
           the 75th, 90th, 95th and 99th percentiles of SATsum's monthly record for {country}, 2010–2025; a daily figure against
           a monthly scale is approximate. Source: SATsum / SIMAR, CONABIO, CC BY 4.0.</Src>
       </div>
 
       <div className="card" style={{ gridColumn: '1 / -1' }}>
+        <h2>{regionName}: daily biomass <span className="pill grey" style={{ fontSize: 10 }}>{d.series?.as_of}</span></h2>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
+          <div className="seg">{REGIONS.map(([k, n]) => <button key={k} className={region === k ? 'on' : ''} onClick={() => setRegion(k)}>{n}</button>)}</div>
+          <div className="seg">{RANGES.map(([k, n]) => <button key={k} className={range === k ? 'on' : ''} onClick={() => setRange(k)}>{n}</button>)}</div>
+        </div>
+        <SeriesChart rows={shownRows} second="t1d" label={regionName} />
+        <div className="muted" style={{ fontSize: 11 }}>Green: multi-day composite. Grey: each day alone, which dips when cloud hides the sea.
+          Statistics describe the period shown.</div>
+        <Src>Wet sargassum biomass from MODIS at 1 km. Source: SATsum / SIMAR, CONABIO, CC BY 4.0.</Src>
+      </div>
+
+      <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>By country waters <span className="pill grey" style={{ fontSize: 10 }}>{d.eez?.as_of}</span></h2>
         {zones.slice(0, 12).map((z, i) => (
-          <div key={z.zone} style={{ display: 'grid', gridTemplateColumns: '24px minmax(110px,190px) 1fr 110px', gap: 10, alignItems: 'center', padding: '5px 0' }}>
+          <button key={z.zone} className={'zonerow' + (z.zone === zone ? ' on' : '')} onClick={() => setZone(z.zone)} aria-pressed={z.zone === zone}>
             <span className="muted" style={{ fontSize: 11 }}>{i + 1}</span>
             <span style={{ fontSize: 13, fontWeight: z.zone === country ? 800 : 400, color: z.zone === country ? 'var(--teal)' : undefined }}>{z.zone}</span>
             <div className="bar" style={{ marginTop: 0 }}><i style={{ width: (z.t / maxZone) * 100 + '%', background: z.zone === country ? 'var(--teal)' : '#6EA8D6' }} /></div>
             <span style={{ fontSize: 12, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(z.t)} t</span>
-          </div>
+          </button>
         ))}
+        <div className="muted" style={{ fontSize: 11, margin: '6px 0 14px' }}>Click a country to see its last 60 days.</div>
+
+        <h2 style={{ marginTop: 0 }}>{zone}: last 60 days</h2>
+        {!hist ? <span className="muted" style={{ fontSize: 12.5 }}>Loading daily history…</span>
+          : zoneRows.length ? <>
+              <SeriesChart rows={zoneRows} color="#6EA8D6" bands={zoneBands} label={zone + ' waters'} />
+              <div className="muted" style={{ fontSize: 11, marginTop: 4 }}>
+                {zoneBands ? `Shaded bands are ${zone}'s alert levels: the 75th, 90th, 95th and 99th percentiles of its monthly record, 2010–2025, scaled to its zone area.`
+                           : `SATsum publishes no alert scale for ${zone}.`}
+                {hist.remaining > 0 && ` Still collecting ${hist.remaining} earlier days.`}</div>
+            </>
+          : <span className="muted" style={{ fontSize: 12.5 }}>No daily history stored for {zone} yet.</span>}
         <Src>Tonnes of wet sargassum afloat inside each exclusive economic zone on {d.eez?.as_of}. Floating offshore, not landed.
           Source: SATsum / SIMAR, CONABIO, CC BY 4.0.</Src>
       </div>

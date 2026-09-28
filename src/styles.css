@@ -125,3 +125,19 @@ th{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px
 .tour-missing{margin-top:8px!important;font-size:12px!important;color:var(--amber)!important}
 .tour-actions{display:flex;align-items:center;gap:8px;margin-top:14px}
 @media (prefers-reduced-motion:reduce){.tour-hole{transition:none}}
+
+/* ---- interactive series: statistics strip, segmented switch, clickable rows ---- */
+.statstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px;margin-top:10px}
+.stat{display:flex;flex-direction:column;gap:2px;text-align:left;background:#23292E;border:1px solid var(--line);border-radius:9px;padding:8px 10px;color:var(--ink);font-family:inherit;cursor:pointer}
+button.stat:hover{border-color:var(--teal)}
+.stat.on{border-color:var(--amber);background:rgba(224,169,79,.08)}
+.stat-k{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--mute);font-weight:700}
+.stat-v{font-size:14.5px;font-weight:800;font-variant-numeric:tabular-nums}
+.stat-s{font-size:10.5px;color:var(--mute)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.seg button{background:transparent;border:0;color:var(--mute);font-family:inherit;font-size:12.5px;padding:7px 12px;cursor:pointer}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--teal);color:#0E1417;font-weight:700}
+.zonerow{display:grid;grid-template-columns:24px minmax(110px,190px) 1fr 110px;gap:10px;align-items:center;padding:6px 8px;width:100%;background:transparent;border:0;border-radius:7px;color:var(--ink);font-family:inherit;text-align:left;cursor:pointer}
+.zonerow:hover{background:#23292E}
+.zonerow.on{background:rgba(87,196,174,.10);box-shadow:inset 2px 0 0 var(--teal)}
