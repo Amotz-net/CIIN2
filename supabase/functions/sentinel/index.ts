@@ -15,6 +15,19 @@ const json = (b: unknown, s = 200) =>
 const TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token'
 const CATALOG_URL = 'https://sh.dataspace.copernicus.eu/api/v1/catalog/1.0.0/search'
 const STATS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/statistics'
+const PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process'
+
+// Raw bands for one day, for the Wang & Hu (2021) Sentinel-2 method:
+// B04 (665), B8A (865), B11 (1610), B12 (2190) reflectance, the L2A scene
+// classification, and dataMask. FLOAT32 GeoTIFF at ~20 m.
+const RASTER_SCRIPT = `//VERSION=3
+function setup() {
+  return { input: [{ bands: ["B02", "B03", "B04", "B8A", "B11", "B12", "SCL", "dataMask"] }],
+           output: { bands: 8, sampleType: "FLOAT32" } };
+}
+function evaluatePixel(s) {
+  return [s.B02, s.B03, s.B04, s.B8A, s.B11, s.B12, s.SCL, s.dataMask];
+}`
 
 // Floating Algae Index (Hu 2009) on Sentinel-2: NIR (B08, 842 nm) above the
 // baseline between red (B04, 665 nm) and SWIR (B11, 1610 nm). Pixels are
@@ -54,6 +67,30 @@ Deno.serve(async (req) => {
     const days = Math.min(90, Number(u.searchParams.get('days') ?? 30))
     const t = await token()
     if (!t.ok) return json({ ok: false, stage: 'auth', ...t })
+
+    if (u.searchParams.get('action') === 'raster') {
+      const bbox = (u.searchParams.get('bbox') ?? '').split(',').map(Number)
+      const date = u.searchParams.get('date')
+      const res = Number(u.searchParams.get('res') ?? 0.00018)
+      const r = await fetch(PROCESS_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${t.access}`, 'Content-Type': 'application/json', Accept: 'image/tiff' },
+        body: JSON.stringify({
+          input: {
+            bounds: { bbox, properties: { crs: 'http://www.opengis.net/def/crs/EPSG/0/4326' } },
+            data: [{ type: 'sentinel-2-l2a', dataFilter: { timeRange: { from: `${date}T00:00:00Z`, to: `${date}T23:59:59Z` } } }],
+          },
+          output: { resx: res, resy: res, responses: [{ identifier: 'default', format: { type: 'image/tiff' } }] },
+          evalscript: RASTER_SCRIPT,
+        }),
+      })
+      if (!r.ok) return json({ ok: false, stage: 'raster', reason: `process ${r.status}`, detail: (await r.text()).slice(0, 400) })
+      const buf = new Uint8Array(await r.arrayBuffer())
+      let bin = ''
+      for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000))
+      return json({ ok: true, stage: 'raster', date, bbox, res, tiff_b64: btoa(bin), bytes: buf.length,
+                    pu: r.headers.get('x-processingunits-spent') })
+    }
 
     if (u.searchParams.get('action') === 'stats') {
       // bbox = minLng,minLat,maxLng,maxLat ; from/to = ISO dates
@@ -96,22 +133,24 @@ Deno.serve(async (req) => {
     }
 
     const d = 0.03
-    const end = new Date(), start = new Date(end.getTime() - days * 86400000)
+    const end = u.searchParams.get('to') ? new Date(u.searchParams.get('to') + 'T23:59:59Z') : new Date()
+    const start = u.searchParams.get('from') ? new Date(u.searchParams.get('from') + 'T00:00:00Z') : new Date(end.getTime() - days * 86400000)
+    const cbbox = u.searchParams.get('bbox') ? u.searchParams.get('bbox')!.split(',').map(Number) : [lng - d, lat - d, lng + d, lat + d]
     const r = await fetch(CATALOG_URL, {
       method: 'POST',
       headers: { Authorization: `Bearer ${t.access}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         collections: ['sentinel-2-l2a'],
-        bbox: [lng - d, lat - d, lng + d, lat + d],
+        bbox: cbbox,
         datetime: `${start.toISOString()}/${end.toISOString()}`,
-        limit: 50,
-        fields: { include: ['properties.datetime', 'properties.eo:cloud_cover'], exclude: [] },
+        limit: 100,
+        fields: { include: ['properties.datetime', 'properties.eo:cloud_cover', 'properties.platform'], exclude: [] },
       }),
     })
     if (!r.ok) return json({ ok: false, stage: 'catalog', reason: `catalog ${r.status}`, detail: (await r.text()).slice(0, 300) })
     const j = await r.json()
     const passes = (j.features ?? []).map((f: any) => ({
-      date: f.properties?.datetime, cloud_pct: f.properties?.['eo:cloud_cover'],
+      date: f.properties?.datetime, cloud_pct: f.properties?.['eo:cloud_cover'], platform: f.properties?.platform,
     })).sort((a: any, b: any) => (a.date < b.date ? 1 : -1))
     return json({ ok: true, stage: 'catalog', token_expires_in: t.expires_in, days, passes })
   } catch (e) {
