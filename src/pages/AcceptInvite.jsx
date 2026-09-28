@@ -18,13 +18,13 @@ export default function AcceptInvite() {
 
   useEffect(() => {
     if (!token) { setStatus('invalid'); return }
-    // Anyone can read an invite by its token (RLS allows email/token match paths;
-    // for a clean UX this read is also fine as the token is the secret).
-    supabase.from('invitations')
-      .select('id, email, level, status, expires_at, org_id, organizations(name, role)')
-      .eq('token', token)
-      .maybeSingle()
-      .then(({ data }) => {
+    // The person has no account yet, so this runs as anon — and RLS on
+    // invitations admits only signed-in users. invite_by_token() (0028) returns
+    // the one invitation matching the token and nothing else.
+    supabase.rpc('invite_by_token', { p_token: token })
+      .then(({ data: rows }) => {
+        const row = Array.isArray(rows) ? rows[0] : rows
+        const data = row ? { ...row, organizations: { name: row.org_name, role: row.org_role } } : null
         if (!data || data.status !== 'pending' || new Date(data.expires_at) < new Date()) {
           setStatus('invalid')
         } else if (!data.org_id) {
