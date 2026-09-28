@@ -6,6 +6,7 @@ import { computeLandfall } from '../../lib/landfall'
 import { runAgent } from '../../lib/agent'
 import { runCapture, loadKnowledge, loadReviews, decideReview } from '../../lib/capture'
 import { CoastMap } from './CoastMap.jsx'
+import { Regional } from './Regional.jsx'
 import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { Landfall } from '../../components/Landfall.jsx'
@@ -131,6 +132,7 @@ export function GovernmentView({ profile, section = 'overview' }) {
     setReviews(await loadReviews())
   }
 
+  if (section === 'regional') return <Regional profile={profile} />
   if (loading) return <div className="card"><span className="muted">Loading jurisdiction dashboard…</span></div>
 
   const scores = computeScores(segReads)

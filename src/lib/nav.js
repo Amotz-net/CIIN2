@@ -7,6 +7,7 @@ export const ROLE_NAV = {
     { key: 'overview',  label: 'Overview',      icon: '▦' },
     { key: 'knowledge', label: 'Knowledge Hub', icon: '✦' },
     { key: 'coast',     label: 'Coast Map',     icon: '≈' },
+    { key: 'regional',  label: 'Regional',      icon: '◍' },
     { key: 'carbon',    label: 'Carbon',        icon: '♲' },
     { key: 'reports',   label: 'Reports',       icon: '§' },
   ],
