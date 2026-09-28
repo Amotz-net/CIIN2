@@ -6,6 +6,7 @@ import { computeLandfall } from '../../lib/landfall'
 import { runAgent } from '../../lib/agent'
 import { runCapture, loadKnowledge, loadReviews, decideReview } from '../../lib/capture'
 import { CoastMap } from './CoastMap.jsx'
+import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { Landfall } from '../../components/Landfall.jsx'
 
@@ -150,6 +151,7 @@ export function GovernmentView({ profile, section = 'overview' }) {
 
       {/* Countdown to the next projected inundation window */}
       <Landfall landfall={landfall} />
+      {S('overview') && <SegmentOutlook segments={segments} />}
 
       {/* Jurisdiction summary */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>

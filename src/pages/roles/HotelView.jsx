@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { CoastMap } from './CoastMap.jsx'
+import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { getForecast, getAfai, getDrift, AFAI_ATTRIBUTION } from '../../lib/feeds'
 import { loadRuleset, gradeBatch } from '../../lib/grading'
@@ -165,6 +166,7 @@ export function HotelView({ profile, section = 'overview' }) {
           responding network, scoped to this property so it opens on its coast
           rather than the whole region. */}
       {S('overview') && <CoastMap orgId={orgId} height={460} title="Your coast" />}
+      {S('overview') && <SegmentOutlook segments={segments} />}
       {S('overview') && <>
       {/* Incoming sargassum — driven by LIVE satellite AFAI per segment */}
       <div className="card">

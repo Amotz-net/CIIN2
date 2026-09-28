@@ -26,3 +26,18 @@ export const getDrift = (lat, lng) => callFeed('drift', lat, lng)
 export const AFAI_ATTRIBUTION =
   'USF Optical Oceanography Lab (AFAI), redistributed by NOAA CoastWatch–AOML. ' +
   'Reflectance index, not ground truth; may contain inaccuracies (US Government work).'
+
+// Biomass in the approach zone (20-40 km offshore) of a beach. `path` is the
+// traced footprint; `days` > 1 returns a daily series as well as the latest.
+export async function getBand(seg, { days = 1, window = '7D' } = {}) {
+  try {
+    const qs = `feeds?feed=band&lat=${seg.lat}&lng=${seg.lng}&days=${days}&window=${window}`
+    const { data, error } = await supabase.functions.invoke(qs, {
+      body: { feed: 'band', lat: seg.lat, lng: seg.lng, days, window, path: seg.path ?? null },
+    })
+    if (error) return { ok: false, reason: error.message || 'feed error' }
+    return data
+  } catch (e) {
+    return { ok: false, reason: 'feed unreachable' }
+  }
+}
