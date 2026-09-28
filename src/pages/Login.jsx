@@ -49,6 +49,9 @@ export default function Login() {
         <p style={{ textAlign: 'center' }}>
           <a href="/verify">Public certificate verification →</a>
         </p>
+        <p style={{ textAlign: 'center', marginTop: 0 }}>
+          <a href="/home.html">← Home page</a>
+        </p>
       </div>
     </div>
   )

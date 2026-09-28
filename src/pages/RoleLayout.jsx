@@ -3,6 +3,7 @@ import { useNavigate, useParams, Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ViewAs, ViewAsBanner } from '../components/ViewAs.jsx'
 import { Tour } from '../components/Tour.jsx'
+import { CommandCentre } from '../components/CommandCentre.jsx'
 import { hasTour } from '../lib/tour.js'
 import { useAuth } from '../lib/auth.jsx'
 import { ROLE_VIEWS, ROLE_LABELS } from '../lib/roleViews.js'
@@ -122,7 +123,7 @@ export default function RoleLayout() {
 
       {/* main */}
       <main style={{ flex: 1, minWidth: 0 }}>
-        <div className="wrap">
+        <div className="wrap wide">
           <div className="dash-head">
             <div>
               <div className="muted" style={{ fontSize: 12, letterSpacing: 1, textTransform: 'uppercase' }}>{ROLE_LABELS[role]}</div>
@@ -132,6 +133,11 @@ export default function RoleLayout() {
           </div>
 
           {impersonating && <ViewAsBanner org={viewAsOrg} onExit={() => chooseViewAs(null)} />}
+
+          {/* Every role opens on the same regional picture. It sits outside the
+              read-only lock: changing a map filter acts on nobody's behalf. */}
+          {RoleView && active === defaultSection(role) &&
+            <CommandCentre profile={effective} role={role} onNavigate={(sec) => nav('/app/' + sec)} />}
 
           {!RoleView ? <div className="card"><p className="muted">No dashboard for this role.</p></div>
            : impersonating ? (

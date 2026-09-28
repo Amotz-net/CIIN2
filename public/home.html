@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CIIN — Independent verification infrastructure for Caribbean sargassum</title>
+<meta name="description" content="CIIN certifies what Caribbean sargassum is, where it came from, and what it may lawfully be used for. Operated by Earth Systems, Jamaica." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spectral:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1C2126;
+    --panel:#23292E;
+    --panel-2:#2A3138;
+    --line:#3C454E;
+    --ink:#EAF0EF;
+    --muted:#9AA6A3;
+    --teal:#57C4AE;
+    --amber:#E0A94F;
+    --green:#6FC08C;
+
+    --measure:34rem;
+    --gut:clamp(1.5rem, 5vw, 5rem);
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+
+  html{-webkit-text-size-adjust:100%}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Public Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size:17px;
+    line-height:1.62;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+
+  a{color:inherit}
+
+  :focus-visible{
+    outline:2px solid var(--teal);
+    outline-offset:3px;
+  }
+
+  .shell{max-width:78rem;margin:0 auto;padding-inline:var(--gut)}
+
+  /* ---------------- masthead ---------------- */
+
+  .masthead{
+    position:relative;
+    z-index:3;
+    display:flex;
+    align-items:baseline;
+    gap:1.25rem;
+    padding-block:1.5rem 1.25rem;
+    border-bottom:1px solid var(--line);
+  }
+  .mark{
+    font-family:"Public Sans",sans-serif;
+    font-weight:600;
+    letter-spacing:.02em;
+    font-size:1.05rem;
+  }
+  .mark i{color:var(--teal);font-style:normal}
+  .operator{
+    color:var(--muted);
+    font-size:.82rem;
+    letter-spacing:.01em;
+  }
+  .masthead nav{
+    margin-left:auto;
+    display:flex;
+    align-items:baseline;
+    gap:1.75rem;
+    font-size:.88rem;
+  }
+  .masthead nav a{
+    color:var(--muted);
+    text-decoration:none;
+    padding-bottom:2px;
+    border-bottom:1px solid transparent;
+  }
+  .masthead nav a:hover{color:var(--ink);border-bottom-color:var(--line)}
+  .masthead nav a.live{color:var(--ink)}
+
+  /* ---------------- hero ---------------- */
+
+  .hero{
+    position:relative;
+    min-height:min(88vh, 50rem);
+    display:flex;
+    align-items:flex-end;
+    padding-block:clamp(4rem,14vh,9rem) clamp(3rem,9vh,6rem);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  #basin{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(to right, rgba(28,33,38,.94) 0%, rgba(28,33,38,.78) 42%, rgba(28,33,38,.18) 78%, rgba(28,33,38,.5) 100%),
+      linear-gradient(to top, rgba(28,33,38,.9) 0%, rgba(28,33,38,0) 45%);
+  }
+  .hero .shell{position:relative;z-index:2;width:100%}
+
+  h1{
+    font-family:"Spectral",Georgia,serif;
+    font-weight:300;
+    font-size:clamp(1.85rem, 4.1vw, 3.5rem);
+    line-height:1.16;
+    letter-spacing:-.012em;
+    margin:0;
+    max-width:24ch;
+    text-wrap:balance;
+  }
+  .standfirst{
+    margin:1.4rem 0 0;
+    font-size:clamp(1.02rem,1.5vw,1.2rem);
+    color:var(--teal);
+    font-weight:400;
+    letter-spacing:.005em;
+  }
+
+  .actions{
+    margin-top:2.6rem;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:1rem 1.75rem;
+  }
+  .btn{
+    display:inline-block;
+    padding:.78rem 1.6rem;
+    background:var(--teal);
+    color:#12211D;
+    text-decoration:none;
+    font-weight:600;
+    font-size:.95rem;
+    letter-spacing:.005em;
+    border:1px solid var(--teal);
+  }
+  .btn:hover{background:#63d0ba;border-color:#63d0ba}
+  .btn-quiet{
+    display:inline-block;
+    padding:.78rem 0;
+    color:var(--muted);
+    text-decoration:none;
+    font-size:.95rem;
+    border-bottom:1px solid var(--line);
+  }
+  .btn-quiet:hover{color:var(--ink);border-bottom-color:var(--muted)}
+
+  .hero-note{
+    margin:1.6rem 0 0;
+    font-size:.84rem;
+    color:var(--muted);
+    max-width:46ch;
+  }
+
+  /* ---------------- sections ---------------- */
+
+  section.band{
+    padding-block:clamp(4rem,9vw,7.5rem);
+    border-bottom:1px solid var(--line);
+  }
+
+  h2{
+    font-family:"Spectral",Georgia,serif;
+    font-weight:400;
+    font-size:clamp(1.5rem,2.6vw,2.15rem);
+    line-height:1.24;
+    letter-spacing:-.01em;
+    margin:0 0 1.1rem;
+    max-width:22ch;
+  }
+  .lede{
+    margin:0 0 3rem;
+    color:var(--muted);
+    max-width:var(--measure);
+    font-size:1.04rem;
+  }
+  .lede:last-child{margin-bottom:0}
+
+  /* definition list — the three artefacts */
+
+  .defs{margin:0;padding:0}
+  .defs > div{
+    display:grid;
+    grid-template-columns:minmax(0,13rem) minmax(0,var(--measure));
+    gap:0 3rem;
+    padding-block:1.6rem;
+    border-top:1px solid var(--line);
+    align-items:start;
+  }
+  .defs > div:last-child{border-bottom:1px solid var(--line)}
+  .defs dt{
+    font-family:"Spectral",Georgia,serif;
+    font-size:1.22rem;
+    font-weight:400;
+    color:var(--ink);
+    line-height:1.3;
+  }
+  .defs dd{margin:0;color:var(--muted)}
+  .defs dd em{
+    color:var(--ink);
+    font-style:normal;
+  }
+
+  .aside{
+    margin-top:2.6rem;
+    padding-left:1.4rem;
+    border-left:2px solid var(--teal);
+    max-width:var(--measure);
+    font-family:"Spectral",Georgia,serif;
+    font-size:1.15rem;
+    line-height:1.55;
+    color:var(--ink);
+  }
+
+  /* sequence — the coordination cascade */
+
+  ol.cascade{
+    list-style:none;
+    margin:0;
+    padding:0;
+    counter-reset:step;
+    max-width:56rem;
+  }
+  ol.cascade li{
+    counter-increment:step;
+    display:grid;
+    grid-template-columns:3.2rem minmax(0,1fr);
+    gap:0 1.6rem;
+    padding-block:1.5rem;
+    border-top:1px solid var(--line);
+  }
+  ol.cascade li:last-child{border-bottom:1px solid var(--line)}
+  ol.cascade li::before{
+    content:counter(step);
+    font-family:"Spectral",Georgia,serif;
+    font-size:1.1rem;
+    color:var(--teal);
+    line-height:1.5;
+    padding-top:.1rem;
+  }
+  ol.cascade h3{
+    grid-column:2;
+    margin:0 0 .3rem;
+    font-size:1.02rem;
+    font-weight:600;
+    letter-spacing:.005em;
+  }
+  ol.cascade p{
+    grid-column:2;
+    margin:0;
+    color:var(--muted);
+    max-width:var(--measure);
+  }
+  ol.cascade li.gate h3{color:var(--amber)}
+
+  /* honesty — capability states */
+
+  .statuslist{
+    list-style:none;
+    margin:0;
+    padding:0;
+    max-width:62rem;
+    border-top:1px solid var(--line);
+  }
+  .statuslist li{
+    display:grid;
+    grid-template-columns:minmax(0,9.5rem) minmax(0,1fr);
+    gap:0 2.5rem;
+    padding-block:1.55rem;
+    border-bottom:1px solid var(--line);
+    align-items:start;
+  }
+  .state{
+    display:inline-block;
+    font-size:.78rem;
+    font-weight:600;
+    letter-spacing:.03em;
+    padding:.22rem .6rem;
+    border:1px solid currentColor;
+    border-radius:2px;
+    white-space:nowrap;
+    margin-top:.12rem;
+  }
+  .state.live{color:var(--green)}
+  .state.reviewed{color:var(--teal)}
+  .state.demo{color:var(--amber)}
+  .state.next{color:var(--muted)}
+  .state.point{color:var(--muted);border-style:dashed}
+  .statuslist h3{
+    margin:0 0 .3rem;
+    font-size:1.02rem;
+    font-weight:600;
+  }
+  .statuslist p{
+    margin:0;
+    color:var(--muted);
+    max-width:var(--measure);
+  }
+
+  .tiers{
+    margin-top:3rem;
+    display:flex;
+    flex-wrap:wrap;
+    gap:2.5rem;
+    max-width:62rem;
+  }
+  .tiers div{flex:1 1 13rem;min-width:12rem}
+  .tiers b{
+    display:block;
+    font-weight:600;
+    font-size:.95rem;
+    margin-bottom:.3rem;
+  }
+  .tiers p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.55}
+  .tiers .t1 b{color:var(--green)}
+  .tiers .t2 b{color:var(--amber)}
+  .tiers .t3 b{color:var(--muted)}
+
+  /* regional layers */
+
+  .layers{margin:0;padding:0;list-style:none;max-width:60rem}
+  .layers li{
+    display:grid;
+    grid-template-columns:minmax(0,15rem) minmax(0,1fr);
+    gap:.4rem 3rem;
+    padding-block:1.5rem;
+    border-top:1px solid var(--line);
+  }
+  .layers li:last-child{border-bottom:1px solid var(--line)}
+  .layers h3{
+    margin:0;
+    font-size:1.02rem;
+    font-weight:600;
+  }
+  .layers h3 small{
+    display:block;
+    font-weight:400;
+    font-size:.82rem;
+    color:var(--teal);
+    letter-spacing:.02em;
+    margin-bottom:.15rem;
+  }
+  .layers p{margin:0;color:var(--muted);max-width:var(--measure)}
+
+  /* roles */
+
+  .roles{
+    margin:0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));
+    gap:0;
+    border-top:1px solid var(--line);
+  }
+  .roles li{
+    padding:1.4rem 2rem 1.4rem 0;
+    border-bottom:1px solid var(--line);
+  }
+  .roles b{display:block;font-weight:600;font-size:1rem;margin-bottom:.2rem}
+  .roles span{color:var(--muted);font-size:.9rem;line-height:1.5;display:block;max-width:26ch}
+  .roles li.public b{color:var(--teal)}
+
+  /* closing */
+
+  .closing{
+    padding-block:clamp(4.5rem,10vw,8rem);
+    border-bottom:1px solid var(--line);
+  }
+  .closing p{
+    font-family:"Spectral",Georgia,serif;
+    font-weight:300;
+    font-size:clamp(1.2rem,2.15vw,1.72rem);
+    line-height:1.46;
+    margin:0;
+    max-width:44ch;
+  }
+  .closing p.coda{
+    font-family:"Public Sans",sans-serif;
+    font-size:1rem;
+    font-weight:400;
+    line-height:1.6;
+    color:var(--muted);
+    max-width:var(--measure);
+    margin-top:2rem;
+    padding-left:1.4rem;
+    border-left:2px solid var(--teal);
+  }
+  .closing .actions{margin-top:2.4rem}
+
+  footer{
+    padding-block:2.5rem 4rem;
+    color:var(--muted);
+    font-size:.85rem;
+  }
+  footer .rows{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.6rem 2.5rem;
+    align-items:baseline;
+  }
+  footer a{text-decoration:none;border-bottom:1px solid var(--line)}
+  footer a:hover{color:var(--ink)}
+  footer .fine{
+    margin-top:1.6rem;
+    max-width:52ch;
+    line-height:1.6;
+  }
+
+  @media (max-width:760px){
+    body{font-size:16px}
+    .masthead{flex-wrap:wrap;gap:.5rem 1rem}
+    .masthead .operator{width:100%;order:3}
+    .masthead nav{gap:1.25rem}
+    .hero{min-height:auto;padding-block:5rem 3.5rem}
+    .hero::after{
+      background:
+        linear-gradient(to right, rgba(28,33,38,.9) 0%, rgba(28,33,38,.62) 100%),
+        linear-gradient(to top, rgba(28,33,38,.94) 0%, rgba(28,33,38,.1) 62%);
+    }
+    h1{max-width:none}
+    .defs > div,
+    .layers li{grid-template-columns:1fr;gap:.45rem}
+    .statuslist li{grid-template-columns:1fr;gap:.7rem}
+    .roles li{padding-right:0}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header class="masthead">
+    <span class="mark">CIIN<i>.</i></span>
+    <span class="operator">Operated by Earth Systems · Jamaica</span>
+    <nav>
+      <a href="#certifies">What we certify</a>
+      <a href="#agent">The agent</a>
+      <a href="#status">Live status</a>
+      <a href="#network">Regional network</a>
+      <!-- Point these two at the CIIN app deployment, e.g. https://app.ciin.example/verify -->
+      <a href="/verify" class="live">Verify</a>
+    </nav>
+  </header>
+</div>
+
+<div class="hero">
+  <canvas id="basin" aria-hidden="true"></canvas>
+  <div class="shell">
+    <h1>Independent verification infrastructure for Caribbean sargassum — turning coastal crisis into traceable, gradeable, financeable biomass.</h1>
+    <p class="standfirst">Agentic AI coordinating recovery.</p>
+    <div class="actions">
+      <a class="btn" href="/verify">Verify a certificate</a>
+      <a class="btn-quiet" href="/login">Sign in</a>
+    </div>
+    <p class="hero-note">Certificates can be checked by anyone, without an account. Operational access is by invitation.</p>
+  </div>
+</div>
+
+<section class="band" id="certifies">
+  <div class="shell">
+    <h2>What a Quality Passport certifies</h2>
+    <p class="lede">A tonne of sargassum on a beach is a liability. The same tonne, with a verified record behind it, is a feedstock someone will buy, a mission a government can fund, and a claim a financier can underwrite. Three separate questions have to be answered before that is true, and answering them repeatably is what measurement, reporting and verification actually means in practice.</p>
+
+    <dl class="defs">
+      <div>
+        <dt>Traceability</dt>
+        <dd>Where the biomass came from and where it went. An unbroken custody chain from beach to gate, reconciled by mass balance — the method follows ISO 22095, the reconciliation tolerances are CIIN's own and published as such. An open manifest fails, whatever the numbers say.</dd>
+      </div>
+      <div>
+        <dt>Grade</dt>
+        <dd>How good it is, and what it may lawfully be used for. Deterministic rules score each batch on arsenic, foreign matter and hours since collection, then check the result against the governing standard for each destination channel — <em>feed, fertiliser, compost, anaerobic digestion, controlled disposal</em>. The channel's own limit decides, not one global grade.</dd>
+      </div>
+      <div>
+        <dt>Quality Passport</dt>
+        <dd>Whether the first two can be trusted. The certified document binding the grade to the referenced laboratory result and the custody record, each field carrying its confidence tier and the standard it cites.</dd>
+      </div>
+    </dl>
+
+    <p class="aside">The passport never grades itself. The laboratory measures, the agent ingests, the rules decide — and the rules are configuration, published and versioned, not code that has to be rebuilt to change.</p>
+  </div>
+</section>
+
+<section class="band" id="how">
+  <div class="shell">
+    <h2>How a recovery is coordinated</h2>
+    <p class="lede">Landed sargassum degrades fast. Within roughly two days it is releasing hydrogen sulphide, smothering the seagrass underneath it, and has lost most of the value it arrived with. Coordination inside that window is the whole problem — and it spans actors who have never had a shared picture.</p>
+
+    <ol class="cascade">
+      <li>
+        <h3>Inundation is forecast for a stretch of coast</h3>
+        <p>Expected mass, arrival time and the beaches affected, before anything lands.</p>
+      </li>
+      <li>
+        <h3>Every role's own risk score moves</h3>
+        <p>A hotel sees beach access and guest health. A ministry sees public health, coastal health and carbon exposure. A recovery hub sees capacity load. One event, scored in each role's own terms, from the same underlying inputs — so the numbers never disagree with each other.</p>
+      </li>
+      <li>
+        <h3>The agent proposes a recovery plan</h3>
+        <p>No single hub can usually cover a surge alone. The agent pools hubs by distance, spare capacity and whether they can arrive inside the window, and proposes a combined mission with each hub's tonnage share. Where the pool still falls short, the shortfall is shown rather than hidden.</p>
+      </li>
+      <li class="gate">
+        <h3>A person approves it</h3>
+        <p>The agent proposes; it does not dispatch. Every recovery plan passes a human gate before anyone is mobilised, and the coastal asset grants access to the plan it can see.</p>
+      </li>
+      <li>
+        <h3>Pooled hubs run as one mission</h3>
+        <p>Collection is recorded against the mission — source beach, time, mass, custody — because a grade with no provenance certifies nothing.</p>
+      </li>
+      <li>
+        <h3>Evidence closes the loop</h3>
+        <p>A sample goes to an accredited laboratory. The result returns, the rules re-grade the batch on the confirmed number, permitted uses are set, and the passport issues. A buyer, a financier or a member of the public can then verify it.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="band" id="agent">
+  <div class="shell">
+    <h2>What the agent decides, and what it is never allowed to decide</h2>
+    <p class="lede">Coordination is a judgement problem: which hubs, in what combination, in what order, against a clock that is already running. Certification is not a judgement problem. CIIN separates the two deliberately, and the separation is what makes the output usable as evidence rather than as opinion.</p>
+
+    <dl class="defs">
+      <div>
+        <dt>What it reads</dt>
+        <dd>Inundation forecasts, hub location and spare capacity, mission history, access decisions and returned laboratory results — each scoped to the organisation entitled to it. The agent inherits the same row-level isolation every user has; it cannot see across a boundary a person could not.</dd>
+      </div>
+      <div>
+        <dt>What it proposes</dt>
+        <dd>Risk scores for each role in that role's own terms, hub combinations that can cover a load inside the window, mission plans with each hub's tonnage share, and the reasoning behind each — including the shortfall when the available capacity does not reach the tonnage on the beach.</dd>
+      </div>
+      <div>
+        <dt>What it never does</dt>
+        <dd>Dispatch a crew, set a grade, or issue a certificate. <em>Rules grade, against published thresholds. People dispatch, on the record.</em> Every proposal passes a human gate, and the gate is recorded as part of the evidence.</dd>
+      </div>
+    </dl>
+
+    <p class="aside">An agent permitted to grade would be an agent that could be wrong about a certificate. Judgement where judgement genuinely helps; deterministic rules wherever a claim depends on the answer.</p>
+  </div>
+</section>
+
+<section class="band" id="status">
+  <div class="shell">
+    <h2>What is running, and what is not</h2>
+    <p class="lede">Most platforms in this space demonstrate a satellite feed they do not have. CIIN publishes the boundary instead — the same boundary the product shows on screen. Five states, and nothing is described as further along than it is.</p>
+
+    <ul class="statuslist">
+      <li>
+        <span class="state live">Live</span>
+        <div>
+          <h3>Multi-tenant platform</h3>
+          <p>Accounts, invitation-only onboarding, organisations, and row-level isolation so an organisation sees only its own records. Deployed. Everything below sits on this spine, because retrofitting isolation afterwards is how verification systems fail.</p>
+        </div>
+      </li>
+      <li>
+        <span class="state reviewed">Reviewed</span>
+        <div>
+          <h3>Grading and closure ruleset</h3>
+          <p>Thresholds reviewed against EU 2002/32/EC, EN 16202:2026 and ISO 22095-2:2026, with the reconciliation tolerances named as CIIN's own rather than borrowed authority. Held as configuration with a citation and a status against every value.</p>
+        </div>
+      </li>
+      <li>
+        <span class="state demo">Demonstrated</span>
+        <div>
+          <h3>Coordination logic</h3>
+          <p>Risk scoring, alert routing, hub matching and capacity pooling, shown end to end — on representative data, labelled as representative wherever it appears. The logic is real; the coastline it runs on is not yet.</p>
+        </div>
+      </li>
+      <li>
+        <span class="state next">Sequenced</span>
+        <div>
+          <h3>Agentic coordination on live records</h3>
+          <p>The agent is built after the operational data layer and the first live feed, not before. An agent narrating over fixtures would contradict everything else on this page.</p>
+        </div>
+      </li>
+      <li>
+        <span class="state point">Integration point</span>
+        <div>
+          <h3>External feeds</h3>
+          <p>Satellite sargassum detection — research imagery under restricted licence, requiring permission and attribution, which is a partnership step rather than an engineering one. Also: messaging delivery for critical alerts, live occupancy data, and a dated, attributable carbon price source.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="tiers">
+      <div class="t1">
+        <b>Verified</b>
+        <p>Matches a sourced standard limit or a laboratory result on record.</p>
+      </div>
+      <div class="t2">
+        <b>Directional</b>
+        <p>A defensible estimate with its assumptions named. A planning aid, never presented as an audited figure.</p>
+      </div>
+      <div class="t3">
+        <b>Representative</b>
+        <p>Illustrative data, marked as illustrative everywhere it appears.</p>
+      </div>
+    </div>
+
+    <p class="aside">Every figure on the platform carries one of these three tiers. Nothing representative is ever shown as though it were live.</p>
+  </div>
+</section>
+
+<section class="band" id="network">
+  <div class="shell">
+    <h2>A regional network, sovereign by default</h2>
+    <p class="lede">A mass that leaves Jamaican waters becomes someone else's problem within days, but coastal data is sovereign and no country will surrender it to a shared system. So sharing is layered by what is genuinely safe to share, each layer an independent decision, and every cross-border figure carries the layer it was shared under.</p>
+
+    <ul class="layers">
+      <li>
+        <h3><small>Layer one</small>Regional early warning</h3>
+        <p>Detected mass, trajectory and arrival time for the next coast. A pure public good, and the safest layer to build first — days of lead time for a country that would otherwise be surprised.</p>
+      </li>
+      <li>
+        <h3><small>Layer two</small>Anonymised benchmarking</h3>
+        <p>Aggregated performance across the network, with no country identifiable. Everyone learns; nobody exposes a weakness.</p>
+      </li>
+      <li>
+        <h3><small>Layer three</small>Opt-in cooperation</h3>
+        <p>Cross-border resource exchange, hub mutual aid near shared maritime boundaries, and a shared picture for a mass hitting two coasts — scoped to that event and dissolved after it.</p>
+      </li>
+      <li>
+        <h3><small>Layer four</small>Comparable standards</h3>
+        <p>One certification framework, so a passport issued in Jamaica means the same to a buyer or a lender in the Dominican Republic. Without it, cross-border trade and carbon claims are noise.</p>
+      </li>
+    </ul>
+
+    <p class="aside">CIIN provides the rails. It does not compel cooperation, and it holds no country's data by default — which is the only basis on which a neutral operator gets to exist.</p>
+  </div>
+</section>
+
+<section class="band" id="who">
+  <div class="shell">
+    <h2>Who works inside it</h2>
+    <p class="lede">Access is by invitation and organised around organisations — each account inherits its role from the body it belongs to, and sees only that organisation's data. Certificate verification is the exception: it is open to everyone.</p>
+
+    <ul class="roles">
+      <li><b>Government</b><span>Public health, coastal and carbon risk; approves dispatch; the national coast view</span></li>
+      <li><b>Hotel or coastal asset</b><span>Incoming sargassum to its frontage, access decisions, the clock</span></li>
+      <li><b>Recovery hub</b><span>Mission queue, collection, capacity pooling with other hubs</span></li>
+      <li><b>Processor</b><span>Batch evidence, quality passport, certification, usage limits</span></li>
+      <li><b>Universities and laboratories</b><span>Sample testing, result validation, research data</span></li>
+      <li><b>Buyer</b><span>Verified biomass, matched to what a channel actually permits</span></li>
+      <li><b>Finance</b><span>Underwriting against verified operational performance</span></li>
+      <li class="public"><b>Public</b><span>Verify any certificate — no account, no login</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="shell">
+    <p>Agentic coordination produces verified operational records. Verified records are what measurement, reporting and verification requires. MRV is what makes a coastal or carbon claim financeable. And one comparable standard across several coasts is what turns a national tool into regional public infrastructure.</p>
+    <p class="coda">CIIN is a verifier. It does not collect the biomass, broker the sale, or sell the carbon — it certifies what happened, and publishes how it knows.</p>
+    <div class="actions">
+      <a class="btn" href="/verify">Verify a certificate</a>
+      <a class="btn-quiet" href="mailto:hello@REPLACE-WITH-EARTH-SYSTEMS-DOMAIN">Request access</a>
+    </div>
+  </div>
+</section>
+
+<div class="shell">
+  <footer>
+    <div class="rows">
+      <span>CIIN — Caribbean Sargassum Intelligence, Response &amp; Recovery Network</span>
+      <span>Earth Systems · Kingston, Jamaica</span>
+      <a href="mailto:hello@REPLACE-WITH-EARTH-SYSTEMS-DOMAIN">hello@REPLACE-WITH-EARTH-SYSTEMS-DOMAIN</a>
+    </div>
+    <p class="fine">The basin shown above traces the North Atlantic gyre — the current system that carries sargassum across the Atlantic each season. It is an illustration of ocean circulation, not a live detection feed.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var canvas = document.getElementById('basin');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Geographic window: West Africa to the Gulf of Mexico — the corridor the
+  // Great Atlantic Sargassum Belt actually occupies.
+  var LON0 = -101, LON1 = -7, LAT0 = -3, LAT1 = 51;
+
+  // ---- simplified coastlines, [lon, lat] ---------------------------------
+  var COASTS = [
+    // US east coast down to the Florida Keys
+    [[-67,44.2],[-70.2,42.1],[-71.8,41.2],[-74,40.5],[-75.6,38.2],[-76.2,36.6],[-77.9,34.1],[-79.8,32.8],[-81.2,31.3],[-81.5,30.2],[-80.6,28.1],[-80.1,26.4],[-80.4,25.2]],
+    // Gulf of Mexico rim, round to Yucatán and Belize
+    [[-80.4,25.2],[-81.8,24.7],[-82.7,27.6],[-83.2,29.4],[-84.9,29.7],[-87.5,30.4],[-89.4,29.2],[-91.5,29.4],[-93.8,29.7],[-95.4,28.9],[-97.2,26.4],[-97.6,24.1],[-96.4,19.4],[-94.6,18.4],[-92.6,18.5],[-91,18.7],[-90.4,20.7],[-88.8,21.5],[-87.1,21.6],[-86.8,20.4],[-87.6,18.6],[-88.3,17.6]],
+    // Central America to the Guianas and northern Brazil
+    [[-88.3,17.6],[-88.6,16],[-86.9,15.9],[-84.5,15.9],[-83.2,15],[-83.6,12.9],[-83.7,10.9],[-82.6,9.5],[-81,8.9],[-79.1,9.4],[-77.4,8.6],[-77.1,9.4],[-75.6,9.4],[-74.4,11.1],[-71.6,12.4],[-70.2,11.8],[-68.3,10.6],[-65.2,10.2],[-62.9,10.7],[-61.6,9.9],[-60.1,8.6],[-57.6,6.3],[-55.2,6],[-52.6,5.1],[-51,4.2],[-49.9,1],[-48.4,-0.7],[-44.8,-2.4],[-42.5,-2.5],[-40.4,-2.8]],
+    // North-west Africa: the Canary and Saharan coast down to the Gulf of Guinea
+    [[-8.5,32.6],[-9.8,31.3],[-9.7,29.4],[-11.4,27.9],[-13.2,25.1],[-14.8,22.2],[-16.2,19.5],[-16.1,17.1],[-16.6,15.4],[-17.5,14.7],[-16.5,13.1],[-16.1,11.9],[-14.9,11.1],[-13.6,9.6],[-12.2,7.7],[-10.3,5.4],[-8.6,4.5]],
+    // Cuba
+    [[-84.9,21.9],[-82.9,22.4],[-81.2,23.1],[-79,22.5],[-77.2,20.7],[-75.2,20.4],[-74.2,20.1],[-75.8,19.9],[-77.8,19.9],[-79.9,21.9],[-82.1,22],[-84.9,21.9]],
+    // Hispaniola
+    [[-74.4,20.1],[-72.4,19.9],[-70.2,19.8],[-68.4,19],[-68.6,18.3],[-70.5,18.2],[-71.7,18.5],[-73.4,18.2],[-74.4,18.5],[-74.4,20.1]],
+    // Jamaica
+    [[-78.4,18.5],[-77.1,18.5],[-76.2,17.9],[-77.6,17.7],[-78.4,18.2],[-78.4,18.5]],
+    // Puerto Rico
+    [[-67.3,18.5],[-65.6,18.4],[-65.6,17.9],[-67.2,17.9],[-67.3,18.5]]
+  ];
+
+  // Lesser Antilles + Bahamas: small islands, drawn as marks rather than outlines
+  var ISLETS = [
+    [-63.1,18.2],[-62.2,17.5],[-61.8,17.1],[-61.4,16.3],[-61.4,15.4],[-61,14.7],
+    [-60.9,14],[-61.2,13.2],[-61.4,12.6],[-61.2,12.1],[-59.5,13.2],[-60.5,11.2],[-61.3,10.5],
+    [-77.5,26.7],[-76.5,25.6],[-75.5,24.2],[-74.4,22.9],[-73,21.8]
+  ];
+
+  // ---- the gyre: one closed circulation, traced through the real system ---
+  // N. Equatorial → Caribbean → Loop → Gulf Stream → N. Atlantic Drift → Canary
+  var GYRE = [
+    [-15,12.5],[-22,10.6],[-30,9.6],[-38,9.4],[-46,10.2],[-53,11.2],[-58.5,12.2],
+    [-62.5,13.2],[-67,14],[-72,14.9],[-77,16.2],[-81.5,17.4],[-84.8,19.2],[-86,21.3],
+    [-86.6,23.8],[-88.2,25.7],[-86.6,27.1],[-84,26.2],[-82.2,24.6],[-80.3,24.3],
+    [-79.4,26.4],[-79.2,29.4],[-77.7,32.3],[-74.6,35.6],[-70.5,38.6],[-65.5,40.6],[-59,42.2],
+    [-51,43.6],[-42,43.8],[-34,42.4],[-26,39.6],[-19.5,36],[-16.4,32],
+    [-15.4,28],[-16.8,23.5],[-18,19.5],[-17.4,16],[-16,13.6]
+  ];
+
+  // Catmull-Rom through the control points, closed.
+  function resample(pts, per) {
+    var out = [], n = pts.length, i, j, t, t2, t3, p0, p1, p2, p3;
+    for (i = 0; i < n; i++) {
+      p0 = pts[(i - 1 + n) % n]; p1 = pts[i]; p2 = pts[(i + 1) % n]; p3 = pts[(i + 2) % n];
+      for (j = 0; j < per; j++) {
+        t = j / per; t2 = t * t; t3 = t2 * t;
+        out.push([
+          0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * t2 + (-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * t3),
+          0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * t2 + (-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * t3)
+        ]);
+      }
+    }
+    return out;
+  }
+
+  var PATH = resample(GYRE, 14);
+  var PN = PATH.length;
+
+  // Perpendicular at each sample, so particles can ride offset lanes and the
+  // current reads as a band with width rather than a drawn line.
+  var NORM = [];
+  (function () {
+    for (var i = 0; i < PN; i++) {
+      var a = PATH[(i - 1 + PN) % PN], b = PATH[(i + 1) % PN];
+      var dx = b[0] - a[0], dy = b[1] - a[1];
+      var m = Math.sqrt(dx * dx + dy * dy) || 1;
+      NORM.push([-dy / m, dx / m]);
+    }
+  })();
+
+  var W = 0, H = 0, sx = 1, sy = 1, ox = 0, oy = 0, dpr = 1;
+
+  function layout() {
+    var r = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(1, Math.round(r.width));
+    H = Math.max(1, Math.round(r.height));
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    var gw = LON1 - LON0, gh = LAT1 - LAT0;
+
+    if (W < 760) {
+      // Narrow screens: covering the frame would crop to a slice of open
+      // ocean. Fit by width instead and sit the basin above the headline,
+      // centred on the Caribbean latitudes.
+      sx = sy = (W / gw) * 1.25;
+      ox = (W - gw * sx) / 2 + W * 0.10;
+      oy = H * 0.40 - (LAT1 - 20) * sy;
+    } else {
+      // Cover at true aspect, centred with a slight rightward bias so the
+      // Caribbean clears the headline without pushing West Africa — and with
+      // it the eastern arc of the gyre — off the right edge.
+      sx = sy = Math.max(W / gw, H / gh);
+      ox = (W - gw * sx) / 2 + W * 0.05;
+      oy = (H - gh * sy) / 2;
+    }
+  }
+
+  function px(lon) { return ox + (lon - LON0) * sx; }
+  function py(lat) { return oy + (LAT1 - lat) * sy; }
+
+  function drawCoasts() {
+    ctx.lineWidth = 1;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#3C454E';
+    for (var c = 0; c < COASTS.length; c++) {
+      var line = COASTS[c];
+      ctx.beginPath();
+      for (var i = 0; i < line.length; i++) {
+        var x = px(line[i][0]), y = py(line[i][1]);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#3C454E';
+    for (var k = 0; k < ISLETS.length; k++) {
+      ctx.beginPath();
+      ctx.arc(px(ISLETS[k][0]), py(ISLETS[k][1]), 1.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function laneAt(i, lane) {
+    var p = PATH[i], n = NORM[i];
+    return [p[0] + n[0] * lane, p[1] + n[1] * lane];
+  }
+
+  function drawStreamlines(alpha) {
+    var lanes = [-2.2, -0.75, 0.75, 2.2];
+    ctx.lineWidth = 1;
+    for (var l = 0; l < lanes.length; l++) {
+      ctx.strokeStyle = 'rgba(87,196,174,' + alpha + ')';
+      ctx.beginPath();
+      for (var i = 0; i <= PN; i++) {
+        var q = laneAt(i % PN, lanes[l]);
+        var x = px(q[0]), y = py(q[1]);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+  }
+
+  // ---- particles ---------------------------------------------------------
+  var particles = [];
+  function seed() {
+    var target = W < 700 ? 60 : (W < 1200 ? 110 : 170);
+    particles.length = 0;
+    for (var i = 0; i < target; i++) {
+      particles.push({
+        t: Math.random() * PN,
+        lane: (Math.random() * 2 - 1) * 2.6,
+        v: 0.055 + Math.random() * 0.075,
+        len: 9 + Math.floor(Math.random() * 16),
+        a: 0.16 + Math.random() * 0.4
+      });
+    }
+  }
+
+  // A trail is drawn as three batched polylines rather than one stroke per
+  // segment — visually the same taper, roughly a fifth of the draw calls.
+  var TAPER = [1, 0.42, 0.14];
+
+  function drawParticles() {
+    ctx.lineWidth = 1.15;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      var chunk = Math.max(2, Math.ceil(p.len / 3));
+
+      for (var c = 0; c < 3; c++) {
+        ctx.strokeStyle = 'rgba(87,196,174,' + (p.a * TAPER[c]) + ')';
+        ctx.beginPath();
+        for (var s = c * chunk; s <= (c + 1) * chunk && s <= p.len; s++) {
+          var idx = Math.floor(p.t - s + PN * 2) % PN;
+          var q = laneAt(idx, p.lane);
+          var x = px(q[0]), y = py(q[1]);
+          if (s === c * chunk) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      // leading point
+      var h = laneAt(Math.floor(p.t) % PN, p.lane);
+      ctx.fillStyle = 'rgba(122,224,203,' + Math.min(1, p.a + 0.25) + ')';
+      ctx.beginPath();
+      ctx.arc(px(h[0]), py(h[1]), 1.25, 0, Math.PI * 2);
+      ctx.fill();
+
+      p.t = (p.t + p.v) % PN;
+    }
+  }
+
+  var running = true, raf = 0;
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    drawStreamlines(0.05);
+    drawCoasts();
+    drawParticles();
+    if (running) raf = requestAnimationFrame(frame);
+  }
+
+  function still() {
+    ctx.clearRect(0, 0, W, H);
+    drawStreamlines(0.16);
+    drawCoasts();
+  }
+
+  function start() {
+    layout();
+    if (reduced) { still(); return; }
+    seed();
+    if (!raf) { running = true; raf = requestAnimationFrame(frame); }
+  }
+
+  var rz;
+  window.addEventListener('resize', function () {
+    clearTimeout(rz);
+    rz = setTimeout(function () {
+      layout();
+      if (reduced) still(); else seed();
+    }, 160);
+  });
+
+  // Stop the loop when the hero is off screen or the tab is hidden.
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      running = false;
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    } else if (!reduced) {
+      running = true;
+      if (!raf) raf = requestAnimationFrame(frame);
+    }
+  });
+
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (entries) {
+      var vis = entries[0].isIntersecting;
+      if (reduced) return;
+      if (vis && !raf) { running = true; raf = requestAnimationFrame(frame); }
+      if (!vis && raf) { running = false; cancelAnimationFrame(raf); raf = 0; }
+    }, { threshold: 0 }).observe(canvas);
+  }
+
+  start();
+})();
+</script>
+
+</body>
+</html>

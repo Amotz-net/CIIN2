@@ -74,6 +74,30 @@ Deno.serve(async (req) => {
       return json({ ok: false, reason: String(e).slice(0, 160) })
     }
   }
+  // Map periods. Which days, months and years SATsum has published a map for,
+  // and the per-country figures for the one asked about.
+  if (params.get('action') === 'period') {
+    try {
+      const nivel = ['1d', 'mensual', 'anual'].includes(params.get('nivel') ?? '') ? params.get('nivel')! : '1d'
+      const list = JSON.parse(await text(`${SITE}/mapas?nivel=${nivel}&var=biomasa${nivel === '1d' ? '&anio=' + new Date().getUTCFullYear() : ''}`))
+      const dates: string[] = list.fechas ?? []
+      const fecha = dates.includes(params.get('fecha') ?? '') ? params.get('fecha')! : dates[dates.length - 1]
+      const dashed = nivel === '1d' ? `${fecha.slice(0, 4)}-${fecha.slice(4, 6)}-${fecha.slice(6, 8)}`
+        : nivel === 'mensual' ? `${fecha.slice(0, 4)}-${fecha.slice(4, 6)}` : fecha
+      let zones: any[] | null = null
+      try {
+        const raw = csv(await text(`${API}/satsum-eez/?nivel=${nivel}&fecha=${dashed}`))
+        // An unrecognised date silently returns the latest period; only keep
+        // figures whose reported period is the one asked for.
+        if (raw.length && raw[0].mes === dashed)
+          zones = raw.map(r => ({ zone: r.zee, t: Number(r.biomasa_t), km2: Number(r.area_km2) })).sort((a, b) => b.t - a.t)
+      } catch (_) { /* the map still shows without the table */ }
+      return json({ ok: true, nivel, fecha, period: dashed, dates, zones, source: 'SATsum / SIMAR, CONABIO (CC BY 4.0)' })
+    } catch (e) {
+      return json({ ok: false, reason: String(e).slice(0, 160) })
+    }
+  }
+
   const out: any = { ok: true, source: 'SATsum / SIMAR, CONABIO (CC BY 4.0)', source_url: SITE + '/', country, stale: [] }
   const year = new Date().getUTCFullYear()
 

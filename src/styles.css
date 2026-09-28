@@ -141,3 +141,43 @@ button.stat:hover{border-color:var(--teal)}
 .zonerow{display:grid;grid-template-columns:24px minmax(110px,190px) 1fr 110px;gap:10px;align-items:center;padding:6px 8px;width:100%;background:transparent;border:0;border-radius:7px;color:var(--ink);font-family:inherit;text-align:left;cursor:pointer}
 .zonerow:hover{background:#23292E}
 .zonerow.on{background:rgba(87,196,174,.10);box-shadow:inset 2px 0 0 var(--teal)}
+
+/* ---- command centre: the first screen for every role ---- */
+.wrap.wide{max-width:1320px}
+.cc{margin-bottom:20px}
+.cc-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:12px}
+.cc-kpi{display:flex;flex-direction:column;gap:3px;background:linear-gradient(180deg,#1B2A33,#18232A);border:1px solid #2C4450;border-radius:12px;padding:14px 16px;border-left:3px solid var(--teal)}
+.cc-kpi.tone-amber{border-left-color:var(--amber)}.cc-kpi.tone-red{border-left-color:var(--red)}.cc-kpi.tone-green{border-left-color:var(--green)}
+.cc-k{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mute);font-weight:700}
+.cc-v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.15}
+.cc-v small{font-size:12px;font-weight:400;color:var(--mute)}
+.cc-s{font-size:11.5px;color:var(--mute)}
+.cc-main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:12px;align-items:start}
+.cc-map,.cc-rail{background:#111A20;border:1px solid #2C4450;border-radius:12px;padding:14px}
+.cc-maphead{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.cc-title{font-size:16px;font-weight:800}
+.cc-sub{font-size:11.5px;color:var(--mute)}
+/* The frame is shorter than the image: the bottom strip is cropped away. */
+.cc-frame{position:relative;aspect-ratio:1000/490;overflow:hidden;border-radius:8px;background:#000;border:1px solid #22343E}
+.cc-frame img{display:block;width:100%;height:auto}
+.cc-wait{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:13px}
+.cc-scale{position:absolute;left:12px;bottom:10px;display:flex;align-items:center;gap:6px;font-size:10px;color:#C9D4D2;background:rgba(10,14,17,.72);padding:4px 8px;border-radius:6px}
+.cc-scale i{display:block;width:90px;height:6px;border-radius:3px;background:linear-gradient(90deg,#2B6CB0,#35C2D6,#7BD66B,#F2E14C,#F08A3C,#E0433A)}
+.cc-ctl{display:flex;align-items:center;gap:8px;margin-top:10px}
+.cc-ctl input[type=range]{flex:1;min-width:0;accent-color:var(--teal);padding:0;margin:0;border:0;background:transparent}
+.cc-play,.cc-step{background:#1B2A33;border:1px solid #2C4450;color:var(--ink);border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:13px;flex-shrink:0;font-family:inherit}
+.cc-play{background:var(--teal);border-color:var(--teal);color:#0E1417}
+.cc-step{font-size:18px;line-height:1}
+.cc-play:disabled,.cc-step:disabled{opacity:.4;cursor:default}
+.cc-date{font-size:12.5px;font-variant-numeric:tabular-nums;min-width:96px;text-align:right}
+.cc-src{font-size:10.5px;color:var(--mute);margin-top:10px;border-top:1px solid #22343E;padding-top:8px}
+.cc-railhead{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;font-weight:800;margin-bottom:10px}
+.cc-alert{display:flex;flex-direction:column;gap:5px;background:#18232A;border:1px solid #2C4450;border-left:3px solid var(--blue,#6EA8D6);border-radius:9px;padding:11px 12px;margin-bottom:9px;font-size:12px;color:var(--mute)}
+.cc-alert:last-child{margin-bottom:0}
+.cc-alert b{color:var(--ink);font-size:13px}
+.cc-alert .btn{align-self:flex-start;margin-top:4px}
+.cc-alert.tone-amber{border-left-color:var(--amber)}.cc-alert.tone-red{border-left-color:var(--red)}.cc-alert.tone-green{border-left-color:var(--green)}.cc-alert.tone-teal{border-left-color:var(--teal)}
+.cc-zone{display:grid;grid-template-columns:minmax(0,96px) 1fr auto;gap:8px;align-items:center;font-size:11.5px;color:var(--ink)}
+.cc-zone>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc-num{font-variant-numeric:tabular-nums;color:var(--mute)}
+@media (max-width:1000px){.cc-main{grid-template-columns:1fr}}
