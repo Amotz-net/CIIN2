@@ -99,8 +99,20 @@ export function CoastMap({ lite = false, orgId = null, height = null, title = 'C
         // Fit to what exists rather than centring on the mean: segments spread
         // across countries (Jamaica + Puerto Rico) average to open ocean, which
         // opened the map on empty sea with every marker off-screen.
-        const bounds = L.latLngBounds(segPts.map(s => [s.lat, s.lng]))
-        mapRef.current.fitBounds(bounds.pad(0.35), { maxZoom: 13 })
+        // Fit to the beaches themselves — every vertex of a traced footprint,
+        // not just the segment's single coordinate — and keep them clear of the
+        // floating layer panel on the left.
+        const pts = segPts.flatMap(s => (Array.isArray(s.path) && s.path.length > 1 ? s.path : [[s.lat, s.lng]]))
+        const bounds = L.latLngBounds(pts).pad(0.35)
+        const fit = () => mapRef.current && mapRef.current.fitBounds(bounds, {
+          maxZoom: 14, paddingTopLeft: lite ? [10, 10] : [230, 20], paddingBottomRight: [20, 20], animate: false,
+        })
+        fit()
+        // The map is created before its card has its final width, so the first
+        // fit is computed against the wrong size and lands the coast in a corner.
+        // Refit once the layout has settled.
+        setTimeout(() => { mapRef.current && mapRef.current.invalidateSize(); fit() }, 250)
+        setTimeout(() => { mapRef.current && mapRef.current.invalidateSize(); fit() }, 900)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(mapRef.current)

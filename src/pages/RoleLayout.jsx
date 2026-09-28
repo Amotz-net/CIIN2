@@ -66,7 +66,9 @@ export default function RoleLayout() {
 
   // The impersonated context substitutes the org AND its id, because the role
   // views scope their own queries by profile.org_id.
-  const impersonating = isPlatformAdmin && !!viewAsOrg
+  // Choosing your own organisation is not impersonation: it must not lock the
+  // dashboard read-only or claim you are viewing someone else's data.
+  const impersonating = isPlatformAdmin && !!viewAsOrg && viewAsOrg.id !== profile?.org_id
   const effective = impersonating
     ? { ...profile, org_id: viewAsOrg.id, organizations: viewAsOrg }
     : profile

@@ -27,7 +27,7 @@ export function ViewAs({ profile, viewAsId, onChange }) {
   }, [])
 
   const grouped = ROLE_ORDER
-    .map(r => ({ role: r, list: orgs.filter(o => o.role === r).sort((a, b) => a.name.localeCompare(b.name)) }))
+    .map(r => ({ role: r, list: orgs.filter(o => o.role === r && o.id !== profile?.org_id).sort((a, b) => a.name.localeCompare(b.name)) }))
     .filter(g => g.list.length)
 
   return (
