@@ -17,16 +17,16 @@ const CATALOG_URL = 'https://sh.dataspace.copernicus.eu/api/v1/catalog/1.0.0/sea
 const STATS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/statistics'
 const PROCESS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/process'
 
-// Raw bands for one day, for the Wang & Hu (2021) Sentinel-2 method:
-// B04 (665), B8A (865), B11 (1610), B12 (2190) reflectance, the L2A scene
-// classification, and dataMask. FLOAT32 GeoTIFF at ~20 m.
+// Every Sentinel-2 L2A band for one day, plus the scene classification and
+// dataMask, as a FLOAT32 GeoTIFF at ~20 m. All bands are returned so a new
+// detection method can be tested on saved images without fetching again.
 const RASTER_SCRIPT = `//VERSION=3
 function setup() {
-  return { input: [{ bands: ["B02", "B03", "B04", "B8A", "B11", "B12", "SCL", "dataMask"] }],
-           output: { bands: 8, sampleType: "FLOAT32" } };
+  return { input: [{ bands: ["B01","B02","B03","B04","B05","B06","B07","B08","B8A","B09","B11","B12","SCL","dataMask"] }],
+           output: { bands: 14, sampleType: "FLOAT32" } };
 }
 function evaluatePixel(s) {
-  return [s.B02, s.B03, s.B04, s.B8A, s.B11, s.B12, s.SCL, s.dataMask];
+  return [s.B01,s.B02,s.B03,s.B04,s.B05,s.B06,s.B07,s.B08,s.B8A,s.B09,s.B11,s.B12,s.SCL,s.dataMask];
 }`
 
 // Floating Algae Index (Hu 2009) on Sentinel-2: NIR (B08, 842 nm) above the

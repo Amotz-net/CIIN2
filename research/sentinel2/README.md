@@ -23,3 +23,21 @@ minimum patch of 2 pixels. The paper's TNRD denoising step is NOT implemented.
 
 Not reliable enough at Long Bay to show users. Open problem: a haze/glint
 filter that keeps good summer scenes.
+
+## LANOT rule test (37 images, all bands saved)
+
+Rule from Arellano-Verdejo et al. (2025), Sci. Rep. 15:8965, eq. 1:
+(B8A < 0.07) and (B04 < 0.10) and (B11 < 0.05) and (B04 < B8A) and (B04 < B08),
+with cloud removed by the L2A scene classification.
+
+Result: as printed, the rule is not usable on its own. It flags 12-74% of the
+water on clear WINTER days at Puerto Morelos and 12-28% at Long Bay, mostly
+deep clear water, where reflectance is near zero and sensor noise alone makes
+B04 < B8A true. The rule has upper limits but no minimum signal. The paper
+mentions later entropy filtering and denoising; those steps are not specified.
+
+On the same images the background-residual method (this folder) flagged
+0.00-0.17% in winter and 0.5-5.7% on summer days with visible sargassum at
+Puerto Morelos, and followed the visible mats.
+
+Cost: 37 requests, 55.7 processing units (about 1.5 per image with 14 bands).
