@@ -14,6 +14,23 @@ const json = (b: unknown, s = 200) =>
 
 const TOKEN_URL = 'https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token'
 const CATALOG_URL = 'https://sh.dataspace.copernicus.eu/api/v1/catalog/1.0.0/search'
+const STATS_URL = 'https://sh.dataspace.copernicus.eu/api/v1/statistics'
+
+// Floating Algae Index (Hu 2009) on Sentinel-2: NIR (B08, 842 nm) above the
+// baseline between red (B04, 665 nm) and SWIR (B11, 1610 nm). Pixels are
+// dropped when cloud, shadow or no-data per the L2A scene classification, and
+// when SWIR is bright, which is land or beach sand rather than water.
+const EVALSCRIPT = `//VERSION=3
+function setup() {
+  return { input: [{ bands: ["B04", "B08", "B11", "SCL", "dataMask"] }],
+           output: [{ id: "fai", bands: 1, sampleType: "FLOAT32" }, { id: "dataMask", bands: 1 }] };
+}
+function evaluatePixel(s) {
+  var bad = [0, 1, 3, 8, 9, 10, 11].indexOf(s.SCL) >= 0;
+  var land = s.B11 > 0.12;
+  var fai = s.B08 - (s.B04 + (s.B11 - s.B04) * (842 - 665) / (1610 - 665));
+  return { fai: [fai], dataMask: [(s.dataMask && !bad && !land) ? 1 : 0] };
+}`
 
 async function token() {
   const id = Deno.env.get('CDSE_CLIENT_ID'), secret = Deno.env.get('CDSE_CLIENT_SECRET')
@@ -37,6 +54,47 @@ Deno.serve(async (req) => {
     const days = Math.min(90, Number(u.searchParams.get('days') ?? 30))
     const t = await token()
     if (!t.ok) return json({ ok: false, stage: 'auth', ...t })
+
+    if (u.searchParams.get('action') === 'stats') {
+      // bbox = minLng,minLat,maxLng,maxLat ; from/to = ISO dates
+      const bbox = (u.searchParams.get('bbox') ?? '').split(',').map(Number)
+      const from = u.searchParams.get('from'), to = u.searchParams.get('to')
+      const res = Number(u.searchParams.get('res') ?? 0.0002)
+      const r = await fetch(STATS_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${t.access}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: {
+            bounds: { bbox, properties: { crs: 'http://www.opengis.net/def/crs/EPSG/0/4326' } },
+            data: [{ type: 'sentinel-2-l2a', dataFilter: { maxCloudCoverage: 70 } }],
+          },
+          aggregation: {
+            timeRange: { from: `${from}T00:00:00Z`, to: `${to}T23:59:59Z` },
+            aggregationInterval: { of: 'P1D' },
+            evalscript: EVALSCRIPT, resx: res, resy: res,
+          },
+          calculations: { fai: {
+            statistics: { default: { percentiles: { k: [10, 50, 90, 99] } } },
+            histograms: { default: { lowEdge: -0.05, highEdge: 0.25, binWidth: 0.0025 } },
+          } },
+        }),
+      })
+      if (!r.ok) return json({ ok: false, stage: 'stats', reason: `stats ${r.status}`, detail: (await r.text()).slice(0, 400) })
+      const j = await r.json()
+      const rows = (j.data ?? []).map((x: any) => {
+        const b = x.outputs?.fai?.bands?.B0
+        const st = b?.stats
+        return st && {
+          hist: (b.histogram?.bins ?? []).map((h: any) => [h.lowEdge, h.count]),
+          date: x.interval?.from?.slice(0, 10),
+          valid: st.sampleCount - st.noDataCount, total: st.sampleCount,
+          mean: st.mean, p10: st.percentiles?.['10.0'], p50: st.percentiles?.['50.0'],
+          p90: st.percentiles?.['90.0'], p99: st.percentiles?.['99.0'], max: st.max,
+        }
+      }).filter(Boolean)
+      return json({ ok: true, stage: 'stats', rows })
+    }
+
     const d = 0.03
     const end = new Date(), start = new Date(end.getTime() - days * 86400000)
     const r = await fetch(CATALOG_URL, {
