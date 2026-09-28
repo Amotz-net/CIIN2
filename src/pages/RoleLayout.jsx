@@ -98,7 +98,7 @@ export default function RoleLayout() {
   const admin = isOrgAdmin(profile)
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="theme-command" style={{ display: 'flex', minHeight: '100vh' }}>
       {/* left sidebar */}
       <nav className="rail">
         <div className="rail-logo">CIIN<span>.</span></div>
@@ -125,11 +125,21 @@ export default function RoleLayout() {
       <main style={{ flex: 1, minWidth: 0 }}>
         <div className="wrap wide">
           <div className="dash-head">
-            <div>
-              <div className="muted" style={{ fontSize: 12, letterSpacing: 1, textTransform: 'uppercase' }}>{ROLE_LABELS[role]}</div>
-              <h1 style={{ margin: '2px 0 0' }}>{org?.name}</h1>
+            {isPlatformAdmin && !impersonating ? (
+              <div>
+                <h1 className="cc-brand">CIIN Command Centre</h1>
+                <div className="muted" style={{ fontSize: 13 }}>Coastal intelligence · Response coordination · Biomass recovery</div>
+              </div>
+            ) : (
+              <div>
+                <div className="muted" style={{ fontSize: 12, letterSpacing: 1, textTransform: 'uppercase' }}>{ROLE_LABELS[role]}</div>
+                <h1 style={{ margin: '2px 0 0' }}>{org?.name}</h1>
+              </div>
+            )}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+              <Clock />
+              {isPlatformAdmin && <ViewAs profile={profile} viewAsId={viewAsId} onChange={chooseViewAs} />}
             </div>
-            {isPlatformAdmin && <ViewAs profile={profile} viewAsId={viewAsId} onChange={chooseViewAs} />}
           </div>
 
           {impersonating && <ViewAsBanner org={viewAsOrg} onExit={() => chooseViewAs(null)} />}
@@ -137,7 +147,7 @@ export default function RoleLayout() {
           {/* Every role opens on the same regional picture. It sits outside the
               read-only lock: changing a map filter acts on nobody's behalf. */}
           {RoleView && active === defaultSection(role) &&
-            <CommandCentre profile={effective} role={role} onNavigate={(sec) => nav('/app/' + sec)} />}
+            <CommandCentre profile={effective} role={role} admin={isPlatformAdmin && !impersonating} onNavigate={(sec) => nav('/app/' + sec)} />}
 
           {!RoleView ? <div className="card"><p className="muted">No dashboard for this role.</p></div>
            : impersonating ? (
@@ -158,6 +168,18 @@ export default function RoleLayout() {
           )}
         </div>
       </main>
+    </div>
+  )
+}
+
+function Clock() {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => { const id = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(id) }, [])
+  return (
+    <div className="cc-clock">
+      <span>{now.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
+      <b>{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
+      <span className="cc-live"><i />Caribbean region</span>
     </div>
   )
 }
