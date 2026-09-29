@@ -223,9 +223,7 @@ button.stat:hover{border-color:var(--teal)}
 .theme-command{--panel2:#23292E;--blue:#6EA8D6;--cyan:#57C4AE}
 .theme-command .wrap.wide{max-width:1560px;padding:18px 22px 40px}
 .theme-command .rail{width:232px;padding:16px 0 12px;gap:3px;background:#23292E;border-right:1px solid #343C44}
-.theme-command .rail-logo{display:flex;align-items:center;gap:10px;padding:2px 18px 18px}
-.theme-command .rail-logo b{display:block;font-size:26px;font-weight:800;letter-spacing:.5px;line-height:1}
-.theme-command .rail-logo small{display:block;font-size:7.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--teal);line-height:1.35;margin-top:4px}
+.theme-command .rail-logo{font-size:26px;font-weight:800;padding:2px 18px 18px}
 .theme-command .rail-item{border-radius:0;padding:12px 18px;gap:13px;font-size:14.5px;color:#C3CCCA;position:relative}
 .theme-command .rail-item:hover{background:#2A3138;color:#fff}
 .theme-command .rail-item.active{background:rgba(87,196,174,.14);color:var(--teal);box-shadow:inset 3px 0 0 var(--teal);border-radius:0 8px 8px 0;margin-right:10px;font-weight:600}
@@ -469,7 +467,7 @@ b.tone-green,span.tone-green,b.tone-amber,span.tone-amber,b.tone-red,span.tone-r
 @media (max-width:820px){
   .k-kpis,.k-two,.k-four,.k-tiles3{grid-template-columns:1fr 1fr}
   .k-two{grid-template-columns:1fr}
-  .theme-command .rail{width:64px}.theme-command .rail-lbl,.theme-command .rail-logo div,.rail-badge{display:none}
+  .theme-command .rail{width:64px}.theme-command .rail-lbl,.rail-badge{display:none}
   .theme-command .rail-item.active{margin-right:0;border-radius:0}
   .cc-brand{font-size:21px}.cc-clock{display:none}
 }

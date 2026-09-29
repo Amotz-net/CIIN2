@@ -110,7 +110,7 @@ export default function RoleLayout() {
     <div className="theme-command" style={{ display: 'flex', minHeight: '100vh' }}>
       {/* left sidebar */}
       <nav className="rail">
-        <div className="rail-logo"><Mark /><div><b>CIIN</b><small>Coastal intelligence<br />infrastructure network</small></div></div>
+        <div className="rail-logo">CIIN<span>.</span></div>
         {items.map(it => (
           <a key={it.key}
              className={'rail-item' + (it.key === active ? ' active' : '')}
@@ -177,17 +177,6 @@ export default function RoleLayout() {
   )
 }
 
-// The CIIN mark: three currents.
-function Mark() {
-  return (
-    <svg width="44" height="34" viewBox="0 0 44 34" aria-hidden="true">
-      <path d="M2 12C9 3 17 3 24 9s12 5 18-2" fill="none" stroke="#57C4AE" strokeWidth="4" strokeLinecap="round" />
-      <path d="M2 20c7-9 15-9 22-3s12 5 18-2" fill="none" stroke="#57C4AE" strokeWidth="4" strokeLinecap="round" />
-      <path d="M6 29c6-7 12-7 18-2s11 4 16-2" fill="none" stroke="#3E8F80" strokeWidth="4" strokeLinecap="round" />
-    </svg>
-  )
-}
-
 // How many things are waiting on this organisation. Row-level security and the
 // organisation filter decide what is counted.
 function useWaiting(role, orgId) {
@@ -225,7 +214,7 @@ function Shell({ children, profile, onOut }) {
   return (
     <div className="theme-command" style={{ display: 'flex', minHeight: '100vh' }}>
       <nav className="rail">
-        <div className="rail-logo"><Mark /><div><b>CIIN</b></div></div>
+        <div className="rail-logo">CIIN<span>.</span></div>
         <div style={{ flex: 1 }} />
         <a className="rail-item" onClick={onOut}><span className="rail-ic">⏻</span><span className="rail-lbl">Sign out</span></a>
       </nav>
