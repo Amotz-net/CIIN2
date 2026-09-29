@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Panel, Chip, Empty, Source, Icon } from './kit.jsx'
+import { RulesNotice, rulesFor } from './Coordination.jsx'
 
 // Clean-up visits: the dates both sides work from.
 // The hub proposes arrival and finish; the property confirms or asks for
@@ -40,7 +41,8 @@ export function HubSchedule({ d, mission, profile }) {
   const start = new Date(Date.now() + 24 * 3.6e6); start.setHours(7, 0, 0, 0)
   const end = new Date(start); end.setHours(15, 0, 0, 0)
   const [f, setF] = useState({ arrives: local(start), finishes: local(end), crew: '', trucks: '', note: '' })
-  const [busy, setBusy] = useState(false), [err, setErr] = useState(''), [edit, setEdit] = useState(null)
+  const [busy, setBusy] = useState(false), [err, setErr] = useState(''), [edit, setEdit] = useState(null), [read, setRead] = useState(false)
+  const rules = rulesFor(d, mission)
   const mine = upcoming(d.visits.filter(v => v.org_id === d.orgId && v.status !== 'cancelled'))
   const canSchedule = mission && (!mission.pool || mission.pool.accepted) && !['completed', 'rejected', 'proposed'].includes(mission.status)
   const set = k => e => setF(x => ({ ...x, [k]: e.target.value }))
@@ -50,7 +52,8 @@ export function HubSchedule({ d, mission, profile }) {
     const a = new Date(f.arrives), b = new Date(f.finishes)
     if (!(b > a)) { setErr('The finish must be after the arrival.'); return }
     setBusy(true)
-    const row = { arrives_at: a.toISOString(), finishes_at: b.toISOString(), crew: f.crew ? Number(f.crew) : null, trucks: f.trucks ? Number(f.trucks) : null, note: f.note.trim() || null }
+    if (rules.length && !read) { setErr('Confirm that you have read the beach rules.'); return }
+    const row = { rules_read_at: rules.length ? new Date().toISOString() : null, arrives_at: a.toISOString(), finishes_at: b.toISOString(), crew: f.crew ? Number(f.crew) : null, trucks: f.trucks ? Number(f.trucks) : null, note: f.note.trim() || null }
     const res = edit
       ? await supabase.from('cleanup_visits').update(row).eq('id', edit).select('id').single()
       : await supabase.from('cleanup_visits').insert({ ...row, mission_id: mission.id, org_id: d.orgId, created_by: profile?.id ?? null }).select('id').single()
@@ -85,6 +88,8 @@ export function HubSchedule({ d, mission, profile }) {
           <div className="k-pair"><label>Crew<input type="number" min="1" placeholder="people" value={f.crew} onChange={set('crew')} /></label>
             <label>Trucks<input type="number" min="0" placeholder="number" value={f.trucks} onChange={set('trucks')} /></label></div>
           <label>Note for the property<input placeholder="Gate, equipment, anything they should know" value={f.note} onChange={set('note')} /></label>
+          {rules.length > 0 && <><RulesNotice d={d} mission={mission} />
+            <label className="k-check"><input type="checkbox" checked={read} onChange={e => setRead(e.target.checked)} />I have read the beach rules and the crew will follow them</label></>}
           <div className="k-pair"><button className="k-btn amber" disabled={busy || (!edit && !canSchedule)}>{edit ? 'Send new dates' : 'Send dates'}</button>
             {edit ? <button type="button" className="k-btn ghost" onClick={() => setEdit(null)}>Keep as is</button> : <span />}</div>
           {!edit && mission && !canSchedule && <Empty>{mission.pool && !mission.pool.accepted ? 'Accept the work order first.' : 'This mission cannot be scheduled yet.'}</Empty>}

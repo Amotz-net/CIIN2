@@ -6,6 +6,7 @@ import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoin
 import { stage, chain, byChannel, CHANNEL_ICON } from './mission.js'
 import { PROGRAMME, GATES } from './program.js'
 import { visitLabel } from './Schedule.jsx'
+import { LandingClock, RemovalList, BeachRules, activeLandings, clockOf } from './Coordination.jsx'
 
 const REGION_VIEW = [{ key: 'region', bounds: [[10, -90], [27, -59]] }]
 const ROLE_KIND = { hotel: 'hotel', recovery_hub: 'hub', processor: 'processor', university_lab: 'lab', government: 'agency', buyer: 'buyer', finance: 'agency' }
@@ -176,6 +177,8 @@ export function AdminConsole({ profile, onOpen }) {
     const pool = d.pools[m.id] || []
     if (!own && !pool.some(p => p.accepted) && Date.now() - new Date(m.created_at) > 6 * 3.6e6) exceptions.push({ tone: 'amber', icon: 'users', pr: 'Medium', title: 'No hub has accepted',
       lines: [`${pool.length} hub${pool.length === 1 ? '' : 's'} alerted ${ago(m.created_at)}`, m.title], act: 'Open', org: m.org_id }) })
+  activeLandings(d).forEach(l => { const c = clockOf(l); if (c.left <= 12) exceptions.unshift({ tone: c.overdue ? 'red' : 'amber', icon: 'clock', pr: c.overdue ? 'Overdue' : 'High priority',
+    title: c.overdue ? 'Landing not cleared in 48 hours' : 'Landing close to 48 hours', lines: [c.label, `${d.segments.find(s => s.id === l.segment_id)?.name || 'Beach'} · ${d.orgName(l.org_id)}`], act: 'Open', org: l.org_id }) })
   sick.forEach(f => exceptions.push({ tone: 'blue', icon: 'db', pr: 'Medium', title: 'Data feed ' + f.st[0].toLowerCase(),
     lines: [f.at ? `Last reading ${shortDate(f.at)}` : 'No reading received', `${f.name} · ${f.src}`] }))
   unapproved.forEach(o => exceptions.push({ tone: 'amber', icon: 'shield', pr: 'Medium', title: 'Organisation awaiting approval',
@@ -328,6 +331,7 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
                  { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={[{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' }, { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' },
                  { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }, { type: 'pin', kind: 'mission', label: 'Open mission' }, { type: 'fill', color: '#F08A3C', label: 'Sargassum afloat, beyond 20 km' }]} />
+      <LandingClock d={d} title="Landings and the 48-hour clock" />
       <Panel title="Dynamic risk trend" action={<span className="k-hint">Offshore readings · not a measurement of the beach</span>}>
         <div className="k-three tight">
           <div><div className="k-mini-h"><Icon name="leaf" size={16} />Offshore biomass <small>{w?.name || ''}</small></div><Spark rows={offshore} color="var(--amber)" x0="−30 d" x1="Now" /></div>
@@ -346,6 +350,8 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
         </tbody></table> : <Empty>No beach list is loaded for this country yet.</Empty>}
         <Source>NEPA Jamaica Beach Guide. The list gives no positions. Where OpenStreetMap has a beach of the same name, that is the position. Otherwise the beach is placed on the shore nearest the bay, village or landmark that carries its name, which can be a kilometre or two from the beach itself. Click a dot to see what it was matched to.</Source>
       </Panel>
+      <BeachRules d={d} profile={profile} />
+      <Panel title="Removals" action={<span className="k-hint">What was taken, by whom, and where it went</span>}><RemovalList d={d} limit={5} /></Panel>
       <Panel title="Agency actions">
         {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Clean-up dates</th><th>Next action</th><th>Status</th></tr></thead><tbody>
           {d.open.map(m => { const s = stage(m), seg = d.beaches.find(b => b.id === m.segment_id), pool = d.pools[m.id] || []

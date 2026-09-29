@@ -56,7 +56,7 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
   const load = useCallback(async () => {
     if (!orgId) return
     const own = q => (scope === 'org' ? q.eq('org_id', orgId) : q)
-    const [seg, org, mis, mh, bat, inv, rates, rs, invites, loads, props, listed, visits, hotelList] = await Promise.all([
+    const [seg, org, mis, mh, bat, inv, rates, rs, invites, loads, props, listed, visits, hotelList, landings, removals, rules, samples, directory] = await Promise.all([
       allSegments ? supabase.from('beach_segments').select('*') : own(supabase.from('beach_segments').select('*')),
       supabase.from('organizations').select('id, name, role, country_code, approved, capacity_t, created_at'),
       scope === 'hub' ? supabase.from('missions').select('*').eq('org_id', orgId) : own(supabase.from('missions').select('*')),
@@ -73,6 +73,12 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
       catalogue ? supabase.from('beaches').select('*').order('name') : Promise.resolve({ data: [] }),
       supabase.from('cleanup_visits').select('*').order('arrives_at'),
       catalogue ? supabase.from('hotels').select('id, country_code, name, kind, lat, lng, place').order('name').limit(3000) : Promise.resolve({ data: [] }),
+      supabase.from('landing_reports').select('*').order('landed_at', { ascending: false }).limit(200),
+      supabase.from('removals').select('*').order('removed_at', { ascending: false }).limit(200),
+      supabase.from('beach_rules').select('*').order('created_at', { ascending: false }),
+      supabase.from('samples').select('*').order('sent_at', { ascending: false }).limit(200),
+      // Names of the other organisations in the country, which row-level security hides from most roles.
+      supabase.rpc('country_directory'),
     ])
     if (!alive.current) return
     let missions = mis.data ?? []
@@ -91,7 +97,10 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
       const confirmed = b.measurement_conf === 'confirmed'
       return { ...b, result, grade: result.grade, confirmed, uses: permittedUses(result.grade, confirmed) }
     })
-    setDb({ visits: visits.data ?? [], properties: props.data ?? [], listed: listed.data ?? [], hotelList: hotelList.data ?? [], segments: (seg.data ?? []), orgs: org.data ?? [], missions, pools, batches, invoices: inv.data ?? [],
+    const known = new Map((directory.data ?? []).map(o => [o.id, { ...o, approved: true }]))
+    for (const o of org.data ?? []) known.set(o.id, { ...known.get(o.id), ...o })
+    org.data = [...known.values()]
+    setDb({ landings: landings.data ?? [], removals: removals.data ?? [], rules: rules.data ?? [], samples: samples.data ?? [], visits: visits.data ?? [], properties: props.data ?? [], listed: listed.data ?? [], hotelList: hotelList.data ?? [], segments: (seg.data ?? []), orgs: org.data ?? [], missions, pools, batches, invoices: inv.data ?? [],
             rates: rates.data ?? [], invitations: invites.data ?? [], loads: loads.data ?? [] })
   }, [orgId, scope, admin, allSegments, catalogue])
   useEffect(() => { load() }, [load])
@@ -130,10 +139,13 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
   }, [segKey, feeds, weather])
 
   return useMemo(() => {
-    const raw = db ?? { segments: [], orgs: [], missions: [], pools: {}, batches: [], invoices: [], rates: [], invitations: [], loads: [], properties: [], listed: [], hotelList: [], visits: [] }
+    const raw = db ?? { segments: [], orgs: [], missions: [], pools: {}, batches: [], invoices: [], rates: [], invitations: [], loads: [], properties: [], listed: [], hotelList: [], visits: [], landings: [], removals: [], rules: [], samples: [] }
     // One property at a time, when the owner has chosen one.
     const segIds = property ? new Set(raw.segments.filter(s => s.property_id === property).map(s => s.id)) : null
-    const d = !property ? raw : { ...raw, segments: raw.segments.filter(s => segIds.has(s.id)), missions: raw.missions.filter(m => segIds.has(m.segment_id)) }
+    const d = !property ? raw : { ...raw, segments: raw.segments.filter(s => segIds.has(s.id)), missions: raw.missions.filter(m => segIds.has(m.segment_id)),
+      landings: raw.landings.filter(l => segIds.has(l.segment_id)), properties: raw.properties,
+      visits: raw.visits.filter(v => raw.missions.some(m => m.id === v.mission_id && segIds.has(m.segment_id))),
+      removals: raw.removals.filter(r => raw.missions.some(m => m.id === r.mission_id && segIds.has(m.segment_id))) }
     const geo = d.segments.filter(s => s.lat && s.lng)
     // Each beach with its alert level, on its own ten-year scale.
     const beaches = geo.map(s => {

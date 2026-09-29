@@ -10,3 +10,14 @@ select cron.schedule('ciin_watch_hourly', '7 * * * *', $cron$
     timeout_milliseconds := 120000
   );
 $cron$);
+
+-- Reminders and escalation, five minutes after the watcher.
+-- Stop it with:  select cron.unschedule('ciin_remind_hourly');
+select cron.schedule('ciin_remind_hourly', '12 * * * *', $cron$
+  select net.http_post(
+    url := 'https://oycflvlmfdosnmnhmguh.supabase.co/functions/v1/remind',
+    headers := '{"Content-Type":"application/json"}'::jsonb,
+    body := '{}'::jsonb,
+    timeout_milliseconds := 120000
+  );
+$cron$);

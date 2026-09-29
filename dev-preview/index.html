@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><title>CIIN local preview</title></head><body><div id="root"></div>
+<script type="module">
+import { IDS } from './fixture.js'
+const React = (await import('react')).default
+const { createRoot } = await import('react-dom/client')
+await import('../src/styles.css')
+const A = await import('../src/console/consolesA.jsx'), B = await import('../src/console/consolesB.jsx'), P = await import('../src/console/Properties.jsx')
+const which = new URLSearchParams(location.search).get('v') || 'hotel'
+const MAP = { command: [A.CommandConsole, IDS.PLAT, 'government'], admin: [A.AdminConsole, IDS.PLAT, 'government'], gov: [A.GovConsole, IDS.GOV, 'government'],
+  hotel: [B.HotelConsole, IDS.H, 'hotel'], hub: [B.HubConsole, IDS.HUB, 'recovery_hub'], buyer: [B.BuyerConsole, IDS.BUY, 'buyer'], lab: [B.LabConsole, IDS.LAB, 'university_lab'], props: [P.Properties, IDS.H, 'hotel'] }
+const [C, org, role] = MAP[which]
+const h = React.createElement
+createRoot(document.getElementById('root')).render(h('div', { className: 'theme-command', style: { minHeight: '100vh' } }, h('div', { className: 'wrap wide' },
+  h(C, { profile: { id: 'u1', level: 'org_admin', org_id: org, organizations: { country_code: 'JM', role } }, onNavigate: () => {}, onOpen: () => {}, reviews: [] }))))
+</script></body></html>

@@ -7,6 +7,7 @@ import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoin
 import { stage, chain, byChannel, LINE_STEPS, CHANNEL_ICON } from './mission.js'
 import { RESEARCH } from './program.js'
 import { HubSchedule, HotelSchedule } from './Schedule.jsx'
+import { LandingClock, ReportLanding, RemovalForm, RemovalList, SiteAccessEdit, SiteAccessView, RulesNotice, SampleSend, SampleInbox, activeLandings, clockOf } from './Coordination.jsx'
 
 const LEVEL_LEGEND = [{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' },
   { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' },
@@ -59,6 +60,7 @@ export function HotelConsole({ profile, onNavigate }) {
              sub={est != null ? `${Math.ceil(Number(lead.tonnes) / 12)} truck loads · indicative` : 'no rate or tonnage yet'} />
       </>}
       rail={<>
+        <ReportLanding d={d} profile={profile} />
         <Panel title="Priority action">
           {lead ? <>
             <div className="k-lead"><span className={'k-lead-ic tone-' + stage(lead).tone}><Icon name="alert" size={26} /></span>
@@ -72,7 +74,8 @@ export function HotelConsole({ profile, onNavigate }) {
             </> : <button className="k-btn ghost wide" onClick={() => onNavigate('management')}>Open sargassum management</button>}
           </> : <Empty>No mission is open on your frontage.</Empty>}
         </Panel>
-        <Panel title="Site access">
+        <SiteAccessEdit d={d} />
+        <Panel title="Access decisions">
           {d.missions.length ? d.missions.slice(0, 4).map(m => <div key={m.id} className="k-gate"><Icon name="building" size={19} /><span>{m.title}</span>
             <Chip tone={m.access_state === 'granted' ? 'green' : m.access_state === 'declined' ? 'red' : m.access_state === 'pending' ? 'amber' : 'teal'}>{nice(m.access_state)}</Chip></div>)
             : <Empty>No access decisions on record.</Empty>}
@@ -85,7 +88,9 @@ export function HotelConsole({ profile, onNavigate }) {
       <SargassumMap title="Your coastline" note="observed, last 72 hours" raster={REGION_BOX} views={mapViews(d.code, pts)} focus="island"
         segments={d.beaches} vectors={d.vectors} layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={LEVEL_LEGEND} />
+      {activeLandings(d).length > 0 && <LandingClock d={d} />}
       <HotelSchedule d={d} />
+      <Panel title="Removal records" action={<span className="k-hint">Sign off what was taken from your frontage</span>}><RemovalList d={d} mode="sign" /></Panel>
       <Panel title="Beach access forecast" action={<span className="k-hint">Indicative · next 72 hours</span>}>
         {d.beaches.length ? <div className="k-fc">
           <div className="k-fc-axis"><span /><div>{['Now', '+24h', '+48h', '+72h'].map((t, i) => <i key={t} style={{ left: (i / 3) * 100 + '%' }}>{t}</i>)}</div></div>
@@ -163,6 +168,9 @@ export function HubConsole({ profile, onNavigate }) {
             {top.pool && !top.pool.accepted && <button className="k-btn amber wide" disabled={busy} onClick={() => acknowledge(top)}>Accept work order</button>}
             {(!top.pool || top.pool.accepted) && stage(top).key === 'ready' && <button className="k-btn amber wide" disabled={busy} onClick={() => start(top)}>Start the line</button>}
             {top.pool?.accepted && stage(top).key === 'owner' && <Empty>Waiting on the property to grant access.</Empty>}
+            <div className="k-mini-h" style={{ marginTop: 10 }}><Icon name="pin" size={16} />Site access</div>
+            <SiteAccessView mission={top} />
+            <RulesNotice d={d} mission={top} />
             {failed && <Empty><span style={{ color: 'var(--red)' }}>{failed}</span></Empty>}
           </> : <Empty>Nothing has been dispatched to this hub.</Empty>}
         </Panel>
@@ -180,13 +188,18 @@ export function HubConsole({ profile, onNavigate }) {
           </> : <Empty>No batch recorded yet.</Empty>}
           <Source>Mass is as recorded by the hub. CIIN has no weighbridge feed.</Source>
         </Panel>
+        <SampleSend d={d} profile={profile} />
       </>}>
       <SargassumMap title="Pickup zones" raster={REGION_BOX} views={mapViews(d.code, pts)} focus="island" segments={sites} vectors={d.vectors} timeline={false}
         markers={d.missions.filter(m => !['completed', 'rejected'].includes(m.status)).map(m => { const s = sites.find(b => b.id === m.segment_id)
           return s && { lat: s.lat + 0.004, lng: s.lng + 0.004, kind: 'mission', label: m.title, note: stage(m).label, showLabel: true } }).filter(Boolean)}
         layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'mission', label: 'Pickups', color: '#D9736A' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
         legend={[{ type: 'pin', kind: 'mission', label: 'Pickup zone' }, { type: 'line', color: '#57C4AE', label: 'Beach footprint' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }]} />
+      {activeLandings(d).length > 0 && <LandingClock d={d} />}
       <HubSchedule d={d} mission={top} profile={profile} />
+      <Panel title="Removal records" action={<span className="k-hint">What was taken, and where it went</span>}>
+        <div className="k-two"><div><RemovalList d={d} /></div><RemovalForm d={d} mission={top} profile={profile} /></div>
+      </Panel>
       <Panel title="Dispatch board" action={<span className="k-hint">Select a mission to act on it</span>}>
         <div className="k-board">{cols.map(([name, ic, list]) => (
           <div key={name} className="k-col"><div className="k-col-h"><Icon name={ic} size={18} />{name} <small>({list.length})</small></div>
@@ -345,14 +358,9 @@ export function LabConsole({ profile, onNavigate }) {
           <div className="k-gate"><Icon name="waves" size={18} /><span>Current fields</span><Chip tone={driftOk ? 'green' : d.feedsDone ? 'amber' : 'grey'}>{driftOk ? 'Available' : d.feedsDone ? 'Unavailable' : 'Reading'}</Chip></div>
           <div className="k-gate"><Icon name="target" size={18} /><span>Shore observations</span><Chip tone="grey">None recorded</Chip></div>
         </Panel>
-        <Panel title="Sample queue">
-          {pending.length ? <table className="k-table"><thead><tr><th>Batch</th><th>Field screen</th><th>Status</th><th /></tr></thead><tbody>
-            {pending.slice(0, 5).map(b => <tr key={b.id}><td>{b.batch_ref}</td><td>{b.arsenic_total} mg/kg</td><td><Chip tone="amber">Awaiting</Chip></td>
-              <td><button className="k-btn ghost sm" disabled={busy} onClick={() => returnResult(b)}>Return result</button></td></tr>)}
-          </tbody></table> : <Empty>No samples awaiting analysis.</Empty>}
-        </Panel>
       </>}
 >
+      <SampleInbox d={d} />
       <div className="k-two maps">
         <SargassumMap title="Modelled drift" note="indicative" views={views} focus="island" segments={d.beaches} vectors={d.vectors} height={360}
           legend={[{ type: 'dash', color: '#EAF0EF', label: 'Water movement, 24 hours' }, { type: 'line', color: '#57C4AE', label: 'Beach footprint' }]} />
