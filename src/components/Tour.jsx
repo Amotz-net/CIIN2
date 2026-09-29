@@ -18,8 +18,9 @@ const CARD_W = 380
 
 function findPanel(match) {
   const wanted = match.toLowerCase()
-  const cards = [...document.querySelectorAll('.card')]
-  return cards.find(c => c.querySelector('h2')?.textContent?.toLowerCase().includes(wanted)) || null
+  const cards = [...document.querySelectorAll('.card, .k-panel, .k-map, .k-kpis')]
+  return cards.find(c => (c.classList.contains('k-kpis') ? c : c.querySelector('h2, h3, .k-map-title b'))
+    ?.textContent?.toLowerCase().includes(wanted)) || null
 }
 
 export function Tour({ role, section, onNavigate, onFinish }) {

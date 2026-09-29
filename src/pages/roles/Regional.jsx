@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { LEVELS } from '../../lib/alert'
 import { SeriesChart } from '../../components/SeriesChart'
+import { CommandCentre } from '../../components/CommandCentre.jsx'
 
 // Regional picture — the Caribbean-wide view, from SATsum (CONABIO, Mexico).
 // CIIN does not produce these figures. Every panel names its source and date,
@@ -94,6 +95,8 @@ export function Regional({ profile }) {
         <span className="pill amber">stored copy</span>{' '}
         <span style={{ fontSize: 12.5 }}>SATsum could not be reached for {d.stale.map(s => s.kind).join(', ')}. Showing the last copy CIIN stored; dates are on each panel.</span>
       </div>}
+
+      <div style={{ gridColumn: '1 / -1' }}><CommandCentre profile={profile} mapOnly /></div>
 
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>Caribbean today <span className="pill" style={{ fontSize: 10 }}>satellite</span></h2>

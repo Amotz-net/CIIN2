@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { loadRuleset, gradeBatch } from '../../lib/grading'
+import { LabConsole } from '../../console/consolesB.jsx'
 
 // Lab dashboard — own-org. Sample queue: batches awaiting or holding lab results.
 // The lab MEASURES (returns inorganic-arsenic result); the RULES grade. Screened
 // batches (no inorganic yet) are the queue; confirmed ones show the re-graded result.
-export function LabView({ profile, section = 'queue' }) {
+export function LabView({ profile, section = 'workspace', onNavigate = () => {} }) {
   const orgId = profile?.org_id
   const [rows, setRows] = useState([])
   const [ruleset, setRuleset] = useState(null)
@@ -44,6 +45,7 @@ export function LabView({ profile, section = 'queue' }) {
   const S = (sec) => section === sec
   return (
     <div className="dash-grid">
+      {S('workspace') && <div style={{ gridColumn: '1 / -1' }}><LabConsole profile={profile} onNavigate={onNavigate} /></div>}
       {S('queue') && <>
       <div className="card">
         <h2>Sample queue</h2>

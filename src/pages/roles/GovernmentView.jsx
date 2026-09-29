@@ -10,6 +10,7 @@ import { Regional } from './Regional.jsx'
 import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { Landfall } from '../../components/Landfall.jsx'
+import { GovConsole } from '../../console/consolesA.jsx'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
@@ -60,7 +61,7 @@ function ScoreCard({ title, score }) {
   )
 }
 
-export function GovernmentView({ profile, section = 'overview' }) {
+export function GovernmentView({ profile, section = 'overview', onNavigate = () => {} }) {
   const [segments, setSegments] = useState([])
   const [orgs, setOrgs] = useState([])
   const [segReads, setSegReads] = useState({})
@@ -148,12 +149,14 @@ export function GovernmentView({ profile, section = 'overview' }) {
 
   return (
     <div className="dash-grid">
-      {S('overview') && <>
+      {S('overview') && <div style={{ gridColumn: '1 / -1' }}><GovConsole profile={profile} onNavigate={onNavigate} reviews={reviews} /></div>}
+
+      {S('coast') && <>
       <CoastMap />
 
       {/* Countdown to the next projected inundation window */}
       <Landfall landfall={landfall} />
-      {S('overview') && <SegmentOutlook segments={segments} />}
+      <SegmentOutlook segments={segments} />
 
       {/* Jurisdiction summary */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
@@ -178,7 +181,9 @@ export function GovernmentView({ profile, section = 'overview' }) {
       <ScoreCard title="Coastal Health Risk" score={scores.coastal_health} />
       <ScoreCard title="Public Health Risk" score={scores.public_health} />
       <ScoreCard title="Carbon Credit Risk" score={scores.carbon_credit} />
+      </>}
 
+      {S('overview') && <>
       {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
       <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>CIIN Agent
@@ -289,7 +294,6 @@ export function GovernmentView({ profile, section = 'overview' }) {
       </div>
       )}
 
-      {S('coast') && <CoastMap />}
       {S('reports') && <RoleReports role="government" profile={profile} />}
     </div>
   )

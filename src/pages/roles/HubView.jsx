@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { loadRuleset, gradeBatch } from '../../lib/grading'
+import { HubConsole } from '../../console/consolesB.jsx'
 
 // Recovery Hub dashboard — own-org scoping. Mission queue, the 9-step recovery
 // line (advanceable), capacity, and deliveries with engine-COMPUTED grades.
@@ -11,7 +12,7 @@ const LINE_STEPS = [
   'Baling', 'Storage', 'Quality certification', 'Shipment',
 ]
 
-export function HubView({ profile, section = 'overview' }) {
+export function HubView({ profile, section = 'overview', onNavigate = () => {} }) {
   const orgId = profile?.org_id
   const [missions, setMissions] = useState([])
   const [graded, setGraded] = useState([])
@@ -141,7 +142,8 @@ export function HubView({ profile, section = 'overview' }) {
   const paidTotal = settled.reduce((s, i) => s + Number(i.total || 0), 0)
   return (
     <div className="dash-grid">
-      {S('overview') && <>
+      {S('overview') && <div style={{ gridColumn: '1 / -1' }}><HubConsole profile={profile} onNavigate={onNavigate} /></div>}
+      {false && <>
       {/* Capacity */}
       <div className="card">
         <h2>Capacity</h2>

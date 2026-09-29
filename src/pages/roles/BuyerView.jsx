@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { loadRuleset, gradeBatch, permittedUses } from '../../lib/grading'
+import { BuyerConsole } from '../../console/consolesB.jsx'
 
 // Buyer / Exchange dashboard — own-org. Verified-biomass marketplace: only
 // batches that pass (A/B, not FAIL/C) and are confirmed appear as matchable,
 // with the passport (grade + permitted uses) as the assurance.
-export function BuyerView({ profile, section = 'market' }) {
+export function BuyerView({ profile, section = 'exchange', onNavigate = () => {} }) {
   const orgId = profile?.org_id
   const [listings, setListings] = useState([])
   const [loading, setLoading] = useState(true)
@@ -43,6 +44,7 @@ export function BuyerView({ profile, section = 'market' }) {
   const S = (sec) => section === sec
   return (
     <div className="dash-grid">
+      {S('exchange') && <div style={{ gridColumn: '1 / -1' }}><BuyerConsole profile={profile} onNavigate={onNavigate} /></div>}
       {S('market') && <>
       <div className="card">
         <h2>Marketplace</h2>

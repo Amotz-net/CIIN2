@@ -1,50 +1,76 @@
 // Per-role navigation config → routes /app/<section>.
-// Government uses the new IA (map/carbon/reports built). Other roles use their
-// currently-built sections; their expanded IA (invoices, processors, methods…)
-// lands in the next pass once those panels exist — no tab leads to a blank screen.
+// The first entry of every role is its console: headline figures, the map and
+// what is waiting on a decision. `icon` names a drawing in console/kit.jsx.
 export const ROLE_NAV = {
   government: [
-    { key: 'overview',  label: 'Overview',      icon: '▦' },
-    { key: 'knowledge', label: 'Knowledge Hub', icon: '✦' },
-    { key: 'coast',     label: 'Coast Map',     icon: '≈' },
-    { key: 'regional',  label: 'Regional',      icon: '◍' },
-    { key: 'carbon',    label: 'Carbon',        icon: '♲' },
-    { key: 'reports',   label: 'Reports',       icon: '§' },
+    { key: 'overview',  label: 'Overview',        icon: 'home' },
+    { key: 'coast',     label: 'Coastal risk',    icon: 'waves' },
+    { key: 'regional',  label: 'Regional',        icon: 'satellite' },
+    { key: 'knowledge', label: 'Knowledge Hub',   icon: 'users' },
+    { key: 'carbon',    label: 'Carbon',          icon: 'leaf' },
+    { key: 'reports',   label: 'Evidence & reports', icon: 'chart' },
   ],
   hotel: [
-    { key: 'overview',   label: 'Overview',    icon: '▦' },
-    { key: 'management', label: 'Sargassum',   icon: '⇉' },
-    { key: 'invoices',   label: 'Invoices',    icon: '§' },
-    { key: 'finance',    label: 'Financials',  icon: '◷' },
-    { key: 'reports',    label: 'Reports',     icon: '✦' },
+    { key: 'overview',   label: 'Overview',           icon: 'home' },
+    { key: 'forecast',   label: 'Beach forecast',     icon: 'waves' },
+    { key: 'management', label: 'Response approvals', icon: 'doc' },
+    { key: 'invoices',   label: 'Invoices',           icon: 'money' },
+    { key: 'finance',    label: 'Financials',         icon: 'trend' },
+    { key: 'reports',    label: 'Reports',            icon: 'chart' },
   ],
   recovery_hub: [
-    { key: 'overview',  label: 'Overview',   icon: '▦' },
-    { key: 'queue',     label: 'Sargassum',  icon: '☰' },
-    { key: 'invoices',  label: 'Invoices',   icon: '§' },
-    { key: 'line',      label: 'Line',       icon: '◎' },
-    { key: 'batches',   label: 'Batches',    icon: '✦' },
+    { key: 'overview',  label: 'Dispatch board', icon: 'home' },
+    { key: 'queue',     label: 'Work orders',    icon: 'clipboard' },
+    { key: 'line',      label: 'Hub receiving',  icon: 'building' },
+    { key: 'batches',   label: 'Batch records',  icon: 'db' },
+    { key: 'invoices',  label: 'Invoices',       icon: 'money' },
   ],
   processor: [
-    { key: 'certification', label: 'Certification', icon: '▦' },
-    { key: 'passports',     label: 'Passports',     icon: '✦' },
-    { key: 'closure',       label: 'Closure',       icon: '♲' },
-    { key: 'certificate',   label: 'Certificate',   icon: '§' },
+    { key: 'certification', label: 'Certification', icon: 'shield' },
+    { key: 'passports',     label: 'Passports',     icon: 'doc' },
+    { key: 'closure',       label: 'Closure',       icon: 'scale' },
+    { key: 'certificate',   label: 'Certificate',   icon: 'clipboard' },
   ],
   university_lab: [
-    { key: 'queue',    label: 'Sample queue', icon: '☰' },
-    { key: 'results',  label: 'Results',      icon: '✦' },
+    { key: 'workspace', label: 'Research workspace', icon: 'gear' },
+    { key: 'queue',     label: 'Sample queue',       icon: 'flask' },
+    { key: 'results',   label: 'Results',            icon: 'chart' },
   ],
   buyer: [
-    { key: 'market',     label: 'Marketplace', icon: '▦' },
-    { key: 'notoffered', label: 'Not offered', icon: '⃠' },
+    { key: 'exchange',   label: 'Feedstock marketplace', icon: 'cart' },
+    { key: 'market',     label: 'Verified listings',     icon: 'doc' },
+    { key: 'notoffered', label: 'Not offered',           icon: 'alert' },
   ],
   finance: [
-    { key: 'book',        label: 'Book',        icon: '▦' },
-    { key: 'instruments', label: 'Instruments', icon: '§' },
-    { key: 'record',      label: 'Record',      icon: '✦' },
+    { key: 'book',        label: 'Book',        icon: 'db' },
+    { key: 'instruments', label: 'Instruments', icon: 'doc' },
+    { key: 'record',      label: 'Record',      icon: 'chart' },
   ],
 }
+
+// The platform administrator's own menu: the two administration consoles, then
+// the jurisdiction tabs of the organisation the administrator belongs to.
+export const ADMIN_NAV = [
+  { key: 'overview', label: 'Overview',          icon: 'home' },
+  { key: 'admin',    label: 'Regional overview', icon: 'target' },
+]
+
+// Title and strapline shown at the top of each role's pages.
+export const ROLE_TITLE = {
+  government:     ['Government Console', 'Coastal exposure, public-health review and response oversight.'],
+  hotel:          ['Hotel Operations', 'Protect beach access. Coordinate response.'],
+  recovery_hub:   ['Recovery Operations', 'Dispatch crews. Track collection. Receive biomass.'],
+  processor:      ['Processor Certification', 'Evidence in. Standing computed. Certificate out.'],
+  university_lab: ['Research Workspace', 'Validate forecasts. Improve evidence. Explain uncertainty.'],
+  buyer:          ['Biomass Exchange', 'Find suitable feedstock. Verify quality. Plan intake.'],
+  finance:        ['Finance Desk', 'Underwrite against verified performance.'],
+  command:        ['Command Centre', 'Coastal intelligence • Response coordination • Biomass recovery'],
+  admin:          ['Regional Administration', 'Coordinate the network. Resolve exceptions. Govern access.'],
+}
+
+// Where each role goes to act on what is waiting for it.
+export const ACT_ON = { government: 'overview', hotel: 'management', recovery_hub: 'queue', university_lab: 'queue' }
+
 export function defaultSection(role) {
   return (ROLE_NAV[role] && ROLE_NAV[role][0]?.key) || 'overview'
 }

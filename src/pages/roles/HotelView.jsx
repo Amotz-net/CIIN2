@@ -5,6 +5,7 @@ import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { getForecast, getAfai, getDrift, AFAI_ATTRIBUTION } from '../../lib/feeds'
 import { loadRuleset, gradeBatch } from '../../lib/grading'
+import { HotelConsole } from '../../console/consolesB.jsx'
 
 // Hotel dashboard — wired to the operational data layer.
 // Operational data is org-scoped by RLS; we still filter by org_id client-side
@@ -27,7 +28,7 @@ function fmtEta(iso) {
 
 const money = (n) => '$' + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-export function HotelView({ profile, section = 'overview' }) {
+export function HotelView({ profile, section = 'overview', onNavigate = () => {} }) {
   const orgId = profile?.org_id
   const [arrivals, setArrivals] = useState([])
   const [missions, setMissions] = useState([])
@@ -165,9 +166,10 @@ export function HotelView({ profile, section = 'overview' }) {
       {/* Full-width and tall: the hotel's own frontage in relation to the
           responding network, scoped to this property so it opens on its coast
           rather than the whole region. */}
-      {S('overview') && <CoastMap orgId={orgId} height={460} title="Your coast" />}
-      {S('overview') && <SegmentOutlook segments={segments} />}
-      {S('overview') && <>
+      {S('overview') && <div style={{ gridColumn: '1 / -1' }}><HotelConsole profile={profile} onNavigate={onNavigate} /></div>}
+      {S('forecast') && <CoastMap orgId={orgId} height={460} title="Your coast" />}
+      {S('forecast') && <SegmentOutlook segments={segments} />}
+      {S('forecast') && <>
       {/* Incoming sargassum — driven by LIVE satellite AFAI per segment */}
       <div className="card">
         <h2>Incoming sargassum <span className="pill" style={{ fontSize: 10 }}>AFAI live</span></h2>

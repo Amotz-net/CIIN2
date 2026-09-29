@@ -42,7 +42,7 @@ function label(nivel, f) {
 }
 const mapUrl = (nivel, f) => `${SITE}/mapa?zona=gran_caribe&nivel=${nivel}&fecha=${f}&var=biomasa&w=1400&fmt=webp`
 
-export function CommandCentre({ profile, role, onNavigate, admin = false }) {
+export function CommandCentre({ profile, role, onNavigate, admin = false, mapOnly = false }) {
   const country = COUNTRY[profile?.organizations?.country_code] || 'Jamaica'
   const [d, setD] = useState(null)
   const [nivel, setNivel] = useState('1d')
@@ -147,7 +147,7 @@ export function CommandCentre({ profile, role, onNavigate, admin = false }) {
 
   return (
     <section className="cc" data-tour="command">
-      <div className="cc-kpis">
+      {!mapOnly && <div className="cc-kpis">
         <div className={'cc-kpi' + (k?.level ? ' tone-' + k.level.tone : '')}>
           <span className="cc-k">{country} waters · alert level</span>
           <span className="cc-v">{k?.level?.label ?? '—'}</span>
@@ -168,9 +168,9 @@ export function CommandCentre({ profile, role, onNavigate, admin = false }) {
           <span className="cc-v">{open.length} <small>active</small></span>
           <span className="cc-s">{waiting.length} awaiting a decision</span>
         </div>
-      </div>
+      </div>}
 
-      <div className="cc-main">
+      <div className="cc-main" style={mapOnly ? { gridTemplateColumns: '1fr' } : undefined}>
         <div className="cc-map">
           <div className="cc-maphead">
             <div>
@@ -207,7 +207,7 @@ export function CommandCentre({ profile, role, onNavigate, admin = false }) {
             Image cropped by CIIN; place names are in Spanish. Issued once a day.</div>
         </div>
 
-        <aside className="cc-rail">
+        {!mapOnly && <aside className="cc-rail">
           <div className="cc-railhead">Decisions &amp; alerts</div>
 
           {waiting.length > 0 && <div className="cc-alert tone-amber">
@@ -237,7 +237,7 @@ export function CommandCentre({ profile, role, onNavigate, admin = false }) {
               </div>
             )) : <span>{playing ? 'Figures load when the map stops.' : per ? 'No country figures for this period.' : 'Loading…'}</span>}
           </div>
-        </aside>
+        </aside>}
       </div>
 
       {admin && <>
