@@ -56,7 +56,7 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
   const load = useCallback(async () => {
     if (!orgId) return
     const own = q => (scope === 'org' ? q.eq('org_id', orgId) : q)
-    const [seg, org, mis, mh, bat, inv, rates, rs, invites, loads, props, listed, hotelList] = await Promise.all([
+    const [seg, org, mis, mh, bat, inv, rates, rs, invites, loads, props, listed, visits, hotelList] = await Promise.all([
       allSegments ? supabase.from('beach_segments').select('*') : own(supabase.from('beach_segments').select('*')),
       supabase.from('organizations').select('id, name, role, country_code, approved, capacity_t, created_at'),
       scope === 'hub' ? supabase.from('missions').select('*').eq('org_id', orgId) : own(supabase.from('missions').select('*')),
@@ -71,6 +71,7 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
       own(supabase.from('properties').select('*')).order('name'),
       // The catalogue. Row-level security returns only the countries this person may see.
       catalogue ? supabase.from('beaches').select('*').order('name') : Promise.resolve({ data: [] }),
+      supabase.from('cleanup_visits').select('*').order('arrives_at'),
       catalogue ? supabase.from('hotels').select('id, country_code, name, kind, lat, lng, place').order('name').limit(3000) : Promise.resolve({ data: [] }),
     ])
     if (!alive.current) return
@@ -90,7 +91,7 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
       const confirmed = b.measurement_conf === 'confirmed'
       return { ...b, result, grade: result.grade, confirmed, uses: permittedUses(result.grade, confirmed) }
     })
-    setDb({ properties: props.data ?? [], listed: listed.data ?? [], hotelList: hotelList.data ?? [], segments: (seg.data ?? []), orgs: org.data ?? [], missions, pools, batches, invoices: inv.data ?? [],
+    setDb({ visits: visits.data ?? [], properties: props.data ?? [], listed: listed.data ?? [], hotelList: hotelList.data ?? [], segments: (seg.data ?? []), orgs: org.data ?? [], missions, pools, batches, invoices: inv.data ?? [],
             rates: rates.data ?? [], invitations: invites.data ?? [], loads: loads.data ?? [] })
   }, [orgId, scope, admin, allSegments, catalogue])
   useEffect(() => { load() }, [load])
@@ -129,7 +130,7 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
   }, [segKey, feeds, weather])
 
   return useMemo(() => {
-    const raw = db ?? { segments: [], orgs: [], missions: [], pools: {}, batches: [], invoices: [], rates: [], invitations: [], loads: [], properties: [], listed: [], hotelList: [] }
+    const raw = db ?? { segments: [], orgs: [], missions: [], pools: {}, batches: [], invoices: [], rates: [], invitations: [], loads: [], properties: [], listed: [], hotelList: [], visits: [] }
     // One property at a time, when the owner has chosen one.
     const segIds = property ? new Set(raw.segments.filter(s => s.property_id === property).map(s => s.id)) : null
     const d = !property ? raw : { ...raw, segments: raw.segments.filter(s => segIds.has(s.id)), missions: raw.missions.filter(m => segIds.has(m.segment_id)) }

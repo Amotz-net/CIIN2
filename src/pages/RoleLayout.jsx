@@ -188,7 +188,7 @@ function useWaiting(role, orgId) {
     ;(async () => {
       let count = 0
       if (role === 'government') count = (await supabase.from('missions').select('id', { count: 'exact', head: true }).eq('status', 'proposed').eq('authority_required', true)).count
-      else if (role === 'hotel') count = (await supabase.from('missions').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('access_state', 'pending').in('status', ['raised', 'authority_approved'])).count
+      else if (role === 'hotel') count = ((await supabase.from('cleanup_visits').select('id', { count: 'exact', head: true }).eq('status', 'proposed')).count || 0) + (await supabase.from('missions').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('access_state', 'pending').in('status', ['raised', 'authority_approved'])).count
       else if (role === 'recovery_hub') count = (await supabase.from('mission_hubs').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('accepted', false)).count
       else if (role === 'university_lab') count = (await supabase.from('batches').select('id', { count: 'exact', head: true }).eq('org_id', orgId).eq('measurement_conf', 'screened')).count
       if (alive) setN(count || 0)

@@ -5,6 +5,7 @@ import { SargassumMap } from './SargassumMap.jsx'
 import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoints } from './useConsole.js'
 import { stage, chain, byChannel, CHANNEL_ICON } from './mission.js'
 import { PROGRAMME, GATES } from './program.js'
+import { visitLabel } from './Schedule.jsx'
 
 const REGION_VIEW = [{ key: 'region', bounds: [[10, -90], [27, -59]] }]
 const ROLE_KIND = { hotel: 'hotel', recovery_hub: 'hub', processor: 'processor', university_lab: 'lab', government: 'agency', buyer: 'buyer', finance: 'agency' }
@@ -346,10 +347,11 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
         <Source>NEPA Jamaica Beach Guide. The list gives no positions. Where OpenStreetMap has a beach of the same name, that is the position. Otherwise the beach is placed on the shore nearest the bay, village or landmark that carries its name, which can be a kilometre or two from the beach itself. Click a dot to see what it was matched to.</Source>
       </Panel>
       <Panel title="Agency actions">
-        {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Next action</th><th>Status</th></tr></thead><tbody>
+        {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Clean-up dates</th><th>Next action</th><th>Status</th></tr></thead><tbody>
           {d.open.map(m => { const s = stage(m), seg = d.beaches.find(b => b.id === m.segment_id), pool = d.pools[m.id] || []
             return <tr key={m.id}><td><span className={'k-dot tone-' + (seg?.level?.tone || 'grey')} />{seg?.name || m.title}</td>
-              <td>{pool.length ? pool.map(p => p.hub_name).join(', ') : hubOwned(m) ? d.orgName(m.org_id) : 'No hub yet'}</td><td>{s.next}</td><td><Chip tone={s.tone}>{s.label}</Chip></td></tr> })}
+              <td>{pool.length ? pool.map(p => p.hub_name).join(', ') : hubOwned(m) ? d.orgName(m.org_id) : 'No hub yet'}</td>
+              <td>{visitLabel(d.visits.filter(v => v.mission_id === m.id && v.status !== 'cancelled').sort((a, b) => a.arrives_at.localeCompare(b.arrives_at))[0])}</td><td>{s.next}</td><td><Chip tone={s.tone}>{s.label}</Chip></td></tr> })}
         </tbody></table> : <Empty>No open missions in this jurisdiction.</Empty>}
       </Panel>
     </Console>

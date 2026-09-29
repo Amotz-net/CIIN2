@@ -6,6 +6,7 @@ import { SargassumMap } from './SargassumMap.jsx'
 import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoints } from './useConsole.js'
 import { stage, chain, byChannel, LINE_STEPS, CHANNEL_ICON } from './mission.js'
 import { RESEARCH } from './program.js'
+import { HubSchedule, HotelSchedule } from './Schedule.jsx'
 
 const LEVEL_LEGEND = [{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' },
   { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' },
@@ -84,6 +85,7 @@ export function HotelConsole({ profile, onNavigate }) {
       <SargassumMap title="Your coastline" note="observed, last 72 hours" raster={REGION_BOX} views={mapViews(d.code, pts)} focus="island"
         segments={d.beaches} vectors={d.vectors} layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={LEVEL_LEGEND} />
+      <HotelSchedule d={d} />
       <Panel title="Beach access forecast" action={<span className="k-hint">Indicative · next 72 hours</span>}>
         {d.beaches.length ? <div className="k-fc">
           <div className="k-fc-axis"><span /><div>{['Now', '+24h', '+48h', '+72h'].map((t, i) => <i key={t} style={{ left: (i / 3) * 100 + '%' }}>{t}</i>)}</div></div>
@@ -184,6 +186,7 @@ export function HubConsole({ profile, onNavigate }) {
           return s && { lat: s.lat + 0.004, lng: s.lng + 0.004, kind: 'mission', label: m.title, note: stage(m).label, showLabel: true } }).filter(Boolean)}
         layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'mission', label: 'Pickups', color: '#D9736A' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
         legend={[{ type: 'pin', kind: 'mission', label: 'Pickup zone' }, { type: 'line', color: '#57C4AE', label: 'Beach footprint' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }]} />
+      <HubSchedule d={d} mission={top} profile={profile} />
       <Panel title="Dispatch board" action={<span className="k-hint">Select a mission to act on it</span>}>
         <div className="k-board">{cols.map(([name, ic, list]) => (
           <div key={name} className="k-col"><div className="k-col-h"><Icon name={ic} size={18} />{name} <small>({list.length})</small></div>
