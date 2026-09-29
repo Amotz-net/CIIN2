@@ -4,12 +4,13 @@ import { IDS } from './fixture.js'
 const React = (await import('react')).default
 const { createRoot } = await import('react-dom/client')
 await import('../src/styles.css')
-const A = await import('../src/console/consolesA.jsx'), B = await import('../src/console/consolesB.jsx'), P = await import('../src/console/Properties.jsx'), N = await import('../src/console/Alerts.jsx')
+const A = await import('../src/console/consolesA.jsx'), B = await import('../src/console/consolesB.jsx'), P = await import('../src/console/Properties.jsx'), N = await import('../src/console/Alerts.jsx'), G = await import('../src/console/Agent.jsx')
 const which = new URLSearchParams(location.search).get('v') || 'hotel'
 const MAP = { command: [A.CommandConsole, IDS.PLAT, 'government'], admin: [A.AdminConsole, IDS.PLAT, 'government'], gov: [A.GovConsole, IDS.GOV, 'government'],
   hotel: [B.HotelConsole, IDS.H, 'hotel'], hub: [B.HubConsole, IDS.HUB, 'recovery_hub'], buyer: [B.BuyerConsole, IDS.BUY, 'buyer'], lab: [B.LabConsole, IDS.LAB, 'university_lab'], props: [P.Properties, IDS.H, 'hotel'], alerts: [N.Alerts, IDS.H, 'hotel'] }
 const [C, org, role] = MAP[which]
 const h = React.createElement
 createRoot(document.getElementById('root')).render(h('div', { className: 'theme-command', style: { minHeight: '100vh' } }, h('div', { className: 'wrap wide' },
+  h('div', { style: { display: 'flex', justifyContent: 'flex-end', marginBottom: 10 } }, h(G.AgentButton, { profile: { id: 'u1', org_id: org, organizations: { country_code: 'JM', role } }, role })),
   h(C, { profile: { id: 'u1', level: 'org_admin', org_id: org, organizations: { country_code: 'JM', role } }, onNavigate: () => {}, onOpen: () => {}, reviews: [] }))))
 </script></body></html>

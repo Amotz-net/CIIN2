@@ -6,6 +6,7 @@ import { Tour } from '../components/Tour.jsx'
 import { CommandConsole, AdminConsole } from '../console/consolesA.jsx'
 import { Icon } from '../console/kit.jsx'
 import { Alerts } from '../console/Alerts.jsx'
+import { AgentButton } from '../console/Agent.jsx'
 import { hasTour } from '../lib/tour.js'
 import { useAuth } from '../lib/auth.jsx'
 import { ROLE_VIEWS, ROLE_LABELS } from '../lib/roleViews.js'
@@ -146,8 +147,9 @@ export default function RoleLayout() {
               <div className="cc-strap">{strap}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}><AgentButton profile={effective} role={role} />
               <Clock org={profile?.properties?.name && !impersonating ? profile.properties.name : org?.name}
-                     role={profile?.properties?.name && !impersonating ? 'Property manager' : ROLE_LABELS[role]} />
+                     role={profile?.properties?.name && !impersonating ? 'Property manager' : ROLE_LABELS[role]} /></div>
               {isPlatformAdmin && <ViewAs profile={profile} viewAsId={viewAsId} onChange={chooseViewAs} />}
             </div>
           </div>

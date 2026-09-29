@@ -157,52 +157,6 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
       <SegmentOutlook segments={segments} />
       </>}
 
-      {S('overview') && <>
-      {/* CIIN Agent — orchestrator over grounded live facts, human-gated */}
-      <div className="card" style={{ gridColumn: '1 / -1' }}>
-        <h2>CIIN Agent
-          <span className={'pill ' + (agent?.ai ? 'teal' : agent?.ai_status === 'error' ? 'amber' : 'grey')} style={{ fontSize: 10, marginLeft: 8 }}>
-            {agent?.ai ? 'AI + rules' : 'rules'}
-          </span>
-          {/* A silent AI outage previously read as a deliberate rules-only run:
-              the badge said "rules" either way and the reason was swallowed.
-              An operator needs to know the difference. */}
-          {agent?.ai_status === 'error' && (
-            <span className="muted" style={{ fontSize: 11, fontWeight: 400, marginLeft: 8 }}>
-              AI narration unavailable ({agent.reason}{agent.ai_detail ? ` — ${agent.ai_detail}` : ''}). Deterministic rules shown.
-            </span>
-          )}
-        </h2>
-        {!agent ? <div className="empty"><span className="muted">Agent analysing live signals…</span></div>
-         : !agent.ok ? <div className="empty"><span className="muted">Agent unavailable{agent.reason ? ` (${agent.reason})` : ''}.</span></div>
-         : (
-          <>
-            {/* named agent contributions, each grounded */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 8, marginBottom: 12 }}>
-              {(agent.agents || []).map((a, i) => (
-                <div key={i} style={{ border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px' }}>
-                  <div style={{ fontWeight: 700, fontSize: 12 }}>{a.agent}</div>
-                  <div className="muted" style={{ fontSize: 12 }}>{a.says}</div>
-                  <div className="muted" style={{ fontSize: 10, marginTop: 2 }}>{a.source}</div>
-                </div>
-              ))}
-            </div>
-            {/* recommendation — AI-narrated if a Groq key is set, else deterministic */}
-            <div style={{ background: 'var(--panel2, #23292E)', border: '1px solid var(--line)', borderRadius: 8, padding: 12 }}>
-              <div style={{ fontSize: 11, letterSpacing: 1, color: 'var(--teal)', textTransform: 'uppercase' }}>
-                Recommendation · confidence {agent.confidence}
-              </div>
-              <div style={{ marginTop: 6, fontSize: 14 }}>{agent.narration || agent.recommendation}</div>
-              {agent.ai && <div className="muted" style={{ fontSize: 10, marginTop: 6 }}>AI-reasoned over grounded facts above. Verify against the data; a human decides.</div>}
-            </div>
-            <div className="muted" style={{ fontSize: 11, marginTop: 10 }}>
-              Missions go straight to the property and the recovery hubs. Government decides only when public health is at risk;
-              those decisions are under Public-health decisions above.
-            </div>
-          </>
-        )}
-      </div>
-      </>}
 
       {S('knowledge') && <>
       {/* Knowledge Hub — cross-org patterns (aggregate, k-anon) + standards audit */}
