@@ -523,3 +523,10 @@ b.tone-green,span.tone-green,b.tone-amber,span.tone-amber,b.tone-red,span.tone-r
 .k-alertrow:first-of-type{border-top:0;padding-top:0}
 .k-alertrow pre{white-space:pre-wrap;font-family:inherit;font-size:12.5px;color:#C3CCCA;background:#23292E;border:1px solid #343C44;border-radius:6px;padding:10px;margin:6px 0 0}
 .k-sub{color:var(--mute);font-size:12px;line-height:1.45}
+/* figures that tick: equal-width digits, so the number does not shiver */
+.k-tick{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.k-clock-t{font-size:17px;font-weight:800;color:var(--t);font-variant-numeric:tabular-nums}
+.k-clock-t.over{animation:k-pulse 1.6s ease-in-out infinite}
+.cc-live i{animation:k-pulse 2s ease-in-out infinite}
+@keyframes k-pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.k-clock-t.over,.cc-live i{animation:none}}

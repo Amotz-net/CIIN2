@@ -5,6 +5,7 @@ import { SargassumMap } from './SargassumMap.jsx'
 import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoints } from './useConsole.js'
 import { stage, chain, byChannel, CHANNEL_ICON } from './mission.js'
 import { PROGRAMME, GATES } from './program.js'
+import { ArrivalKpi } from './Live.jsx'
 import { visitLabel } from './Schedule.jsx'
 import { LandingClock, RemovalList, BeachRules, activeLandings, clockOf } from './Coordination.jsx'
 
@@ -92,7 +93,7 @@ export function CommandConsole({ profile, onNavigate }) {
   return (
     <Console
       kpis={<>
-        <Kpi icon="waves" label="Landfall window" value={arr.value} sub={arr.sub} tone={arr.tone} />
+        <ArrivalKpi landfall={d.landfall} label="Landfall window" />
         <Kpi icon="target" label="Missions active" value={String(active.length).padStart(2, '0')}
              meter={d.missions.length ? active.length / d.missions.length : 0} sub={`${active.length} of ${d.missions.length} on record`} />
         <Kpi icon="doc" label="Approvals pending" value={String(authority.length + owner.length).padStart(2, '0')} tone="amber"

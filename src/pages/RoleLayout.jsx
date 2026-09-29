@@ -203,12 +203,12 @@ function useWaiting(role, orgId) {
 
 function Clock({ org, role }) {
   const [now, setNow] = useState(() => new Date())
-  useEffect(() => { const id = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(id) }, [])
+  useEffect(() => { const id = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(id) }, [])
   return (
     <div className="cc-clock">
       {org && <span className="cc-org"><small>{role}</small>{org}</span>}
       <span>{now.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}</span>
-      <b>{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</b>
+      <b className="k-tick">{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</b>
       <span className="cc-live"><i />Caribbean region</span>
     </div>
   )

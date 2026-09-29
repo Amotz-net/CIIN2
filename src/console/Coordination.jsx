@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Panel, Chip, Empty, Source, Icon, Facts, fmt } from './kit.jsx'
+import { useNow, span } from './Live.jsx'
 
 // Coordination on the beach: the landing report and its 48-hour clock, the
 // removal record and its sign-off, site access, beach rules, and the sample
@@ -37,19 +38,18 @@ export function Photo({ path, label }) {
 export function clockOf(l, now = Date.now()) {
   const gone = (now - new Date(l.landed_at)) / 3.6e6, left = HOURS - gone
   return { gone, left, overdue: left <= 0, tone: left <= 0 ? 'red' : left <= 12 ? 'amber' : 'teal',
-    label: left <= 0 ? `Overdue by ${Math.ceil(-left)}h` : `${Math.floor(left)}h left`, pct: Math.min(100, (gone / HOURS) * 100) }
+    label: left <= 0 ? `Overdue by ${span(-left * 3.6e6)}` : `${span(left * 3.6e6)} left`, pct: Math.min(100, (gone / HOURS) * 100) }
 }
 export const activeLandings = d => d.landings.filter(l => !l.cleared_at).sort((a, b) => a.landed_at.localeCompare(b.landed_at))
 
 export function LandingClock({ d, title = '48-hour clock' }) {
-  const [, tick] = useState(0)
-  useEffect(() => { const id = setInterval(() => tick(n => n + 1), 60000); return () => clearInterval(id) }, [])
+  const now = useNow()
   const list = activeLandings(d)
   return (
     <Panel title={title} action={<span className="k-hint">From landing to signed-off removal</span>}>
-      {list.length ? list.map(l => { const c = clockOf(l), seg = d.segments.find(s => s.id === l.segment_id); return (
+      {list.length ? list.map(l => { const c = clockOf(l, now), seg = d.segments.find(s => s.id === l.segment_id); return (
         <div key={l.id} className={'k-clock tone-' + c.tone}>
-          <div className="k-clock-h"><b>{seg?.name || 'Beach'}</b><Chip tone={c.tone} solid>{c.label}</Chip></div>
+          <div className="k-clock-h"><b>{seg?.name || 'Beach'}</b><span className={'k-clock-t' + (c.overdue ? ' over' : '')}>{c.label}</span></div>
           <div className="k-prog"><i style={{ width: c.pct + '%', background: 'var(--t)' }} /></div>
           <span>Landed {day(l.landed_at)} · {l.extent} · reported by {d.orgName(l.org_id)}</span>
           {l.note && <span>“{l.note}”</span>}

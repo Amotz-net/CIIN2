@@ -6,6 +6,7 @@ import { SargassumMap } from './SargassumMap.jsx'
 import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoints } from './useConsole.js'
 import { stage, chain, byChannel, LINE_STEPS, CHANNEL_ICON } from './mission.js'
 import { RESEARCH } from './program.js'
+import { ArrivalKpi } from './Live.jsx'
 import { HubSchedule, HotelSchedule } from './Schedule.jsx'
 import { LandingClock, ReportLanding, RemovalForm, RemovalList, SiteAccessEdit, SiteAccessView, RulesNotice, SampleSend, SampleInbox, activeLandings, clockOf } from './Coordination.jsx'
 
@@ -52,7 +53,7 @@ export function HotelConsole({ profile, onNavigate }) {
     </div>}
     <Console
       kpis={<>
-        <Kpi icon="waves" label="Arrival window" value={arr.value} sub={arr.sub} tone={arr.tone} />
+        <ArrivalKpi landfall={d.landfall} />
         <Kpi icon="alert" label="Beach access" value={access[0]} tone={access[1]} bars={rank < 0 ? 0 : rank + 1} sub={d.worst ? `${d.worst.name} · offshore level ${d.worst.tag.toLowerCase()}` : 'reading satellite'} />
         <Kpi icon="doc" label="Response plan" value={<span style={{ fontSize: 19 }}>{plan[0]}</span>} tone={plan[1]}
              meter={lead ? (['authority', 'owner', 'ready', 'collecting', 'done'].indexOf(stage(lead).key) + 1) / 5 : null} sub={lead ? lead.title : 'no mission on your frontage'} />
