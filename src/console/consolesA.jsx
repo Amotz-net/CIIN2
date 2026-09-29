@@ -37,11 +37,11 @@ function cataloguePoints(d) {
     ...d.hotelList.map(h => ({ lat: h.lat, lng: h.lng, kind: 'hotellist', color: '#6EA8D6', r: 3.5, label: h.name,
       note: [h.kind?.replace('_', ' '), h.place, 'from OpenStreetMap'].filter(Boolean).join(' · ') })),
     ...d.listed.filter(b => b.lat != null).map(b => ({ lat: b.lat, lng: b.lng, kind: 'beachlist', color: '#57C4AE', r: 5.5, hollow: b.precision !== 'beach', label: b.name,
-      note: [b.parish, b.owner_name, b.licensed ? 'licensed' : null, b.precision === 'beach' ? 'position: the mapped beach' : 'position approximate'].filter(Boolean).join(' · ') })),
+      note: [b.parish, b.owner_name, b.licensed ? 'licensed' : null, b.precision === 'beach' ? 'position: the mapped beach of this name' : 'position: ' + (b.located_by || 'approximate')].filter(Boolean).join(' · ') })),
   ]
 }
 const CAT_LAYERS = [{ key: 'beachlist', label: 'Listed beaches', color: '#57C4AE' }, { key: 'hotellist', label: 'Hotel list', color: '#6EA8D6' }]
-const CAT_LEGEND = [{ type: 'dot', color: '#57C4AE', label: 'Listed beach' }, { type: 'dot', color: '#57C4AE', hollow: true, label: 'Listed beach, approximate position' },
+const CAT_LEGEND = [{ type: 'dot', color: '#57C4AE', label: 'Listed beach' }, { type: 'dot', color: '#57C4AE', hollow: true, label: 'Listed beach, placed on the nearest shore' },
   { type: 'dot', color: '#6EA8D6', label: 'Hotel on the list' }]
 
 function byCountry(d) {
@@ -343,7 +343,7 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
         {parishes.length ? <table className="k-table"><thead><tr><th>Parish</th><th>Beaches</th><th>Licensed</th><th>On the map</th></tr></thead><tbody>
           {parishes.map(p => <tr key={p.parish}><td>{p.parish}</td><td>{p.n}</td><td>{p.licensed}</td><td>{p.located} of {p.n}</td></tr>)}
         </tbody></table> : <Empty>No beach list is loaded for this country yet.</Empty>}
-        <Source>NEPA Jamaica Beach Guide. The list gives no positions: CIIN placed each beach from OpenStreetMap, exactly where a mapped beach has the same name and approximately otherwise.</Source>
+        <Source>NEPA Jamaica Beach Guide. The list gives no positions. Where OpenStreetMap has a beach of the same name, that is the position. Otherwise the beach is placed on the shore nearest the bay, village or landmark that carries its name, which can be a kilometre or two from the beach itself. Click a dot to see what it was matched to.</Source>
       </Panel>
       <Panel title="Agency actions">
         {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Next action</th><th>Status</th></tr></thead><tbody>
