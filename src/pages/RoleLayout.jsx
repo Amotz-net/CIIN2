@@ -182,8 +182,8 @@ function Mark() {
   return (
     <svg width="44" height="34" viewBox="0 0 44 34" aria-hidden="true">
       <path d="M2 12C9 3 17 3 24 9s12 5 18-2" fill="none" stroke="#57C4AE" strokeWidth="4" strokeLinecap="round" />
-      <path d="M2 20c7-9 15-9 22-3s12 5 18-2" fill="none" stroke="#35C2D6" strokeWidth="4" strokeLinecap="round" />
-      <path d="M6 29c6-7 12-7 18-2s11 4 16-2" fill="none" stroke="#2B7FA8" strokeWidth="4" strokeLinecap="round" />
+      <path d="M2 20c7-9 15-9 22-3s12 5 18-2" fill="none" stroke="#57C4AE" strokeWidth="4" strokeLinecap="round" />
+      <path d="M6 29c6-7 12-7 18-2s11 4 16-2" fill="none" stroke="#3E8F80" strokeWidth="4" strokeLinecap="round" />
     </svg>
   )
 }

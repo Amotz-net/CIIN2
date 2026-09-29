@@ -76,7 +76,7 @@ export function HotelConsole({ profile, onNavigate }) {
           'CIIN does not measure air quality. No clinical conclusions are drawn here.']} />
       </>}>
       <SargassumMap title="Your coastline" note="observed, last 72 hours" raster={pts.length ? boxAround(pts, 80) : null} views={coastViews(pts, d.code)}
-        segments={d.beaches} vectors={d.vectors} layers={[{ key: 'segments', label: 'Beaches', color: '#35C2D6' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
+        segments={d.beaches} vectors={d.vectors} layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={LEVEL_LEGEND} />
       <Panel title="Beach access forecast" action={<span className="k-hint">Indicative · next 72 hours</span>}>
         {d.beaches.length ? <div className="k-fc">
@@ -174,7 +174,7 @@ export function HubConsole({ profile, onNavigate }) {
       <SargassumMap title="Pickup zones" raster={pts.length ? boxAround(pts, 80) : null} views={coastViews(pts, d.code)} segments={sites} vectors={d.vectors} timeline={false}
         markers={d.missions.filter(m => !['completed', 'rejected'].includes(m.status)).map(m => { const s = sites.find(b => b.id === m.segment_id)
           return s && { lat: s.lat + 0.004, lng: s.lng + 0.004, kind: 'mission', label: m.title, note: stage(m).label, showLabel: true } }).filter(Boolean)}
-        layers={[{ key: 'segments', label: 'Beaches', color: '#35C2D6' }, { key: 'mission', label: 'Pickups', color: '#D9736A' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
+        layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'mission', label: 'Pickups', color: '#D9736A' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
         legend={[{ type: 'pin', kind: 'mission', label: 'Pickup zone' }, { type: 'line', color: '#57C4AE', label: 'Beach footprint' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }]} />
       <Panel title="Dispatch board">
         <div className="k-board">{cols.map(([name, ic, list]) => (

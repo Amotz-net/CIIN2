@@ -159,8 +159,8 @@ export function Spark({ rows = [], dashed = [], color = 'var(--amber)', dashColo
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }} role="img">
       {levels && levels.map((l, i) => <text key={l} x={P.l - 6} y={P.t + (i / (levels.length - 1)) * (H - P.t - P.b) + 3}
         textAnchor="end" fontSize="9.500" fill="#9AA6A3">{l}</text>)}
-      <line x1={P.l} x2={W - P.r} y1={H - P.b} y2={H - P.b} stroke="#2C4450" />
-      <line x1={P.l} x2={P.l} y1={P.t} y2={H - P.b} stroke="#2C4450" />
+      <line x1={P.l} x2={W - P.r} y1={H - P.b} y2={H - P.b} stroke="#3C454E" />
+      <line x1={P.l} x2={P.l} y1={P.t} y2={H - P.b} stroke="#3C454E" />
       {fill && solid.map((r, i) => <polygon key={'f' + i} fill={color} opacity=".140"
         points={`${r[0][0]},${H - P.b} ${pts(r)} ${r[r.length - 1][0]},${H - P.b}`} />)}
       {solid.map((r, i) => <polyline key={i} points={pts(r)} fill="none" stroke={color} strokeWidth="1.800" strokeLinejoin="round" />)}

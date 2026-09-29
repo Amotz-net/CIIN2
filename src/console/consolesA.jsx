@@ -97,7 +97,7 @@ export function CommandConsole({ profile, onNavigate }) {
         <Source>Regional figures and forecast: SATsum / SIMAR, CONABIO, CC BY 4.0.</Source>
       </>}>
       <SargassumMap title="Sargassum offshore" note="observed, last 72 hours" raster={REGION_BOX} views={REGION_VIEW} markers={markers}
-        layers={[{ key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }, { key: 'hotel', label: 'Hotels', color: '#35C2D6' }, { key: 'hub', label: 'Hubs', color: '#E0A94F' }]}
+        layers={[{ key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }, { key: 'hotel', label: 'Hotels', color: '#57C4AE' }, { key: 'hub', label: 'Hubs', color: '#E0A94F' }]}
         legend={[{ type: 'fill', color: '#F08A3C', label: 'Sargassum afloat (satellite)' }, { type: 'pin', kind: 'hotel', label: 'Hotel beach (monitored)' },
                  { type: 'pin', kind: 'hub', label: 'Recovery hubs, per country' }]} />
       <Panel title="Response pipeline" note={lead ? lead.title : null}>
@@ -266,7 +266,7 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
         </Panel>
       </>}>
       <SargassumMap title="Coastal sectors" note={d.country} raster={pts.length ? boxAround(pts, 90) : null} views={views} segments={d.beaches} vectors={d.vectors} markers={cleanup}
-        layers={[{ key: 'segments', label: 'Exposure', color: '#35C2D6' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'mission', label: 'Cleanup', color: '#D9736A' },
+        layers={[{ key: 'segments', label: 'Exposure', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'mission', label: 'Cleanup', color: '#D9736A' },
                  { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={[{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' }, { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' },
                  { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }, { type: 'pin', kind: 'mission', label: 'Open mission' }, { type: 'fill', color: '#F08A3C', label: 'Sargassum afloat, beyond 20 km' }]} />

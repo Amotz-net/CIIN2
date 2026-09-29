@@ -107,7 +107,7 @@ let _meta = null
 const loadMeta = () => (_meta ??= fetch(FN + '?meta=1').then(r => r.json()).catch(() => ({ ok: false })))
 
 const KIND = {
-  hotel: ['#35C2D6', 'building'], hub: ['#E0A94F', 'leaf'], processor: ['#9B8BD6', 'flask'],
+  hotel: ['#6EA8D6', 'building'], hub: ['#E0A94F', 'leaf'], processor: ['#9B8BD6', 'flask'],
   lab: ['#6FC08C', 'flask'], agency: ['#EAF0EF', 'bank'], buyer: ['#6EA8D6', 'cart'], mission: ['#D9736A', 'target'],
 }
 const SVG = {
@@ -214,7 +214,7 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
       const pth = Array.isArray(s.path) && s.path.length > 1 ? s.path : null
       const at = pth ? pth[Math.floor(pth.length / 2)] : [s.lat, s.lng]
       if (pth) {
-        L.polyline(pth, { color: '#0B1A24', weight: 9, opacity: 0.55 }).addTo(group.current)
+        L.polyline(pth, { color: '#1C2126', weight: 9, opacity: 0.55 }).addTo(group.current)
         L.polyline(pth, { color: col, weight: 5, opacity: 1, lineCap: 'round' }).addTo(group.current)
       } else L.circleMarker(at, { radius: 8, color: '#fff', weight: 2, fillColor: col, fillOpacity: 1 }).addTo(group.current)
       L.marker(at, { interactive: false, icon: L.divIcon({ className: '', iconSize: [0, 0],
@@ -247,7 +247,7 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
         <div className="k-map-title"><b>{title}</b>{note && <span> • {note}</span>}
           {raster && <em>{state === 'loading' ? 'reading satellite…' : state === 'failed' ? 'satellite layer unavailable' : times ? `satellite · 7 days to ${stamp(step)}` : ''}</em>}</div>
         {layers.length > 0 && <div className="k-map-toggles">{layers.map(l => (
-          <button key={l.key} className={'k-tog' + (shown(l.key) ? ' on' : '')} style={{ '--c': l.color || '#35C2D6' }}
+          <button key={l.key} className={'k-tog' + (shown(l.key) ? ' on' : '')} style={{ '--c': l.color || '#57C4AE' }}
                   aria-pressed={shown(l.key)} onClick={() => setOn(o => ({ ...o, [l.key]: !shown(l.key) }))}><i />{l.label}</button>))}</div>}
         {legend.length > 0 && <div className="k-map-legend">{legend.map((g, i) => (
           <span key={i}>{g.type === 'pin' ? <i className="pin" style={{ background: (KIND[g.kind] || [])[0] || g.color }} />
