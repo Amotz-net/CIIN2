@@ -3,13 +3,13 @@
 
 export const LINE_STEPS = ['Receiving', 'Weighing', 'De-sanding', 'Dewatering', 'Drying', 'Baling', 'Storage', 'Quality certification', 'Shipment']
 
-export const TONE = { proposed: 'amber', authority_approved: 'blue', access_granted: 'teal', in_progress: 'teal', completed: 'green', rejected: 'red' }
+export const TONE = { raised: 'amber', proposed: 'amber', authority_approved: 'blue', access_granted: 'teal', in_progress: 'teal', completed: 'green', rejected: 'red' }
 
 export function stage(m) {
   if (m.status === 'rejected') return { key: 'rejected', label: 'Rejected', tone: 'red', next: 'None' }
   if (m.status === 'completed' || m.line_step >= 9) return { key: 'done', label: 'Completed', tone: 'green', next: 'Raise invoices' }
   if (m.status === 'in_progress' || m.line_step > 0) return { key: 'collecting', label: `Collecting · step ${m.line_step} of 9`, tone: 'teal', next: `Advance the line: ${LINE_STEPS[m.line_step] || 'finish'}` }
-  if (m.status === 'proposed') return { key: 'authority', label: 'Awaiting authority', tone: 'amber', next: 'Authority to approve, modify or reject' }
+  if (m.status === 'proposed') return { key: 'authority', label: 'Awaiting government', tone: 'red', next: 'Public health at risk: government to decide' }
   if (m.access_state === 'declined') return { key: 'declined', label: 'Access declined', tone: 'red', next: 'Owner declined access' }
   if (m.access_state === 'pending') return { key: 'owner', label: 'Awaiting owner', tone: 'amber', next: 'Owner to grant access to the frontage' }
   return { key: 'ready', label: 'Ready to start', tone: 'blue', next: 'Hub to start the line' }
@@ -26,7 +26,9 @@ export function chain(m, pool = [], batches = []) {
   const s = (done, now) => (done ? 'done' : now ? 'now' : 'todo')
   return [
     { name: 'Raised', note: 'From the satellite reading', state: 'done' },
-    { name: 'Authority', note: 'Approve, modify or reject', state: s(at > 0, at === 0) },
+    m.authority_required || m.status === 'proposed'
+      ? { name: 'Government', note: 'Public health at risk', state: s(at > 0, at === 0) }
+      : { name: 'Government', note: 'Not required', state: 'done' },
     { name: 'Owner access', note: 'Consent for the frontage', state: s(at > 1, at === 1) },
     { name: 'Dispatch', note: acked ? 'Hub has acknowledged' : 'Hub to acknowledge', state: s(at > 2, at === 2) },
     { name: 'Collection', note: m.line_step > 0 ? `Step ${Math.min(9, m.line_step)} of 9` : 'Recovery line', state: s(at > 3, at === 3) },

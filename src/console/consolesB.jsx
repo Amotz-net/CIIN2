@@ -3,14 +3,10 @@ import { supabase } from '../lib/supabase'
 import { LEVELS } from '../lib/alert'
 import { Console, Kpi, Panel, Chip, Empty, Source, Facts, Notice, Steps, Spark, Icon, fmt, money, nice, eta, shortDate } from './kit.jsx'
 import { SargassumMap } from './SargassumMap.jsx'
-import { useConsole, arrivalText, CENTRE, COUNTRY, segPoints, boxAround } from './useConsole.js'
+import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoints } from './useConsole.js'
 import { stage, chain, byChannel, LINE_STEPS, CHANNEL_ICON } from './mission.js'
 import { RESEARCH } from './program.js'
 
-const coastViews = (pts, code) => pts.length
-  ? [{ key: 'beach', label: 'Beach', icon: 'umbrella', points: pts, maxZoom: 14, pad: 0.5 },
-     { key: 'offshore', label: 'Offshore', icon: 'waves', points: pts.flatMap(p => [[p[0] - 0.5, p[1] - 0.5], [p[0] + 0.5, p[1] + 0.5]]), maxZoom: 10, pad: 0 }]
-  : [{ key: 'country', bounds: [[(CENTRE[code] || [18, -77])[0] - 1.2, (CENTRE[code] || [18, -77])[1] - 2], [(CENTRE[code] || [18, -77])[0] + 1.2, (CENTRE[code] || [18, -77])[1] + 2]] }]
 const LEVEL_LEGEND = [{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' },
   { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' },
   { type: 'fill', color: '#F08A3C', label: 'Sargassum afloat, beyond 20 km' }]
@@ -75,7 +71,7 @@ export function HotelConsole({ profile, onNavigate }) {
           d.worst?.level ? `Offshore level is ${d.worst.level.label.toLowerCase()}: ${d.worst.level.means}.` : 'Offshore level not yet read.',
           'CIIN does not measure air quality. No clinical conclusions are drawn here.']} />
       </>}>
-      <SargassumMap title="Your coastline" note="observed, last 72 hours" raster={pts.length ? boxAround(pts, 80) : null} views={coastViews(pts, d.code)}
+      <SargassumMap title="Your coastline" note="observed, last 72 hours" raster={REGION_BOX} views={mapViews(d.code, pts)} focus="island"
         segments={d.beaches} vectors={d.vectors} layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={LEVEL_LEGEND} />
       <Panel title="Beach access forecast" action={<span className="k-hint">Indicative · next 72 hours</span>}>
@@ -112,13 +108,13 @@ export function HotelConsole({ profile, onNavigate }) {
 /* ------------------------------------------------------------------ */
 export function HubConsole({ profile, onNavigate }) {
   const d = useConsole(profile, { scope: 'hub', regional: false })
-  const [busy, setBusy] = useState(false)
+  const [busy, setBusy] = useState(false), [pick, setPick] = useState(null), [failed, setFailed] = useState(null)
   const me = d.orgs.find(o => o.id === d.orgId)
   // Work dispatched to this hub through a pool, and missions it owns outright.
   const jobs = d.missions.filter(m => !['completed', 'rejected'].includes(m.status))
   const unacked = jobs.filter(m => m.pool && !m.pool.accepted)
   const onLine = d.missions.filter(m => stage(m).key === 'collecting')
-  const cap = Number(me?.capacity_t || 0), used = jobs.reduce((s, m) => s + Number((m.pool ? m.pool.share_tonnes : m.tonnes) || 0), 0)
+  const cap = Number(me?.capacity_t || 0), used = jobs.filter(m => !m.pool || m.pool.accepted).reduce((s, m) => s + Number(m.tonnes || 0), 0)
   const sites = d.beaches.filter(b => d.missions.some(m => m.segment_id === b.id))
   const pts = segPoints(sites)
   const cols = [
@@ -127,12 +123,13 @@ export function HubConsole({ profile, onNavigate }) {
     ['Collecting', 'truck', onLine],
     ['Delivered', 'check', d.missions.filter(m => stage(m).key === 'done')],
   ]
-  const top = unacked[0] || cols[0][2][0] || cols[1][2][0] || onLine[0]
-  const run = async fn => { setBusy(true); await fn(); await d.reload(); setBusy(false) }
+  const top = d.missions.find(m => m.id === pick) || unacked[0] || cols[0][2][0] || cols[1][2][0] || onLine[0]
+  const run = async fn => { setBusy(true); setFailed(null); const { error } = await fn(); if (error) setFailed(error.message); await d.reload(); setBusy(false) }
   const acknowledge = m => run(() => supabase.from('mission_hubs').update({ accepted: true }).eq('id', m.pool.id))
-  const start = m => run(() => supabase.from('missions').update({ status: 'in_progress', line_step: 1 }).eq('id', m.id))
-  const advance = m => run(() => { const next = m.line_step + 1
-    return supabase.from('missions').update(next >= 9 ? { line_step: next, status: 'completed' } : { line_step: next }).eq('id', m.id) })
+  // The mission belongs to the property, so the hub moves it through one
+  // database function that checks the hub has accepted it and access is granted.
+  const advance = m => run(() => supabase.rpc('hub_advance', { p_mission: m.id }))
+  const start = advance
   const last = d.batches[0]
 
   return (
@@ -149,11 +146,11 @@ export function HubConsole({ profile, onNavigate }) {
             <div className="k-lead"><span className={'k-lead-ic tone-' + stage(top).tone}><Icon name="alert" size={26} /></span>
               <div><b>{top.title}</b><span>{d.orgName(top.org_id)}</span></div><Chip tone={stage(top).tone} solid>{eta(top.eta_at)}</Chip></div>
             <Facts rows={[['pin', 'Site access', nice(top.access_state), top.access_state === 'granted' ? 'green' : 'amber'], ['clock', 'Expected', shortDate(top.eta_at)],
-              ['scale', 'Your share', top.pool ? `${fmt(top.pool.share_tonnes)} of ${fmt(top.tonnes)} t` : `${fmt(top.tonnes)} t`], ['bank', 'Authority', nice(top.status)]]} />
+              ['scale', 'Tonnage', `${fmt(top.tonnes)} t${top.tonnes_basis === 'indicative_length_heuristic' ? ' · indicative' : ''}`], ['bank', 'Authority', nice(top.status)]]} />
             {top.pool && !top.pool.accepted && <button className="k-btn amber wide" disabled={busy} onClick={() => acknowledge(top)}>Accept work order</button>}
             {(!top.pool || top.pool.accepted) && stage(top).key === 'ready' && <button className="k-btn amber wide" disabled={busy} onClick={() => start(top)}>Start the line</button>}
             {top.pool?.accepted && stage(top).key === 'owner' && <Empty>Waiting on the property to grant access.</Empty>}
-            <button className="k-btn ghost wide" onClick={() => onNavigate('queue')}>All work orders</button>
+            {failed && <Empty><span style={{ color: 'var(--red)' }}>{failed}</span></Empty>}
           </> : <Empty>Nothing has been dispatched to this hub.</Empty>}
         </Panel>
         <Panel title="Receiving queue">
@@ -171,19 +168,19 @@ export function HubConsole({ profile, onNavigate }) {
           <Source>Mass is as recorded by the hub. CIIN has no weighbridge feed.</Source>
         </Panel>
       </>}>
-      <SargassumMap title="Pickup zones" raster={pts.length ? boxAround(pts, 80) : null} views={coastViews(pts, d.code)} segments={sites} vectors={d.vectors} timeline={false}
+      <SargassumMap title="Pickup zones" raster={REGION_BOX} views={mapViews(d.code, pts)} focus="island" segments={sites} vectors={d.vectors} timeline={false}
         markers={d.missions.filter(m => !['completed', 'rejected'].includes(m.status)).map(m => { const s = sites.find(b => b.id === m.segment_id)
           return s && { lat: s.lat + 0.004, lng: s.lng + 0.004, kind: 'mission', label: m.title, note: stage(m).label, showLabel: true } }).filter(Boolean)}
         layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'mission', label: 'Pickups', color: '#D9736A' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
         legend={[{ type: 'pin', kind: 'mission', label: 'Pickup zone' }, { type: 'line', color: '#57C4AE', label: 'Beach footprint' }, { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }]} />
-      <Panel title="Dispatch board">
+      <Panel title="Dispatch board" action={<span className="k-hint">Select a mission to act on it</span>}>
         <div className="k-board">{cols.map(([name, ic, list]) => (
           <div key={name} className="k-col"><div className="k-col-h"><Icon name={ic} size={18} />{name} <small>({list.length})</small></div>
             {list.length ? list.slice(0, 3).map(m => { const s = stage(m), pct = Math.round((Math.min(9, m.line_step) / 9) * 100); return (
-              <div key={m.id} className={'k-card tone-' + s.tone}>
+              <div key={m.id} className={'k-card tone-' + s.tone + (top?.id === m.id ? ' on' : '')} onClick={() => setPick(m.id)}>
                 <div className="k-card-h"><b>{m.title}</b><Chip tone={s.tone} solid>{eta(m.eta_at)}</Chip></div>
                 <span><Icon name="pin" size={14} />{d.orgName(m.org_id)}</span>
-                <span><Icon name="scale" size={14} />{m.pool ? `${fmt(m.pool.share_tonnes)} of ${fmt(m.tonnes)} t` : `${fmt(m.tonnes)} t`}</span>
+                <span><Icon name="scale" size={14} />{fmt(m.tonnes)} t</span>
                 <span><Icon name="route" size={14} />{s.label}</span>
                 {m.line_step > 0 && <div className="k-prog"><i style={{ width: pct + '%' }} /><em>{pct}%</em></div>}
               </div>) }) : <div className="k-col-e">None</div>}
@@ -249,8 +246,8 @@ export function BuyerConsole({ profile, onNavigate }) {
         </Panel>
       </>}
 >
-      <SargassumMap title="Supply hubs" note={COUNTRY[d.code] || ''} views={[{ key: 'c', bounds: [[c[0] - 1.6, c[1] - 2.6], [c[0] + 1.4, c[1] + 2.6]] }]} markers={hubMarkers} height={290}
-        raster={{ s: c[0] - 3, n: c[0] + 3, w: c[1] - 4, e: c[1] + 4, k: 50 }} timeline={false}
+      <SargassumMap title="Supply hubs" note={COUNTRY[d.code] || ''} views={mapViews(d.code)} focus="island" markers={hubMarkers} height={290}
+        raster={REGION_BOX} timeline={false}
         layers={[{ key: 'hub', label: 'Hubs', color: '#E0A94F' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
         legend={[{ type: 'pin', kind: 'hub', label: 'Supply hubs, per country' }]} />
       <Panel title={`Feedstock inventory (${rows.length} batches)`} action={<div className="k-filters">
@@ -295,7 +292,7 @@ export function LabConsole({ profile, onNavigate }) {
   const series = d.beaches.flatMap(b => b.band?.series ?? [])
   const gaps = series.filter(s => s.gap).length
   const w = d.worst || d.beaches[0]
-  const pts = segPoints(d.beaches), views = coastViews(pts, d.code).slice(-1)
+  const pts = segPoints(d.beaches), views = mapViews(d.code, pts)
   const f = d.forecast
 
   // The laboratory returns a confirmed inorganic-arsenic figure; the rules then
@@ -339,15 +336,14 @@ export function LabConsole({ profile, onNavigate }) {
             {pending.slice(0, 5).map(b => <tr key={b.id}><td>{b.batch_ref}</td><td>{b.arsenic_total} mg/kg</td><td><Chip tone="amber">Awaiting</Chip></td>
               <td><button className="k-btn ghost sm" disabled={busy} onClick={() => returnResult(b)}>Return result</button></td></tr>)}
           </tbody></table> : <Empty>No samples awaiting analysis.</Empty>}
-          <button className="k-btn teal wide" onClick={() => onNavigate('queue')}>Open sample queue</button>
         </Panel>
       </>}
 >
       <div className="k-two maps">
-        <SargassumMap title="Modelled drift" note="indicative" views={views} segments={d.beaches} vectors={d.vectors} height={360}
+        <SargassumMap title="Modelled drift" note="indicative" views={views} focus="island" segments={d.beaches} vectors={d.vectors} height={360}
           legend={[{ type: 'dash', color: '#EAF0EF', label: 'Water movement, 24 hours' }, { type: 'line', color: '#57C4AE', label: 'Beach footprint' }]} />
-        <SargassumMap title="Observed offshore" note="satellite" views={views} segments={d.beaches} height={360} timeline={false}
-          raster={pts.length ? boxAround(pts, 80) : { s: 15, n: 21, w: -81, e: -73, k: 50 }}
+        <SargassumMap title="Observed offshore" note="satellite" views={views} focus="island" segments={d.beaches} height={360} timeline={false}
+          raster={REGION_BOX}
           legend={[{ type: 'fill', color: '#F08A3C', label: 'Sargassum afloat, beyond 20 km' }]} />
       </div>
       <div className="k-two">

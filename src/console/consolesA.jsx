@@ -1,7 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
+import { supabase } from '../lib/supabase'
 import { Console, Kpi, Panel, Chip, Empty, Source, Facts, Notice, Steps, Spark, LegendLine, Icon, fmt, nice, eta, ago, shortDate } from './kit.jsx'
 import { SargassumMap } from './SargassumMap.jsx'
-import { useConsole, arrivalText, REGION_BOX, CENTRE, COUNTRY, segPoints, boxAround } from './useConsole.js'
+import { useConsole, arrivalText, mapViews, REGION_BOX, CENTRE, COUNTRY, segPoints } from './useConsole.js'
 import { stage, chain, byChannel, CHANNEL_ICON } from './mission.js'
 import { PROGRAMME, GATES } from './program.js'
 
@@ -103,9 +104,7 @@ export function CommandConsole({ profile, onNavigate }) {
       <Panel title="Response pipeline" note={lead ? lead.title : null}>
         {lead ? <Steps steps={chain(lead, d.pools[lead.id], d.batches)} /> : <Empty>No open mission to follow.</Empty>}
       </Panel>
-      <div className="k-two">
-        <Panel title="Mission queue" action={<a className="k-link" onClick={() => onNavigate('admin')}>View all</a>}><MissionQueue d={d} limit={4} /></Panel>
-        <Panel title="Sargassum to value">
+      <Panel title="Sargassum to value">
           <div className="k-tiles3">
             <div className="k-tile"><Icon name="leaf" size={26} /><div><span>Recovered</span><b>{fmt(mass)} t</b><small>{d.batches.length} batches</small></div></div>
             <div className="k-tile"><Icon name="flask" size={26} /><div><span>Quality checked</span><b>{fmt(checked)} t</b><small>{mass ? Math.round((checked / mass) * 100) : 0}% of recovered</small></div></div>
@@ -116,7 +115,6 @@ export function CommandConsole({ profile, onNavigate }) {
             <div key={c.channel} className="k-tile plain"><Icon name={CHANNEL_ICON[c.channel] || 'leaf'} size={24} /><div><b style={{ fontSize: 13, textTransform: 'capitalize' }}>{nice(c.channel)}</b>
               <small>{fmt(c.t)} t eligible · {c.n} batches</small></div></div>)) : <Empty>No graded batches yet.</Empty>}</div>
         </Panel>
-      </div>
     </Console>
   )
 }
@@ -211,8 +209,25 @@ export function AdminConsole({ profile, onOpen }) {
 /* ------------------------------------------------------------------ */
 /* Government Console                                                  */
 /* ------------------------------------------------------------------ */
+const SCORES = [
+  ['coastal_health', 'Coastal health', 'From the offshore level of the worst beach'],
+  ['public_health', 'Public health', 'Estimated from the offshore level. No air-quality or population feed'],
+  ['carbon_credit', 'Carbon credit', 'Offshore level across beaches. The carbon value is directional'],
+]
+
 export function GovConsole({ profile, onNavigate, reviews = [] }) {
   const d = useConsole(profile, { scope: 'all', history: true })
+  const [busy, setBusy] = useState(null), [ruled, setRuled] = useState({}), [failed, setFailed] = useState(null)
+  // Government decides only where public health is at risk. The decision is
+  // recorded against the reasoning that was shown, with the person's name.
+  async function decide(m, decision) {
+    setBusy(m.id); setFailed(null)
+    const { data: prop } = await supabase.from('agent_proposals').select('id').eq('mission_id', m.id).order('created_at', { ascending: false }).limit(1).maybeSingle()
+    const { error } = prop ? await supabase.rpc('authority_decide', { p_proposal: prop.id, p_decision: decision })
+      : { error: { message: 'No recorded reasoning for this mission.' } }
+    if (error) setFailed(error.message); else { setRuled(r => ({ ...r, [m.id]: decision })); await d.reload() }
+    setBusy(null)
+  }
   const authority = d.open.filter(m => stage(m).key === 'authority')
   const pendingReviews = reviews.filter(r => r.state === 'proposed').length
   // A mission a hub raised itself is already staffed by that hub.
@@ -221,9 +236,7 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
   const gaps = d.open.filter(m => !staffed(m) || stage(m).key === 'owner')
   const clear = d.beaches.filter(b => b.band?.ok && !b.band.gap).length
   const pts = segPoints(d.beaches)
-  const views = pts.length ? [{ key: 'coast', label: 'Coast', icon: 'pin', points: pts, maxZoom: 12, pad: 0.8 },
-                              { key: 'offshore', label: 'Offshore', icon: 'waves', points: pts.flatMap(p => [[p[0] - 0.55, p[1] - 0.55], [p[0] + 0.55, p[1] + 0.55]]), maxZoom: 10, pad: 0 }]
-    : [{ key: 'country', bounds: [[(CENTRE[d.code] || [18, -77])[0] - 1.2, (CENTRE[d.code] || [18, -77])[1] - 2], [(CENTRE[d.code] || [18, -77])[0] + 1.2, (CENTRE[d.code] || [18, -77])[1] + 2]] }]
+  const views = mapViews(d.code, pts)
   const cleanup = d.open.map(m => { const s = d.beaches.find(b => b.id === m.segment_id); return s && { lat: s.lat + 0.006, lng: s.lng + 0.006, kind: 'mission', label: m.title, note: stage(m).label } }).filter(Boolean)
   const w = d.worst
   const offshore = (w?.band?.series ?? []).map(s => ({ v: s.gap ? null : s.density }))
@@ -235,11 +248,21 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
     <Console
       kpis={<>
         <Kpi icon="waves" label="Sectors monitored" value={d.beaches.length} bars={Math.min(5, d.beaches.length + 1)} sub={`${d.country} coast`} />
-        <Kpi icon="doc" label="Reviews pending" value={String(authority.length + pendingReviews).padStart(2, '0')} tone="amber" sub={`${authority.length} missions · ${pendingReviews} rule reviews`} />
+        <Kpi icon="doc" label="Reviews pending" value={String(authority.length + pendingReviews).padStart(2, '0')} tone="amber" sub={`${authority.length} health decisions · ${pendingReviews} rule reviews`} />
         <Kpi icon="alert" label="Response gaps" value={String(gaps.length).padStart(2, '0')} tone={gaps.length ? 'red' : 'green'} sub="open missions not yet staffed or cleared" />
         <Kpi icon="satellite" label="Satellite reads" value={`${clear} / ${d.beaches.length}`} tone="green" bars={d.beaches.length ? Math.round((clear / d.beaches.length) * 5) : 0} sub="beaches with a clear reading" />
       </>}
       rail={<>
+        <Panel title="Public-health decisions">
+          {authority.length ? authority.map(m => <div key={m.id} style={{ marginBottom: 10 }}>
+            <div className="k-lead"><span className="k-lead-ic tone-red"><Icon name="alert" size={26} /></span>
+              <div><b>{m.title}</b><span className="tone-red">Offshore level {m.alert_level || 'severe'}</span>
+                <small>{d.orgName(m.org_id)} · {fmt(m.tonnes)} t indicative</small></div></div>
+            <div className="k-pair"><button className="k-btn amber" disabled={busy === m.id} onClick={() => decide(m, 'approved')}>Approve</button>
+              <button className="k-btn ghost" disabled={busy === m.id} onClick={() => decide(m, 'rejected')}>Reject</button></div>
+          </div>) : <Empty>No mission needs a government decision. Missions go straight to the property and the hubs; government decides only when the offshore level is severe or extreme.</Empty>}
+          {failed && <div className="k-empty tone-red" style={{ color: 'var(--red)' }}>Could not record the decision: {failed}</div>}
+        </Panel>
         <Panel title="Public-health review">
           {w ? <>
             <div className="k-lead"><span className={'k-lead-ic tone-' + (w.level?.tone || 'grey')}><Icon name="alert" size={26} /></span>
@@ -258,14 +281,14 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
             <span className="k-lead-ic tone-red"><Icon name="alert" size={26} /></span>
             <div><b>{m.title}</b><span className="tone-red">{stage(m).key === 'owner' ? 'Owner has not granted access' : 'No hub has acknowledged'}</span>
               <small>{fmt(m.tonnes)} t · expected {eta(m.eta_at)}</small></div></div>) : <Empty>Every open mission has a hub and site access.</Empty>}
-          <button className="k-btn teal wide" onClick={() => onNavigate('coast')}>Open coast map</button>
+          <button className="k-btn teal wide" onClick={() => onNavigate('regional')}>Open regional picture</button>
         </Panel>
         <Panel title="Sector summary">
           <Facts rows={[['waves', 'Sectors monitored', d.beaches.length], ['satellite', 'Clear satellite reads', `${clear} / ${d.beaches.length}`],
             ['leaf', 'Hubs in country', d.orgs.filter(o => o.role === 'recovery_hub').length], ['target', 'Missions open', d.open.length], ['scale', 'Recovered', fmt(recoveredT) + ' t']]} />
         </Panel>
       </>}>
-      <SargassumMap title="Coastal sectors" note={d.country} raster={pts.length ? boxAround(pts, 90) : null} views={views} segments={d.beaches} vectors={d.vectors} markers={cleanup}
+      <SargassumMap title="Coastal sectors" note={d.country} raster={REGION_BOX} views={views} focus="island" segments={d.beaches} vectors={d.vectors} markers={cleanup}
         layers={[{ key: 'segments', label: 'Exposure', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'mission', label: 'Cleanup', color: '#D9736A' },
                  { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={[{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' }, { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' },
@@ -276,6 +299,11 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
           <div><div className="k-mini-h"><Icon name="alert" size={16} />{d.country} waters <small>tonnes afloat</small></div><Spark rows={waters} color="var(--red)" x0="−30 d" x1="Now" /></div>
           <div><div className="k-mini-h"><Icon name="scale" size={16} />Recovered <small>cumulative tonnes</small></div><Spark rows={recovered} color="var(--green)" x0="first batch" x1="latest" /></div>
         </div>
+      </Panel>
+      <Panel title="Risk scores" action={<span className="k-hint">0 to 100 · higher is worse</span>}>
+        <div className="k-three tight">{SCORES.map(([k, name, basis]) => { const v = d.scores[k]?.value, tone = v == null ? 'grey' : v >= 66 ? 'red' : v >= 33 ? 'amber' : 'green'; return (
+          <div key={k} className={'k-score tone-' + tone}><div className="k-mini-h">{name} <small>{d.scores[k]?.tier}</small></div>
+            <b>{v ?? '—'}<small>/100</small></b><div className="k-prog"><i style={{ width: (v ?? 0) + '%' }} /></div><span>{basis}.</span></div>) })}</div>
       </Panel>
       <Panel title="Agency actions">
         {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Next action</th><th>Status</th></tr></thead><tbody>

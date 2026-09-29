@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { COUNTRIES, CHOOSES_COUNTRY } from '../lib/countries.js'
 
 // The invite-only account-creation flow.
 // A person arrives at /accept?token=UUID from their invitation email.
@@ -12,6 +13,7 @@ export default function AcceptInvite() {
   const [invite, setInvite] = useState(null)
   const [fullName, setFullName] = useState('')
   const [pw, setPw] = useState('')
+  const [country, setCountry] = useState('JM')
   const [err, setErr] = useState('')
   const [status, setStatus] = useState('loading') // loading | ready | invalid | done
   const nav = useNavigate()
@@ -74,12 +76,17 @@ export default function AcceptInvite() {
       return
     }
 
+    // The first administrator of a hotel or government sets where it is.
+    if (choosesCountry) await supabase.from('organizations').update({ country_code: country }).eq('id', invite.org_id)
+
     // 3) mark the invite accepted
     await supabase.from('invitations').update({ status: 'accepted' }).eq('id', invite.id)
 
     setStatus('done')
     setTimeout(() => nav('/', { replace: true }), 1200)
   }
+
+  const choosesCountry = invite?.level === 'org_admin' && CHOOSES_COUNTRY.includes(invite?.organizations?.role)
 
   if (status === 'loading') return <div className="center muted">Checking your invitation…</div>
   if (status === 'invalid') return (
@@ -114,6 +121,12 @@ export default function AcceptInvite() {
             <input value={invite.email} disabled />
             <label>Your full name</label>
             <input value={fullName} onChange={e => setFullName(e.target.value)} required />
+            {choosesCountry && <>
+              <label>Your island or country</label>
+              <select value={country} onChange={e => setCountry(e.target.value)}>
+                {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}</select>
+              <p className="muted" style={{ fontSize: 12, margin: '4px 0 0' }}>Your dashboard opens on the Caribbean, then settles on this island.</p>
+            </>}
             <label>Choose a password</label>
             <input value={pw} onChange={e => setPw(e.target.value)} type="password" minLength={8} required />
             <button className="btn" style={{ width: '100%', marginTop: 14 }}>Create account & enter</button>

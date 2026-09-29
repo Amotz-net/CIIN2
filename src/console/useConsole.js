@@ -2,8 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { getAfai, getDrift, getBand, getForecast } from '../lib/feeds'
 import { computeLandfall } from '../lib/landfall'
+import { computeScores } from '../lib/riskscores'
 import { loadRuleset, gradeBatch, permittedUses } from '../lib/grading'
 import { LEVELS, levelFor } from '../lib/alert'
+import { COUNTRY, CENTRE, countryOf } from '../lib/countries'
 
 // One loader for every console, so the same figure is the same number on every
 // role's screen. Row-level security decides what comes back; `scope` narrows it
@@ -11,8 +13,7 @@ import { LEVELS, levelFor } from '../lib/alert'
 // as that organisation and the database would otherwise return everything.
 //   scope: 'all' | 'org' | 'hub'
 
-export const COUNTRY = { JM: 'Jamaica', PR: 'Puerto Rico', BB: 'Barbados', DO: 'Dominican Republic' }
-export const CENTRE = { JM: [18.15, -77.3], PR: [18.22, -66.45], BB: [13.17, -59.55], DO: [18.9, -70.3] }
+export { COUNTRY, CENTRE }
 export const REGION_BOX = { s: 8, n: 32, w: -98, e: -55, k: 36 }
 const KM = 111.32
 
@@ -26,6 +27,16 @@ export function boxAround(points, km = 60, k = 66) {
   const la = points.map(p => p[0]), lo = points.map(p => p[1]), d = km / KM
   const r = v => Math.round(v * 100) / 100
   return { s: r(Math.min(...la) - d), n: r(Math.max(...la) + d), w: r(Math.min(...lo) - d), e: r(Math.max(...lo) + d), k }
+}
+// The three framings every role's map offers: the Caribbean, the organisation's
+// own island, and (where it has them) its beaches. The map opens on the
+// Caribbean and then settles on the island.
+export function mapViews(code, pts = []) {
+  const c = countryOf(code)
+  const out = [{ key: 'region', label: 'Caribbean', icon: 'satellite', bounds: [[10, -90], [27, -59]] }]
+  if (c) out.push({ key: 'island', label: c.name, icon: 'pin', bounds: [[c.box[0] - 0.35, c.box[1] - 0.35], [c.box[2] + 0.35, c.box[3] + 0.35]], maxZoom: 11 })
+  if (pts.length) out.push({ key: 'beach', label: 'Beaches', icon: 'umbrella', points: pts, maxZoom: 14, pad: 0.5 })
+  return out
 }
 export const segPoints = segs => segs.flatMap(s => (Array.isArray(s.path) && s.path.length > 1 ? s.path : s.lat && s.lng ? [[s.lat, s.lng]] : []))
 
@@ -148,7 +159,7 @@ export function useConsole(profile, { scope = 'all', feeds = true, regional = tr
     const forecast = reg?.forecast?.payload
     return {
       ...d, loading: !db, reload: load, country, code, orgId, orgName,
-      beaches, worst, landfall, vectors, open, feedsDone: live.done, weather: live.weather,
+      beaches, worst, landfall, vectors, open, scores: computeScores(offshore), feedsDone: live.done, weather: live.weather,
       regional: reg, hist, gc, zones, mine, waterLevel: density == null ? null : LEVELS[th.umbrales.filter(u => density >= u).length],
       forecast, stale: reg?.stale ?? [],
     }

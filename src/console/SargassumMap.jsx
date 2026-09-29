@@ -130,10 +130,11 @@ const pinHtml = (kind, count) => {
 //   layers    [{key,label,color}] toggles; keys: sargassum, segments, vectors, or a marker kind
 //   legend    [{type:'fill'|'line'|'dash'|'pin', color, label, kind}]
 export function SargassumMap({ title, note, raster = null, views = [], segments = [], markers = [], vectors = [],
-                               layers = [], legend = [], height = 430, timeline = true, onField }) {
+                               layers = [], legend = [], height = 430, timeline = true, onField, focus = null }) {
   const el = useRef(null), map = useRef(null), group = useRef(null), field = useRef(null)
   const [on, setOn] = useState(() => Object.fromEntries(layers.map(l => [l.key, l.off ? false : true])))
   const [view, setView] = useState(views[0]?.key)
+  const moved = useRef(false)
   const [meta, setMeta] = useState(null)
   const [step, setStep] = useState(3)
   const [playing, setPlaying] = useState(false)
@@ -175,9 +176,18 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
     const b = v.bounds ? L.latLngBounds(v.bounds) : v.points?.length ? L.latLngBounds(v.points).pad(v.pad ?? 0.25) : null
     if (!b || !b.isValid()) return
     const fit = () => map.current && map.current.fitBounds(b, { maxZoom: v.maxZoom ?? 14, animate: false })
+    if (moved.current) { map.current.flyToBounds(b, { maxZoom: v.maxZoom ?? 14, duration: 1.4 }); return }
     fit(); const id = setTimeout(() => { map.current && map.current.invalidateSize(); fit() }, 400)
     return () => clearTimeout(id)
   }, [ready, view, viewKey])
+
+  // Open on the whole Caribbean, then settle on the organisation's own island.
+  const hasFocus = !!focus && views.some(v => v.key === focus)
+  useEffect(() => {
+    if (!ready || !hasFocus || moved.current) return
+    const id = setTimeout(() => { moved.current = true; setView(focus) }, 2600)
+    return () => clearTimeout(id)
+  }, [ready, hasFocus, focus])
 
   // Sargassum layer
   const back = 3 - step
@@ -254,7 +264,7 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
             : g.type === 'fill' ? <i className="fill" style={{ background: g.color }} />
             : <i className="line" style={{ borderTop: `2px ${g.type === 'dash' ? 'dashed' : 'solid'} ${g.color}` }} />}{g.label}</span>))}</div>}
         {views.length > 1 && <div className="k-map-views">{views.map(v => (
-          <button key={v.key} className={view === v.key ? 'on' : ''} onClick={() => setView(v.key)}>{v.icon && <Icon name={v.icon} size={15} />}{v.label}</button>))}</div>}
+          <button key={v.key} className={view === v.key ? 'on' : ''} onClick={() => { moved.current = true; setView(v.key) }}>{v.icon && <Icon name={v.icon} size={15} />}{v.label}</button>))}</div>}
       </div>
       {raster && timeline && <div className="k-time">
         <button className="k-play" aria-label={playing ? 'Stop' : 'Play'} onClick={() => { if (playing) setPlaying(false); else { setStep(0); setPlaying(true) } }}>{playing ? '■' : '▶'}</button>

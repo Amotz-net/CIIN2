@@ -4,6 +4,7 @@ import TopBar from '../components/TopBar.jsx'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth.jsx'
 import { ROLE_LABELS } from '../lib/roleViews.js'
+import { COUNTRIES, COUNTRY, CHOOSES_COUNTRY } from '../lib/countries.js'
 
 // Organization settings — the admin SECTION within the role view (§11.1).
 // Reached from the role dashboard's "Organization settings" button.
@@ -45,6 +46,15 @@ export default function Manage() {
     setEmail(''); load()
   }
 
+  // Hotels and governments choose their own country; it decides which island
+  // their dashboard settles on and whose regional figures they are shown.
+  async function setCountry(code) {
+    setErr('')
+    const { error } = await supabase.from('organizations').update({ country_code: code }).eq('id', profile.org_id)
+    if (error) { setErr(error.message); return }
+    window.location.reload()
+  }
+
   async function revoke(id) {
     await supabase.from('invitations').update({ status: 'revoked' }).eq('id', id)
     load()
@@ -74,7 +84,10 @@ export default function Manage() {
           <table><tbody>
             <tr><th>Name</th><td>{org?.name}</td></tr>
             <tr><th>Role</th><td><span className="pill">{ROLE_LABELS[org?.role]}</span></td></tr>
-            <tr><th>Country</th><td>{org?.country_code}</td></tr>
+            <tr><th>Country</th><td>{CHOOSES_COUNTRY.includes(org?.role)
+              ? <select value={org?.country_code || ''} onChange={e => setCountry(e.target.value)} style={{ maxWidth: 320 }}>
+                  {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}</select>
+              : (COUNTRY[org?.country_code] || org?.country_code)}</td></tr>
             <tr><th>Approved</th><td>{org?.approved ? <span className="pill">approved</span> : <span className="pill amber">pending</span>}</td></tr>
           </tbody></table>
         </div>

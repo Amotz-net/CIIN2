@@ -474,3 +474,9 @@ b.tone-green,span.tone-green,b.tone-amber,span.tone-amber,b.tone-red,span.tone-r
 /* Tone wins over a component's default colour. */
 .theme-command .tone-teal{--t:var(--teal)}.theme-command .tone-amber{--t:#E0A94F}.theme-command .tone-red{--t:var(--red)}.theme-command .tone-green{--t:var(--green)}
 .theme-command .tone-blue{--t:#6EA8D6}.theme-command .tone-grey{--t:#9AA6A3}.theme-command .tone-cyan{--t:#57C4AE}
+.k-score{display:flex;flex-direction:column;gap:3px;font-size:11px;color:var(--mute);line-height:1.4}
+.k-score>b{font-size:30px;font-weight:800;color:var(--t);font-variant-numeric:tabular-nums;line-height:1.1}
+.k-score>b small{font-size:13px;color:var(--mute);font-weight:400}
+.k-score .k-prog{margin:2px 0 6px}.k-score .k-prog i{background:var(--t)}
+.k-score .k-mini-h small{text-transform:uppercase;letter-spacing:.8px;font-size:9.5px}
+.k-card{cursor:pointer}.k-card.on{box-shadow:0 0 0 1px var(--teal)}

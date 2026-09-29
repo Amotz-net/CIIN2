@@ -10,6 +10,8 @@
 // `section` is the nav tab the step lives on; the tour navigates there first.
 // =====================================================================
 
+import { ROLE_NAV } from './nav.js'
+
 export const TOURS = {
   government: [
     { section: 'overview', match: 'Sectors monitored',
@@ -24,21 +26,21 @@ export const TOURS = {
     { section: 'coast', match: 'Coast map',
       title: 'Your whole jurisdiction',
       body: 'Every beach segment coloured by live inundation risk, with hotels, hubs, processors and labs. Dashed arrows show 24 hours of observed drift. Toggle any layer from the panel on the map.' },
-    { section: 'coast', match: 'Landfall watch',
+    { section: 'regional', match: 'Landfall watch',
       title: 'What is coming, and when',
       body: 'A live countdown to the next arrival window. If a beach is already inundated it counts up from the satellite observation instead and turns red. Green means nothing is projected inside the model’s 3-day horizon.' },
-    { section: 'coast', match: 'Coastal Health Risk',
+    { section: 'overview', match: 'Risk scores',
       title: 'Three scores, three honesty tiers',
       body: 'Each score carries the tier it deserves. Coastal Health is live from satellite. Carbon Credit is live-informed. Public Health is directional — there is no live H₂S or population feed behind it, and the label says so.' },
     { section: 'overview', match: 'CIIN Agent',
-      title: 'The agent proposes; you decide',
-      body: 'Six named agents each contribute one grounded statement with its source. The recommendation is reasoned over those facts. Approve, modify or reject — nothing dispatches without a named human.' },
+      title: 'What the agent sees',
+      body: 'Six named agents each contribute one grounded statement with its source. Missions go straight to the property and the hubs. You are asked to decide only when public health is at risk, under Public-health decisions on the right.' },
     { section: 'knowledge', match: 'Knowledge Hub',
       title: 'Patterns nobody else can see',
       body: 'Findings mined across every organisation, published only above a k-anonymity floor. You see the pattern, never a single company’s record. Accepting a proposed rule review flags it for a standards owner — it never edits the grading rules itself.' },
     { section: 'regional', match: 'Caribbean today',
       title: 'The whole Caribbean',
-      body: 'Regional totals, where your country ranks, and a 10-day drift forecast. These figures come from SATsum, Mexico\u2019s national system, and each panel says so. CIIN\u2019s own reading is the Offshore outlook on the Coastal risk tab.' },
+      body: 'Regional totals, where your country ranks, and a 10-day drift forecast. These figures come from SATsum, Mexico\u2019s national system, and each panel says so. CIIN\u2019s own reading is the Offshore outlook further down this page.' },
     { section: 'reports', match: 'Reports',
       title: 'Take it away',
       body: 'Batches, missions and invoices as CSV, or print to PDF for a briefing pack.' },
@@ -158,5 +160,8 @@ export const TOURS = {
       body: 'Recovered tonnage, grades and closure states: the basis your instruments are priced on, shown rather than summarised.' },
   ],
 }
+
+// A step is kept only while the tab it lives on is still in that role's menu.
+for (const role of Object.keys(TOURS)) TOURS[role] = TOURS[role].filter(st => (ROLE_NAV[role] || []).some(n => n.key === st.section))
 
 export const hasTour = (role) => Array.isArray(TOURS[role]) && TOURS[role].length > 0

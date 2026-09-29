@@ -11,6 +11,7 @@ import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { Landfall } from '../../components/Landfall.jsx'
 import { GovConsole } from '../../console/consolesA.jsx'
+import { OffshoreLandfall } from '../../console/OffshoreLandfall.jsx'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
@@ -133,7 +134,6 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
     setReviews(await loadReviews())
   }
 
-  if (section === 'regional') return <Regional profile={profile} />
   if (loading) return <div className="card"><span className="muted">Loading jurisdiction dashboard…</span></div>
 
   const scores = computeScores(segReads)
@@ -151,36 +151,10 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
     <div className="dash-grid">
       {S('overview') && <div style={{ gridColumn: '1 / -1' }}><GovConsole profile={profile} onNavigate={onNavigate} reviews={reviews} /></div>}
 
-      {S('coast') && <>
-      <CoastMap />
-
-      {/* Countdown to the next projected inundation window */}
-      <Landfall landfall={landfall} />
+      {S('regional') && <>
+      <div style={{ gridColumn: '1 / -1' }}><Regional profile={profile} /></div>
+      <OffshoreLandfall profile={profile} />
       <SegmentOutlook segments={segments} />
-
-      {/* Jurisdiction summary */}
-      <div className="card" style={{ gridColumn: '1 / -1' }}>
-        <h2 style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          Coast management — {country}
-          <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <LiveDot at={updatedAt} refreshing={refreshing} />
-            <button className="btn ghost sm" disabled={refreshing} onClick={() => pollFeeds(segments)}>Refresh</button>
-          </span>
-        </h2>
-        <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(120px,1fr))' }}>
-          <div><div style={{ fontSize: 26, fontWeight: 800 }}>{segments.length}</div><div className="muted" style={{ fontSize: 12 }}>coast segments</div></div>
-          <div><div style={{ fontSize: 26, fontWeight: 800 }}>{hotels}</div><div className="muted" style={{ fontSize: 12 }}>hotels</div></div>
-          <div><div style={{ fontSize: 26, fontWeight: 800 }}>{hubs}</div><div className="muted" style={{ fontSize: 12 }}>recovery hubs</div></div>
-          <div><div style={{ fontSize: 26, fontWeight: 800 }}>{processors}</div><div className="muted" style={{ fontSize: 12 }}>processors</div></div>
-          <div><div style={{ fontSize: 26, fontWeight: 800 }}>{recovered} t</div><div className="muted" style={{ fontSize: 12 }}>recovered</div></div>
-        </div>
-        {refreshing && <div className="refresh-track"><i /></div>}
-      </div>
-
-      {/* Three risk scores — each at its honest tier */}
-      <ScoreCard title="Coastal Health Risk" score={scores.coastal_health} />
-      <ScoreCard title="Public Health Risk" score={scores.public_health} />
-      <ScoreCard title="Carbon Credit Risk" score={scores.carbon_credit} />
       </>}
 
       {S('overview') && <>
@@ -221,20 +195,9 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
               <div style={{ marginTop: 6, fontSize: 14 }}>{agent.narration || agent.recommendation}</div>
               {agent.ai && <div className="muted" style={{ fontSize: 10, marginTop: 6 }}>AI-reasoned over grounded facts above. Verify against the data; a human decides.</div>}
             </div>
-            {/* human-in-the-loop gate */}
-            <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-              {decision ? (
-                <span className={'pill ' + (decision === 'approved' ? 'green' : decision === 'rejected' ? 'red' : 'amber')}>
-                  {decision === 'approved' ? '✓ Approved & dispatched' : decision === 'rejected' ? '✕ Rejected' : '✎ Sent back to re-plan'}
-                </span>
-              ) : (
-                <>
-                  <button className="btn" onClick={() => setDecision('approved')}>Approve &amp; dispatch</button>
-                  <button className="btn ghost" onClick={() => setDecision('modified')}>Modify</button>
-                  <button className="btn" style={{ background: 'transparent', border: '1px solid var(--red)', color: 'var(--red)' }} onClick={() => setDecision('rejected')}>Reject</button>
-                  <span className="muted" style={{ fontSize: 11 }}>The agent proposes; you decide. Nothing dispatches without approval.</span>
-                </>
-              )}
+            <div className="muted" style={{ fontSize: 11, marginTop: 10 }}>
+              Missions go straight to the property and the recovery hubs. Government decides only when public health is at risk;
+              those decisions are under Public-health decisions above.
             </div>
           </>
         )}
@@ -282,7 +245,7 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
       </div>
       </>}
 
-      {S('carbon') && (
+      {S('reports') && (
       /* Carbon exposure — directional */
       <div className="card">
         <h2>Carbon exposure <span className="pill amber" style={{ fontSize: 10 }}>directional</span></h2>

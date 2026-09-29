@@ -3,27 +3,20 @@
 // what is waiting on a decision. `icon` names a drawing in console/kit.jsx.
 export const ROLE_NAV = {
   government: [
-    { key: 'overview',  label: 'Overview',        icon: 'home' },
-    { key: 'coast',     label: 'Coastal risk',    icon: 'waves' },
-    { key: 'regional',  label: 'Regional',        icon: 'satellite' },
-    { key: 'knowledge', label: 'Knowledge Hub',   icon: 'users' },
-    { key: 'carbon',    label: 'Carbon',          icon: 'leaf' },
+    { key: 'overview',  label: 'Overview',           icon: 'home' },
+    { key: 'regional',  label: 'Regional',           icon: 'satellite' },
+    { key: 'knowledge', label: 'Knowledge Hub',      icon: 'users' },
     { key: 'reports',   label: 'Evidence & reports', icon: 'chart' },
   ],
   hotel: [
     { key: 'overview',   label: 'Overview',           icon: 'home' },
-    { key: 'forecast',   label: 'Beach forecast',     icon: 'waves' },
     { key: 'management', label: 'Response approvals', icon: 'doc' },
-    { key: 'invoices',   label: 'Invoices',           icon: 'money' },
     { key: 'finance',    label: 'Financials',         icon: 'trend' },
     { key: 'reports',    label: 'Reports',            icon: 'chart' },
   ],
   recovery_hub: [
     { key: 'overview',  label: 'Dispatch board', icon: 'home' },
-    { key: 'queue',     label: 'Work orders',    icon: 'clipboard' },
-    { key: 'line',      label: 'Hub receiving',  icon: 'building' },
     { key: 'batches',   label: 'Batch records',  icon: 'db' },
-    { key: 'invoices',  label: 'Invoices',       icon: 'money' },
   ],
   processor: [
     { key: 'certification', label: 'Certification', icon: 'shield' },
@@ -33,13 +26,10 @@ export const ROLE_NAV = {
   ],
   university_lab: [
     { key: 'workspace', label: 'Research workspace', icon: 'gear' },
-    { key: 'queue',     label: 'Sample queue',       icon: 'flask' },
     { key: 'results',   label: 'Results',            icon: 'chart' },
   ],
   buyer: [
     { key: 'exchange',   label: 'Feedstock marketplace', icon: 'cart' },
-    { key: 'market',     label: 'Verified listings',     icon: 'doc' },
-    { key: 'notoffered', label: 'Not offered',           icon: 'alert' },
   ],
   finance: [
     { key: 'book',        label: 'Book',        icon: 'db' },
@@ -69,7 +59,7 @@ export const ROLE_TITLE = {
 }
 
 // Where each role goes to act on what is waiting for it.
-export const ACT_ON = { government: 'overview', hotel: 'management', recovery_hub: 'queue', university_lab: 'queue' }
+export const ACT_ON = { government: 'overview', hotel: 'overview', recovery_hub: 'overview', university_lab: 'workspace' }
 
 export function defaultSection(role) {
   return (ROLE_NAV[role] && ROLE_NAV[role][0]?.key) || 'overview'
