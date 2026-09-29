@@ -18,7 +18,7 @@ export const RESEARCH = [
 // The human gates the platform enforces. Each is a rule in the database or the
 // grading engine, not a convention.
 export const GATES = [
-  { icon: 'bank', name: 'Authority decision', rule: 'Required', tone: 'amber', covers: 'Dispatch' },
+  { icon: 'bank', name: 'Government decision', rule: 'Health risk only', tone: 'red', covers: 'Severe or extreme' },
   { icon: 'users', name: 'Owner consent', rule: 'Required', tone: 'amber', covers: 'Site access' },
   { icon: 'flask', name: 'Laboratory result', rule: 'Required', tone: 'teal', covers: 'Verified grade' },
 ]

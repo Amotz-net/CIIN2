@@ -480,3 +480,12 @@ b.tone-green,span.tone-green,b.tone-amber,span.tone-amber,b.tone-red,span.tone-r
 .k-score .k-prog{margin:2px 0 6px}.k-score .k-prog i{background:var(--t)}
 .k-score .k-mini-h small{text-transform:uppercase;letter-spacing:.8px;font-size:9.5px}
 .k-card{cursor:pointer}.k-card.on{box-shadow:0 0 0 1px var(--teal)}
+.k-map-legend i.dot{width:9px;height:9px;border-radius:50%;border:2px solid;margin:0 5px 0 4px}
+.k-select{background:#1C2126;border:1px solid #5A656E;border-radius:6px;color:var(--ink);font-family:inherit;font-size:13px;padding:7px 10px;width:auto;margin:0;max-width:100%}
+.k-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:8px}
+.k-form input,.k-form select{background:#1C2126;border:1px solid #5A656E;border-radius:6px;color:var(--ink);font-family:inherit;font-size:13px;padding:8px 10px;width:100%;margin:0}
+.k-pick{max-height:230px;overflow:auto;border:1px solid #343C44;border-radius:6px;margin-top:6px}
+.k-pick button{display:flex;justify-content:space-between;gap:10px;width:100%;text-align:left;background:transparent;border:0;border-top:1px solid #343C44;color:var(--ink);font-family:inherit;font-size:13px;padding:8px 10px;cursor:pointer}
+.k-pick button:first-child{border-top:0}.k-pick button:hover{background:#23292E}
+.k-pick small{color:var(--mute)}
+.k-link-out{font-size:12px;word-break:break-all;background:#1C2126;border:1px dashed #5A656E;border-radius:6px;padding:8px 10px;margin-top:8px;color:var(--teal)}

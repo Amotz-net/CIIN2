@@ -30,6 +30,27 @@ function networkMarkers(d, kinds = null) {
   return out
 }
 
+// The catalogue as map dots. A hollow dot is a position found by place name,
+// which may be a village or a road near the beach and not the beach itself.
+function cataloguePoints(d) {
+  return [
+    ...d.hotelList.map(h => ({ lat: h.lat, lng: h.lng, kind: 'hotellist', color: '#6EA8D6', r: 3.5, label: h.name,
+      note: [h.kind?.replace('_', ' '), h.place, 'from OpenStreetMap'].filter(Boolean).join(' · ') })),
+    ...d.listed.filter(b => b.lat != null).map(b => ({ lat: b.lat, lng: b.lng, kind: 'beachlist', color: '#57C4AE', r: 5.5, hollow: b.precision !== 'beach', label: b.name,
+      note: [b.parish, b.owner_name, b.licensed ? 'licensed' : null, b.precision === 'beach' ? 'position: the mapped beach' : 'position approximate'].filter(Boolean).join(' · ') })),
+  ]
+}
+const CAT_LAYERS = [{ key: 'beachlist', label: 'Listed beaches', color: '#57C4AE' }, { key: 'hotellist', label: 'Hotel list', color: '#6EA8D6' }]
+const CAT_LEGEND = [{ type: 'dot', color: '#57C4AE', label: 'Listed beach' }, { type: 'dot', color: '#57C4AE', hollow: true, label: 'Listed beach, approximate position' },
+  { type: 'dot', color: '#6EA8D6', label: 'Hotel on the list' }]
+
+function byCountry(d) {
+  const codes = [...new Set([...d.listed.map(b => b.country_code), ...d.hotelList.map(h => h.country_code), ...d.orgs.map(o => o.country_code)])].filter(Boolean).sort()
+  return codes.map(c => ({ code: c, name: COUNTRY[c] || c, beaches: d.listed.filter(b => b.country_code === c).length, hotels: d.hotelList.filter(h => h.country_code === c).length,
+    members: d.properties.filter(p => p.country_code === c).length, hubs: d.orgs.filter(o => o.country_code === c && o.role === 'recovery_hub').length,
+    processors: d.orgs.filter(o => o.country_code === c && o.role === 'processor').length, gov: d.orgs.filter(o => o.country_code === c && o.role === 'government').length }))
+}
+
 function committed(d, hubId) {
   return Object.values(d.pools).flat().filter(p => p.org_id === hubId)
     .filter(p => { const m = d.missions.find(x => x.id === p.mission_id); return m && !['completed', 'rejected'].includes(m.status) })
@@ -51,7 +72,8 @@ function MissionQueue({ d, limit = 6 }) {
 /* CIIN Command Centre — the platform administrator's overview         */
 /* ------------------------------------------------------------------ */
 export function CommandConsole({ profile, onNavigate }) {
-  const d = useConsole(profile, { scope: 'all', history: true })
+  const d = useConsole(profile, { scope: 'all', history: true, catalogue: true })
+  const points = useMemo(() => cataloguePoints(d), [d.listed, d.hotelList])
   const arr = arrivalText(d.landfall)
   const active = d.open.filter(m => m.status !== 'proposed')
   const authority = d.open.filter(m => stage(m).key === 'authority'), owner = d.open.filter(m => stage(m).key === 'owner')
@@ -97,8 +119,8 @@ export function CommandConsole({ profile, onNavigate }) {
             <button className="k-btn ghost" onClick={() => onNavigate('admin')}>View hub</button></Notice>) })}
         <Source>Regional figures and forecast: SATsum / SIMAR, CONABIO, CC BY 4.0.</Source>
       </>}>
-      <SargassumMap title="Sargassum offshore" note="observed, last 72 hours" raster={REGION_BOX} views={REGION_VIEW} markers={markers}
-        layers={[{ key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }, { key: 'hotel', label: 'Hotels', color: '#57C4AE' }, { key: 'hub', label: 'Hubs', color: '#E0A94F' }]}
+      <SargassumMap title="Sargassum offshore" note="observed, last 72 hours" raster={REGION_BOX} views={REGION_VIEW} markers={markers} points={points}
+        layers={[{ key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }, ...CAT_LAYERS, { key: 'hotel', label: 'Members', color: '#6EA8D6' }, { key: 'hub', label: 'Hubs', color: '#E0A94F' }]}
         legend={[{ type: 'fill', color: '#F08A3C', label: 'Sargassum afloat (satellite)' }, { type: 'pin', kind: 'hotel', label: 'Hotel beach (monitored)' },
                  { type: 'pin', kind: 'hub', label: 'Recovery hubs, per country' }]} />
       <Panel title="Response pipeline" note={lead ? lead.title : null}>
@@ -123,7 +145,9 @@ export function CommandConsole({ profile, onNavigate }) {
 /* Regional Administration                                             */
 /* ------------------------------------------------------------------ */
 export function AdminConsole({ profile, onOpen }) {
-  const d = useConsole(profile, { scope: 'all', admin: true })
+  const d = useConsole(profile, { scope: 'all', admin: true, catalogue: true })
+  const points = useMemo(() => cataloguePoints(d), [d.listed, d.hotelList])
+  const countries = byCountry(d)
   const active = d.open.filter(m => m.status !== 'proposed')
   const waiting = d.open.filter(m => ['authority', 'owner'].includes(stage(m).key))
   const late = waiting.filter(m => Date.now() - new Date(m.created_at) > 24 * 3.6e6)
@@ -147,10 +171,10 @@ export function AdminConsole({ profile, onOpen }) {
   const exceptions = []
   late.forEach(m => exceptions.push({ tone: 'red', icon: 'alert', pr: 'High priority', title: stage(m).key === 'owner' ? 'Owner approval overdue' : 'Authority decision overdue',
     lines: [`Waiting ${ago(m.created_at).replace(' ago', '')}`, `${m.title} · ${d.orgName(m.org_id)}`], act: 'Open', org: m.org_id }))
-  d.open.forEach(m => { const share = (d.pools[m.id] || []).reduce((s, p) => s + Number(p.share_tonnes || 0), 0)
-    const own = d.orgs.find(o => o.id === m.org_id)?.role === 'recovery_hub'   // a hub's own mission is covered by that hub
-    if (!own && m.tonnes && share < Number(m.tonnes)) exceptions.push({ tone: 'amber', icon: 'users', pr: 'Medium', title: 'Mission not fully covered',
-      lines: [`${fmt(share)} t allocated of ${fmt(m.tonnes)} t`, m.title], act: 'Open', org: m.org_id }) })
+  d.open.forEach(m => { const own = d.orgs.find(o => o.id === m.org_id)?.role === 'recovery_hub'   // a hub's own mission is staffed by that hub
+    const pool = d.pools[m.id] || []
+    if (!own && !pool.some(p => p.accepted) && Date.now() - new Date(m.created_at) > 6 * 3.6e6) exceptions.push({ tone: 'amber', icon: 'users', pr: 'Medium', title: 'No hub has accepted',
+      lines: [`${pool.length} hub${pool.length === 1 ? '' : 's'} alerted ${ago(m.created_at)}`, m.title], act: 'Open', org: m.org_id }) })
   sick.forEach(f => exceptions.push({ tone: 'blue', icon: 'db', pr: 'Medium', title: 'Data feed ' + f.st[0].toLowerCase(),
     lines: [f.at ? `Last reading ${shortDate(f.at)}` : 'No reading received', `${f.name} · ${f.src}`] }))
   unapproved.forEach(o => exceptions.push({ tone: 'amber', icon: 'shield', pr: 'Medium', title: 'Organisation awaiting approval',
@@ -179,7 +203,13 @@ export function AdminConsole({ profile, onOpen }) {
               {x.act && <button className="k-btn ghost" onClick={() => onOpen(x.orgs ? { orgs: true } : { org: x.org })}>{x.act}</button>}</div>
           </div>)) : <Empty>Nothing needs action. Every mission is moving, every feed is reporting and every organisation is approved.</Empty>}
       </Panel>}
-      below={<div className="k-three">
+      below={<><Panel title="Network by country" action={<span className="k-hint">Listed means known to CIIN; members have joined</span>}>
+        <table className="k-table"><thead><tr><th>Country</th><th>Listed beaches</th><th>Listed hotels</th><th>Member properties</th><th>Recovery hubs</th><th>Processors</th><th>Government</th></tr></thead><tbody>
+          {countries.map(c => <tr key={c.code}><td><b>{c.name}</b></td><td>{fmt(c.beaches)}</td><td>{fmt(c.hotels)}</td><td>{c.members}</td><td>{c.hubs}</td><td>{c.processors}</td><td>{c.gov}</td></tr>)}
+        </tbody></table>
+        <Source>Beaches: NEPA Jamaica Beach Guide. Hotels: OpenStreetMap contributors, ODbL. Other countries appear here once their lists are loaded.</Source>
+      </Panel>
+      <div className="k-three">
         <Panel title="Partner onboarding" action={<a className="k-link" onClick={() => onOpen({ orgs: true })}>Organisations ›</a>}>
           {onboarding.length ? <table className="k-table"><thead><tr><th>Partner</th><th>Type</th><th>Status</th><th>Next step</th></tr></thead><tbody>
             {onboarding.map(o => <tr key={o.key}><td>{o.name}</td><td>{o.type}</td><td><Chip tone={o.status[1]}>{o.status[0]}</Chip></td><td>{o.next}</td></tr>)}
@@ -197,9 +227,9 @@ export function AdminConsole({ profile, onOpen }) {
           </Panel>
           <Panel title="Programme milestones"><Steps steps={PROGRAMME} /></Panel>
         </div>
-      </div>}>
-      <SargassumMap title="Regional network" raster={REGION_BOX} views={REGION_VIEW} markers={useMemo(() => networkMarkers(d), [d.beaches, d.orgs])} height={400} timeline={false}
-        layers={[{ key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
+      </div></>}>
+      <SargassumMap title="Regional network" raster={REGION_BOX} views={REGION_VIEW} markers={useMemo(() => networkMarkers(d), [d.beaches, d.orgs])} points={points} height={400} timeline={false}
+        layers={[...CAT_LAYERS, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
         legend={[{ type: 'pin', kind: 'hotel', label: 'Hotels' }, { type: 'pin', kind: 'hub', label: 'Hubs' }, { type: 'pin', kind: 'processor', label: 'Processors' },
                  { type: 'pin', kind: 'lab', label: 'Laboratories' }, { type: 'pin', kind: 'agency', label: 'Agencies' }, { type: 'pin', kind: 'buyer', label: 'Buyers' }]} />
     </Console>
@@ -216,7 +246,11 @@ const SCORES = [
 ]
 
 export function GovConsole({ profile, onNavigate, reviews = [] }) {
-  const d = useConsole(profile, { scope: 'all', history: true })
+  const d = useConsole(profile, { scope: 'all', history: true, catalogue: true })
+  const points = useMemo(() => cataloguePoints(d), [d.listed, d.hotelList])
+  const parishes = useMemo(() => Object.values(d.listed.reduce((a, b) => { const k = b.parish || 'Unknown'
+    a[k] = a[k] || { parish: k, n: 0, licensed: 0, located: 0 }; a[k].n++; if (b.licensed) a[k].licensed++; if (b.lat != null) a[k].located++; return a }, {}))
+    .sort((x, y) => y.n - x.n), [d.listed])
   const [busy, setBusy] = useState(null), [ruled, setRuled] = useState({}), [failed, setFailed] = useState(null)
   // Government decides only where public health is at risk. The decision is
   // recorded against the reasoning that was shown, with the person's name.
@@ -247,7 +281,7 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
   return (
     <Console
       kpis={<>
-        <Kpi icon="waves" label="Sectors monitored" value={d.beaches.length} bars={Math.min(5, d.beaches.length + 1)} sub={`${d.country} coast`} />
+        <Kpi icon="waves" label="Sectors monitored" value={d.beaches.length} bars={Math.min(5, d.beaches.length + 1)} sub={`of ${d.listed.length} listed beaches · ${fmt(d.hotelList.length)} hotels`} />
         <Kpi icon="doc" label="Reviews pending" value={String(authority.length + pendingReviews).padStart(2, '0')} tone="amber" sub={`${authority.length} health decisions · ${pendingReviews} rule reviews`} />
         <Kpi icon="alert" label="Response gaps" value={String(gaps.length).padStart(2, '0')} tone={gaps.length ? 'red' : 'green'} sub="open missions not yet staffed or cleared" />
         <Kpi icon="satellite" label="Satellite reads" value={`${clear} / ${d.beaches.length}`} tone="green" bars={d.beaches.length ? Math.round((clear / d.beaches.length) * 5) : 0} sub="beaches with a clear reading" />
@@ -288,8 +322,8 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
             ['leaf', 'Hubs in country', d.orgs.filter(o => o.role === 'recovery_hub').length], ['target', 'Missions open', d.open.length], ['scale', 'Recovered', fmt(recoveredT) + ' t']]} />
         </Panel>
       </>}>
-      <SargassumMap title="Coastal sectors" note={d.country} raster={REGION_BOX} views={views} focus="island" segments={d.beaches} vectors={d.vectors} markers={cleanup}
-        layers={[{ key: 'segments', label: 'Exposure', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'mission', label: 'Cleanup', color: '#D9736A' },
+      <SargassumMap title="Coastal sectors" note={d.country} raster={REGION_BOX} views={views} focus="island" segments={d.beaches} vectors={d.vectors} markers={cleanup} points={points}
+        layers={[...CAT_LAYERS, { key: 'segments', label: 'Exposure', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'mission', label: 'Cleanup', color: '#D9736A' },
                  { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
         legend={[{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' }, { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' },
                  { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }, { type: 'pin', kind: 'mission', label: 'Open mission' }, { type: 'fill', color: '#F08A3C', label: 'Sargassum afloat, beyond 20 km' }]} />
@@ -304,6 +338,12 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
         <div className="k-three tight">{SCORES.map(([k, name, basis]) => { const v = d.scores[k]?.value, tone = v == null ? 'grey' : v >= 66 ? 'red' : v >= 33 ? 'amber' : 'green'; return (
           <div key={k} className={'k-score tone-' + tone}><div className="k-mini-h">{name} <small>{d.scores[k]?.tier}</small></div>
             <b>{v ?? '—'}<small>/100</small></b><div className="k-prog"><i style={{ width: (v ?? 0) + '%' }} /></div><span>{basis}.</span></div>) })}</div>
+      </Panel>
+      <Panel title="Listed beaches by parish" action={<span className="k-hint">{d.listed.length} beaches · {d.listed.filter(b => b.lat == null).length} not yet located</span>}>
+        {parishes.length ? <table className="k-table"><thead><tr><th>Parish</th><th>Beaches</th><th>Licensed</th><th>On the map</th></tr></thead><tbody>
+          {parishes.map(p => <tr key={p.parish}><td>{p.parish}</td><td>{p.n}</td><td>{p.licensed}</td><td>{p.located} of {p.n}</td></tr>)}
+        </tbody></table> : <Empty>No beach list is loaded for this country yet.</Empty>}
+        <Source>NEPA Jamaica Beach Guide. The list gives no positions: CIIN placed each beach from OpenStreetMap, exactly where a mapped beach has the same name and approximately otherwise.</Source>
       </Panel>
       <Panel title="Agency actions">
         {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Next action</th><th>Status</th></tr></thead><tbody>

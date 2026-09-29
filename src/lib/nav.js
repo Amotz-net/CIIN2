@@ -11,6 +11,7 @@ export const ROLE_NAV = {
   hotel: [
     { key: 'overview',   label: 'Overview',           icon: 'home' },
     { key: 'management', label: 'Response approvals', icon: 'doc' },
+    { key: 'properties', label: 'Properties',         icon: 'building' },
     { key: 'finance',    label: 'Financials',         icon: 'trend' },
     { key: 'reports',    label: 'Reports',            icon: 'chart' },
   ],

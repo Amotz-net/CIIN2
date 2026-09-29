@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
     if (!userId) { setProfile(null); return }
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, full_name, org_id, level, is_platform_admin, organizations!profiles_org_id_fkey(name, role, country_code, approved)')
+      .select('id, full_name, org_id, level, is_platform_admin, property_id, properties(name), organizations!profiles_org_id_fkey(name, role, country_code, approved)')
       .eq('id', userId)
       .maybeSingle()
     if (error) console.error('profile load error', error)

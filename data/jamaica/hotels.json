@@ -1,0 +1,5072 @@
+[
+{
+"country_code": "JM",
+"name": "Utech Commons",
+"kind": "guest_house",
+"lat": 18.020555,
+"lng": -76.744594,
+"place": null,
+"osm_ref": "node/1137652928",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Wild Thing",
+"kind": "hotel",
+"lat": 18.301709,
+"lng": -78.337467,
+"place": null,
+"osm_ref": "node/1338117600",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals",
+"kind": "hotel",
+"lat": 18.335401,
+"lng": -78.338461,
+"place": null,
+"osm_ref": "node/1338117649",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Couples Negril",
+"kind": "hotel",
+"lat": 18.342255,
+"lng": -78.335728,
+"place": null,
+"osm_ref": "node/1338117684",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Country Country",
+"kind": "hotel",
+"lat": 18.305195,
+"lng": -78.335977,
+"place": null,
+"osm_ref": "node/1338117807",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Memories at Seawind",
+"kind": "hotel",
+"lat": 17.884997,
+"lng": -77.770753,
+"place": null,
+"osm_ref": "node/1531129659",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Coral Seas Garden Resort",
+"kind": "hotel",
+"lat": 18.286984,
+"lng": -78.340498,
+"place": null,
+"osm_ref": "node/1684852678",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Beach Resort",
+"kind": "hotel",
+"lat": 17.86791,
+"lng": -77.58135,
+"place": null,
+"osm_ref": "node/1891429455",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jewel Grande Montego Bay Resort & Spa",
+"kind": "hotel",
+"lat": 18.524035,
+"lng": -77.828164,
+"place": null,
+"osm_ref": "node/2078508127",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Royal Caribbean Resort",
+"kind": "hotel",
+"lat": 18.519607,
+"lng": -77.880133,
+"place": null,
+"osm_ref": "node/2078508129",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Robin's Bay Village & Beach Hotel",
+"kind": "hotel",
+"lat": 18.316246,
+"lng": -76.808994,
+"place": null,
+"osm_ref": "node/2393408277",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bonnie View Hotel",
+"kind": "hotel",
+"lat": 18.171996,
+"lng": -76.454157,
+"place": null,
+"osm_ref": "node/2533653648",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Judy House Cottages and Rooms",
+"kind": "hostel",
+"lat": 18.273071,
+"lng": -78.355934,
+"place": "Negril",
+"osm_ref": "node/2761183084",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Frenchman's Cove Resort",
+"kind": "hotel",
+"lat": 18.173736,
+"lng": -76.400165,
+"place": null,
+"osm_ref": "node/2761764389",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Anchorage Bed & Breakfast",
+"kind": "guest_house",
+"lat": 18.050755,
+"lng": -76.782197,
+"place": null,
+"osm_ref": "node/2995993986",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "SeaWind",
+"kind": "hotel",
+"lat": 18.307724,
+"lng": -78.337452,
+"place": null,
+"osm_ref": "node/2998034292",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Forres Park Nature Resort and Spa",
+"kind": "hotel",
+"lat": 18.027203,
+"lng": -76.659867,
+"place": null,
+"osm_ref": "node/3003430810",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jamaican Colors",
+"kind": "guest_house",
+"lat": 18.075225,
+"lng": -76.291557,
+"place": null,
+"osm_ref": "node/3005053829",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Katamah Beachfront Resort",
+"kind": "guest_house",
+"lat": 17.884353,
+"lng": -77.766158,
+"place": null,
+"osm_ref": "node/3027119766",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Camp Cabarita",
+"kind": "hotel",
+"lat": 18.350255,
+"lng": -78.081996,
+"place": "Glenbrook",
+"osm_ref": "node/3117051392",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Search-Me-Heart",
+"kind": "guest_house",
+"lat": 18.176396,
+"lng": -76.409068,
+"place": null,
+"osm_ref": "node/3202931204",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Zion Country Beach Cabins",
+"kind": "hostel",
+"lat": 18.031995,
+"lng": -76.276451,
+"place": null,
+"osm_ref": "node/3208720978",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Caribic House",
+"kind": "guest_house",
+"lat": 18.485913,
+"lng": -77.928915,
+"place": "Montego Bay",
+"osm_ref": "node/3280292635",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Drapers San Guest House",
+"kind": "guest_house",
+"lat": 18.175919,
+"lng": -76.407493,
+"place": null,
+"osm_ref": "node/3583568307",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jamaica Methodist Deaconess House",
+"kind": "hostel",
+"lat": 18.037725,
+"lng": -76.797307,
+"place": "Kingston",
+"osm_ref": "node/3596966227",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Moon Hill",
+"kind": "guest_house",
+"lat": 18.037111,
+"lng": -76.756751,
+"place": "Kingston",
+"osm_ref": "node/3597491069",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Strawberry Hill Resort",
+"kind": "hotel",
+"lat": 18.052306,
+"lng": -76.727368,
+"place": "Irish Town",
+"osm_ref": "node/3627924045",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Serendipity Holistic Resort",
+"kind": "hotel",
+"lat": 18.060889,
+"lng": -76.719921,
+"place": null,
+"osm_ref": "node/3627926497",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Palladium Resort & Spa",
+"kind": "hotel",
+"lat": 18.45853,
+"lng": -78.150624,
+"place": null,
+"osm_ref": "node/3766738989",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Point",
+"kind": "hotel",
+"lat": 18.339164,
+"lng": -78.342708,
+"place": null,
+"osm_ref": "node/3774013421",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Grand Port Royal Hotel Marina",
+"kind": "hotel",
+"lat": 17.939885,
+"lng": -76.839543,
+"place": null,
+"osm_ref": "node/3814096406",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shelliann",
+"kind": "guest_house",
+"lat": 18.430357,
+"lng": -77.167664,
+"place": null,
+"osm_ref": "node/3938812417",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shut in",
+"kind": "motel",
+"lat": 17.958258,
+"lng": -76.521063,
+"place": null,
+"osm_ref": "node/4129636154",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Abondoned house",
+"kind": "chalet",
+"lat": 17.96375,
+"lng": -76.516286,
+"place": null,
+"osm_ref": "node/4129639156",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Abondoned house",
+"kind": "chalet",
+"lat": 17.963929,
+"lng": -76.515775,
+"place": null,
+"osm_ref": "node/4129641173",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Clifton house",
+"kind": "chalet",
+"lat": 17.964067,
+"lng": -76.515448,
+"place": null,
+"osm_ref": "node/4129641174",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Abandoned house",
+"kind": "chalet",
+"lat": 17.964012,
+"lng": -76.515232,
+"place": null,
+"osm_ref": "node/4129641394",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jacques house",
+"kind": "chalet",
+"lat": 17.963942,
+"lng": -76.512202,
+"place": null,
+"osm_ref": "node/4129641396",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Roder bar, shop and guest house",
+"kind": "guest_house",
+"lat": 17.963363,
+"lng": -76.517425,
+"place": null,
+"osm_ref": "node/4129641496",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shut in",
+"kind": "motel",
+"lat": 17.962318,
+"lng": -76.517558,
+"place": null,
+"osm_ref": "node/4129641498",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shut in",
+"kind": "chalet",
+"lat": 17.950602,
+"lng": -76.523778,
+"place": null,
+"osm_ref": "node/4134615708",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Darian johnson",
+"kind": "chalet",
+"lat": 17.950796,
+"lng": -76.523882,
+"place": null,
+"osm_ref": "node/4135635618",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Houses on breakaway",
+"kind": "chalet",
+"lat": 17.939242,
+"lng": -76.506944,
+"place": null,
+"osm_ref": "node/4142157286",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "House on breakaway",
+"kind": "hostel",
+"lat": 17.960667,
+"lng": -76.53768,
+"place": null,
+"osm_ref": "node/4142255090",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "House on Wyatt Ave",
+"kind": "chalet",
+"lat": 17.929897,
+"lng": -76.451661,
+"place": null,
+"osm_ref": "node/4155480811",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mr Williams house",
+"kind": "hostel",
+"lat": 17.925006,
+"lng": -76.474673,
+"place": null,
+"osm_ref": "node/4173885959",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Annie house",
+"kind": "chalet",
+"lat": 17.960997,
+"lng": -76.470583,
+"place": null,
+"osm_ref": "node/4202059476",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bahia Principe",
+"kind": "hotel",
+"lat": 18.460962,
+"lng": -77.349778,
+"place": null,
+"osm_ref": "node/4256378589",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Southern comfort",
+"kind": "motel",
+"lat": 17.960593,
+"lng": -77.814528,
+"place": null,
+"osm_ref": "node/4285927789",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Fi Wi Place",
+"kind": "hotel",
+"lat": 17.94526,
+"lng": -77.063192,
+"place": null,
+"osm_ref": "node/4319526690",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Firefly Guest house",
+"kind": "guest_house",
+"lat": 18.40311,
+"lng": -76.940621,
+"place": null,
+"osm_ref": "node/4320163309",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Zion Country Eco Beach Cabins",
+"kind": "hotel",
+"lat": 18.013989,
+"lng": -76.269562,
+"place": "Portland, Jamaica W.I.",
+"osm_ref": "node/4400889336",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "#cognizantcountry",
+"kind": "hostel",
+"lat": 18.015796,
+"lng": -76.800209,
+"place": null,
+"osm_ref": "node/4455129491",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Le Mer Villas",
+"kind": "guest_house",
+"lat": 18.448106,
+"lng": -78.220254,
+"place": null,
+"osm_ref": "node/4530594890",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Five Gables",
+"kind": "hostel",
+"lat": 18.505075,
+"lng": -77.864664,
+"place": null,
+"osm_ref": "node/4549397793",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jamnesia",
+"kind": "hostel",
+"lat": 17.941155,
+"lng": -76.688011,
+"place": null,
+"osm_ref": "node/4620846698",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kingston Go876",
+"kind": "hotel",
+"lat": 18.01843,
+"lng": -76.760769,
+"place": null,
+"osm_ref": "node/4643812018",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Waikiki Guest House",
+"kind": "guest_house",
+"lat": 17.882076,
+"lng": -77.764883,
+"place": null,
+"osm_ref": "node/4660622289",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Negril Yoga Centre",
+"kind": "guest_house",
+"lat": 18.283616,
+"lng": -78.341985,
+"place": null,
+"osm_ref": "node/4721382789",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "RafJam Bed & Breakfast",
+"kind": "guest_house",
+"lat": 18.064114,
+"lng": -76.718275,
+"place": "Irish Towb",
+"osm_ref": "node/4777306628",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Alhambra Inn",
+"kind": "hotel",
+"lat": 18.003972,
+"lng": -76.769359,
+"place": null,
+"osm_ref": "node/4782876122",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "G&R Guesthouse",
+"kind": "hotel",
+"lat": 18.492728,
+"lng": -77.656189,
+"place": null,
+"osm_ref": "node/4870128521",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Medallion Hall Hotel",
+"kind": "hotel",
+"lat": 18.017981,
+"lng": -76.781183,
+"place": null,
+"osm_ref": "node/4893786896",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Bamboo Hostel",
+"kind": "hostel",
+"lat": 18.409757,
+"lng": -77.103559,
+"place": null,
+"osm_ref": "node/4925282822",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pleasant View",
+"kind": "guest_house",
+"lat": 18.445553,
+"lng": -77.977442,
+"place": "Unity Hall",
+"osm_ref": "node/4968804964",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Goblin Hill Villas at San San",
+"kind": "hotel",
+"lat": 18.172016,
+"lng": -76.391727,
+"place": "Port Antonio",
+"osm_ref": "node/5037574557",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The North Ligt",
+"kind": "hostel",
+"lat": 18.040307,
+"lng": -76.750562,
+"place": null,
+"osm_ref": "node/5074529121",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Lyric",
+"kind": "guest_house",
+"lat": 17.878383,
+"lng": -77.761452,
+"place": null,
+"osm_ref": "node/5110891921",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Executive Mammee Bay Hotel",
+"kind": "guest_house",
+"lat": 18.426572,
+"lng": -77.167688,
+"place": null,
+"osm_ref": "node/5157960118",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Riu Club Hotel",
+"kind": "hotel",
+"lat": 18.426806,
+"lng": -77.166497,
+"place": null,
+"osm_ref": "node/5157960383",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Jewel Dunn's River",
+"kind": "hotel",
+"lat": 18.427131,
+"lng": -77.164866,
+"place": null,
+"osm_ref": "node/5157960566",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hyatt Ziva Rose Hall",
+"kind": "hotel",
+"lat": 18.522918,
+"lng": -77.833302,
+"place": null,
+"osm_ref": "node/5181706622",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hyatt Zilara Rose Hall",
+"kind": "hotel",
+"lat": 18.522885,
+"lng": -77.834063,
+"place": null,
+"osm_ref": "node/5187412321",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mahoe Guest House",
+"kind": "guest_house",
+"lat": 18.400576,
+"lng": -77.103095,
+"place": null,
+"osm_ref": "node/5221599222",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Executive Shaw Park Guest House",
+"kind": "guest_house",
+"lat": 18.40078,
+"lng": -77.103285,
+"place": null,
+"osm_ref": "node/5223511870",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Little Shaw Park Guest House",
+"kind": "guest_house",
+"lat": 18.400462,
+"lng": -77.104603,
+"place": null,
+"osm_ref": "node/5223511871",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mangoridge Guest House",
+"kind": "guest_house",
+"lat": 18.172981,
+"lng": -76.451021,
+"place": null,
+"osm_ref": "node/5229165823",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Banana's Garden Guest House",
+"kind": "guest_house",
+"lat": 18.254748,
+"lng": -78.363153,
+"place": null,
+"osm_ref": "node/5237086820",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Doubloon",
+"kind": "hotel",
+"lat": 17.878184,
+"lng": -77.7603,
+"place": null,
+"osm_ref": "node/5240353349",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Golden Sands Beach Resort",
+"kind": "hotel",
+"lat": 17.883786,
+"lng": -77.765757,
+"place": null,
+"osm_ref": "node/5240353361",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mountain View Cottage",
+"kind": "guest_house",
+"lat": 17.878633,
+"lng": -77.761098,
+"place": null,
+"osm_ref": "node/5242158419",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Docs on the bay",
+"kind": "hotel",
+"lat": 17.878093,
+"lng": -77.760103,
+"place": null,
+"osm_ref": "node/5242158420",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandy Hill Cottage",
+"kind": "guest_house",
+"lat": 17.886064,
+"lng": -77.769942,
+"place": null,
+"osm_ref": "node/5243566123",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jah B’s Guesthouse",
+"kind": "guest_house",
+"lat": 18.048101,
+"lng": -76.622866,
+"place": null,
+"osm_ref": "node/5248681345",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Irie Inn",
+"kind": "hotel",
+"lat": 18.481363,
+"lng": -77.929139,
+"place": null,
+"osm_ref": "node/5309600322",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hometa",
+"kind": "hotel",
+"lat": 18.43754,
+"lng": -77.236454,
+"place": null,
+"osm_ref": "node/5356847525",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Buccaneer",
+"kind": "hostel",
+"lat": 18.496064,
+"lng": -77.924923,
+"place": null,
+"osm_ref": "node/5365843921",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Polish Princess Guest House (Correct Location)",
+"kind": "guest_house",
+"lat": 18.162754,
+"lng": -76.383153,
+"place": null,
+"osm_ref": "node/5423724227",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Ocean Ridge Guesthouse",
+"kind": "guest_house",
+"lat": 18.406576,
+"lng": -77.114425,
+"place": null,
+"osm_ref": "node/5423724228",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "STRAWBERRY FIELDS TOGETHER",
+"kind": "hotel",
+"lat": 18.323862,
+"lng": -76.805185,
+"place": null,
+"osm_ref": "node/5448877021",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Home",
+"kind": "apartment",
+"lat": 17.986382,
+"lng": -76.797199,
+"place": null,
+"osm_ref": "node/5614755824",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cedar Ridge Lodge-Inn",
+"kind": "hostel",
+"lat": 18.435857,
+"lng": -77.927951,
+"place": null,
+"osm_ref": "node/5633838924",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mr Barry s White House",
+"kind": "apartment",
+"lat": 18.161883,
+"lng": -76.361158,
+"place": null,
+"osm_ref": "node/5759044121",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Reggae hostel",
+"kind": "hostel",
+"lat": 18.471334,
+"lng": -77.924002,
+"place": null,
+"osm_ref": "node/6005787785",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pon De Rock",
+"kind": "guest_house",
+"lat": 17.916117,
+"lng": -77.79731,
+"place": null,
+"osm_ref": "node/6135733685",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Gladstone",
+"kind": "guest_house",
+"lat": 18.015532,
+"lng": -76.781172,
+"place": null,
+"osm_ref": "node/6138373685",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Old England",
+"kind": "guest_house",
+"lat": 17.993548,
+"lng": -77.472145,
+"place": null,
+"osm_ref": "node/6187168185",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "KNOLLIS",
+"kind": "apartment",
+"lat": 18.115626,
+"lng": -76.994208,
+"place": null,
+"osm_ref": "node/6216219587",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Skyview Mansion",
+"kind": "apartment",
+"lat": 18.030676,
+"lng": -76.741296,
+"place": null,
+"osm_ref": "node/6221004785",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Skyview Manor",
+"kind": "apartment",
+"lat": 18.030697,
+"lng": -76.741231,
+"place": null,
+"osm_ref": "node/6222882085",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "River Paradise Jamai",
+"kind": "hostel",
+"lat": 18.402786,
+"lng": -77.017432,
+"place": null,
+"osm_ref": "node/6328749985",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kingsworth bed and breakfast",
+"kind": "hostel",
+"lat": 18.045575,
+"lng": -76.754237,
+"place": null,
+"osm_ref": "node/6381140585",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Hikura",
+"kind": "guest_house",
+"lat": 17.891719,
+"lng": -77.781475,
+"place": null,
+"osm_ref": "node/6450242701",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Garfield Cottage",
+"kind": "chalet",
+"lat": 17.891947,
+"lng": -77.781417,
+"place": null,
+"osm_ref": "node/6450242702",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Nuestra Casa",
+"kind": "guest_house",
+"lat": 17.892323,
+"lng": -77.77904,
+"place": null,
+"osm_ref": "node/6466833922",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Buccaneer Villa",
+"kind": "guest_house",
+"lat": 17.890797,
+"lng": -77.779779,
+"place": null,
+"osm_ref": "node/6466833932",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rainbow Tree",
+"kind": "guest_house",
+"lat": 17.892633,
+"lng": -77.783001,
+"place": null,
+"osm_ref": "node/6466860408",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Barukamba",
+"kind": "guest_house",
+"lat": 17.893843,
+"lng": -77.782563,
+"place": null,
+"osm_ref": "node/6466860418",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "77 West Cottages",
+"kind": "chalet",
+"lat": 17.892894,
+"lng": -77.784001,
+"place": null,
+"osm_ref": "node/6466860420",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sparkiling Waters- Villa de la Sable",
+"kind": "guest_house",
+"lat": 17.888506,
+"lng": -77.777513,
+"place": null,
+"osm_ref": "node/6466884176",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sparkling Waters- Villa d' la Ocean",
+"kind": "guest_house",
+"lat": 17.888465,
+"lng": -77.777185,
+"place": null,
+"osm_ref": "node/6466884177",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tallawah Apartments",
+"kind": "apartment",
+"lat": 17.888624,
+"lng": -77.776332,
+"place": null,
+"osm_ref": "node/6466884789",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tallawah Villa",
+"kind": "guest_house",
+"lat": 17.888292,
+"lng": -77.776177,
+"place": null,
+"osm_ref": "node/6466884790",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sparkling Waters- Villa du Soleil",
+"kind": "guest_house",
+"lat": 17.887592,
+"lng": -77.776013,
+"place": null,
+"osm_ref": "node/6466884793",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Kouros",
+"kind": "guest_house",
+"lat": 17.887309,
+"lng": -77.774527,
+"place": null,
+"osm_ref": "node/6466891965",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Canem",
+"kind": "guest_house",
+"lat": 17.887483,
+"lng": -77.774769,
+"place": null,
+"osm_ref": "node/6466891969",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Doranja house",
+"kind": "guest_house",
+"lat": 17.871052,
+"lng": -77.745447,
+"place": null,
+"osm_ref": "node/6481806551",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Doranja Twin",
+"kind": "guest_house",
+"lat": 17.871252,
+"lng": -77.745603,
+"place": null,
+"osm_ref": "node/6481806552",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ital rest cottages",
+"kind": "guest_house",
+"lat": 17.871187,
+"lng": -77.745906,
+"place": null,
+"osm_ref": "node/6481806557",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Wild Pine cottages",
+"kind": "guest_house",
+"lat": 17.870737,
+"lng": -77.745267,
+"place": null,
+"osm_ref": "node/6481806561",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Wild Pine cottages",
+"kind": "guest_house",
+"lat": 17.870331,
+"lng": -77.744968,
+"place": null,
+"osm_ref": "node/6481810399",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Wild Pine cottages",
+"kind": "guest_house",
+"lat": 17.868844,
+"lng": -77.744496,
+"place": null,
+"osm_ref": "node/6481821888",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bliss by the sea",
+"kind": "guest_house",
+"lat": 17.867757,
+"lng": -77.741754,
+"place": null,
+"osm_ref": "node/6481836381",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cocquina",
+"kind": "guest_house",
+"lat": 17.867085,
+"lng": -77.740138,
+"place": null,
+"osm_ref": "node/6481857549",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Blue Marlin beach house",
+"kind": "guest_house",
+"lat": 17.866589,
+"lng": -77.739996,
+"place": null,
+"osm_ref": "node/6481857550",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Alice's guest house",
+"kind": "guest_house",
+"lat": 17.866226,
+"lng": -77.73966,
+"place": null,
+"osm_ref": "node/6481857564",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Out of the blue",
+"kind": "guest_house",
+"lat": 17.865999,
+"lng": -77.739498,
+"place": null,
+"osm_ref": "node/6481857569",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pelican's reach",
+"kind": "guest_house",
+"lat": 17.865491,
+"lng": -77.739237,
+"place": null,
+"osm_ref": "node/6481880478",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Great bay inn",
+"kind": "guest_house",
+"lat": 17.864216,
+"lng": -77.73822,
+"place": null,
+"osm_ref": "node/6481880689",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Elia",
+"kind": "guest_house",
+"lat": 17.892776,
+"lng": -77.785199,
+"place": null,
+"osm_ref": "node/6592269313",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Minerva",
+"kind": "guest_house",
+"lat": 17.896388,
+"lng": -77.788044,
+"place": null,
+"osm_ref": "node/6592269317",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa JQ",
+"kind": "guest_house",
+"lat": 17.895602,
+"lng": -77.78753,
+"place": null,
+"osm_ref": "node/6592269320",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hill side Hostel (real location)",
+"kind": "hostel",
+"lat": 18.149332,
+"lng": -76.375875,
+"place": null,
+"osm_ref": "node/6795232585",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ragamuffin Hostel",
+"kind": "hostel",
+"lat": 18.016377,
+"lng": -76.780635,
+"place": "Kingston",
+"osm_ref": "node/6831424987",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "airbnb amanda & jerome",
+"kind": "apartment",
+"lat": 18.481856,
+"lng": -77.923356,
+"place": null,
+"osm_ref": "node/6865009086",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Restoration Village Farm",
+"kind": "chalet",
+"lat": 18.128409,
+"lng": -76.4334,
+"place": null,
+"osm_ref": "node/6958513094",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "AC Marriot Hotel",
+"kind": "hotel",
+"lat": 18.008757,
+"lng": -76.778754,
+"place": null,
+"osm_ref": "node/6990014816",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Easyman Guesthouse",
+"kind": "guest_house",
+"lat": 18.164551,
+"lng": -76.370816,
+"place": null,
+"osm_ref": "node/7030111794",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Goldeneye Hotel",
+"kind": "hotel",
+"lat": 18.410676,
+"lng": -76.94446,
+"place": null,
+"osm_ref": "node/7058924571",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Mockingbird Hill",
+"kind": "hotel",
+"lat": 18.173576,
+"lng": -76.434575,
+"place": null,
+"osm_ref": "node/7061716826",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bailey's Bed and Breakfast",
+"kind": "guest_house",
+"lat": 18.447491,
+"lng": -77.332115,
+"place": null,
+"osm_ref": "node/7076327168",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kush Art Reggae home",
+"kind": "guest_house",
+"lat": 18.003586,
+"lng": -76.808301,
+"place": null,
+"osm_ref": "node/7200489191",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "3 Trees Hostel",
+"kind": "hostel",
+"lat": 17.87919,
+"lng": -77.756954,
+"place": null,
+"osm_ref": "node/7200489193",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hakuna Matata",
+"kind": "guest_house",
+"lat": 18.154522,
+"lng": -76.357862,
+"place": null,
+"osm_ref": "node/7200489194",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Junction Guest House",
+"kind": "hotel",
+"lat": 17.899596,
+"lng": -77.605131,
+"place": null,
+"osm_ref": "node/7829366305",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Beach Resort",
+"kind": "hotel",
+"lat": 18.410907,
+"lng": -77.085881,
+"place": null,
+"osm_ref": "node/7861740196",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Turtle Beach Towers Condominium",
+"kind": "apartment",
+"lat": 18.407123,
+"lng": -77.109687,
+"place": null,
+"osm_ref": "node/8034317896",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "English",
+"kind": "apartment",
+"lat": 18.407132,
+"lng": -77.109858,
+"place": null,
+"osm_ref": "node/8034318799",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ocean Coral Spring",
+"kind": "hotel",
+"lat": 18.487006,
+"lng": -77.573767,
+"place": null,
+"osm_ref": "node/8440534617",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Calypso Villa",
+"kind": "guest_house",
+"lat": 18.517321,
+"lng": -77.779643,
+"place": null,
+"osm_ref": "node/9866044717",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Palladium Lady Hamilton Resort & Spa",
+"kind": "hotel",
+"lat": 18.457336,
+"lng": -78.152075,
+"place": null,
+"osm_ref": "node/9918881571",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Lamar",
+"kind": "guest_house",
+"lat": 17.891743,
+"lng": -77.781819,
+"place": null,
+"osm_ref": "node/9984241517",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "African Symbol Guesthouse",
+"kind": "guest_house",
+"lat": 18.517239,
+"lng": -77.865161,
+"place": "Montego Bay",
+"osm_ref": "node/10651067425",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Basileia Palace",
+"kind": "hotel",
+"lat": 18.508182,
+"lng": -77.870934,
+"place": null,
+"osm_ref": "node/10697904205",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Хата",
+"kind": "apartment",
+"lat": 18.000009,
+"lng": -76.760912,
+"place": null,
+"osm_ref": "node/11113273005",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pink Rock Inn Bed and Breakfast",
+"kind": "hotel",
+"lat": 18.399634,
+"lng": -77.111606,
+"place": null,
+"osm_ref": "node/11372539669",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Great Huts",
+"kind": "hotel",
+"lat": 18.159741,
+"lng": -76.35544,
+"place": null,
+"osm_ref": "node/12451415152",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bak a Yaad",
+"kind": "hotel",
+"lat": 18.254814,
+"lng": -78.362924,
+"place": null,
+"osm_ref": "node/12458881673",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "BlueMountView Guesthouse",
+"kind": "guest_house",
+"lat": 18.060999,
+"lng": -76.71586,
+"place": null,
+"osm_ref": "node/12464133601",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Serenity Heights Air BnB",
+"kind": "guest_house",
+"lat": 18.100002,
+"lng": -76.31417,
+"place": null,
+"osm_ref": "node/13422320401",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Casa Aster",
+"kind": "guest_house",
+"lat": 18.253375,
+"lng": -78.361287,
+"place": "Negril",
+"osm_ref": "node/13545055871",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "323 Charles Avenue",
+"kind": "apartment",
+"lat": 18.504517,
+"lng": -77.872627,
+"place": null,
+"osm_ref": "node/14064500501",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Liguanea Club",
+"kind": "hotel",
+"lat": 18.004866,
+"lng": -76.788534,
+"place": null,
+"osm_ref": "way/62029432",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Courtleigh Hotel and Suites",
+"kind": "hotel",
+"lat": 18.00402,
+"lng": -76.7874,
+"place": "Kingston",
+"osm_ref": "way/62029435",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Kingston Hilton Hotel",
+"kind": "hotel",
+"lat": 18.004938,
+"lng": -76.78725,
+"place": "Kingston",
+"osm_ref": "way/62029450",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Terra Nova",
+"kind": "hotel",
+"lat": 18.019173,
+"lng": -76.792504,
+"place": "Kingston",
+"osm_ref": "way/75603526",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Secrets St. James",
+"kind": "hotel",
+"lat": 18.460343,
+"lng": -77.948696,
+"place": null,
+"osm_ref": "way/154325315",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Secrets St. James Montego Bay",
+"kind": "hotel",
+"lat": 18.459643,
+"lng": -77.949942,
+"place": null,
+"osm_ref": "way/154325437",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hard Rock Cafe Montego Bay",
+"kind": "hotel",
+"lat": 18.461752,
+"lng": -77.946774,
+"place": null,
+"osm_ref": "way/154326282",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Moon Palace Jamaica",
+"kind": "hotel",
+"lat": 18.412196,
+"lng": -77.105016,
+"place": "Ocho Rios",
+"osm_ref": "way/180639471",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Ochi - Great House Village and Butler Village",
+"kind": "hotel",
+"lat": 18.407933,
+"lng": -77.08482,
+"place": null,
+"osm_ref": "way/199616281",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Loyola",
+"kind": "hotel",
+"lat": 18.432949,
+"lng": -77.170194,
+"place": "Mammee Bay",
+"osm_ref": "way/220476844",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Ocho Rios",
+"kind": "hotel",
+"lat": 18.431447,
+"lng": -77.166348,
+"place": "Ocho Rios",
+"osm_ref": "way/220476919",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "S Hotel Kingston",
+"kind": "hotel",
+"lat": 18.008194,
+"lng": -76.783845,
+"place": "Kingston",
+"osm_ref": "way/224325534",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Village Hotel",
+"kind": "hotel",
+"lat": 18.409746,
+"lng": -77.103958,
+"place": null,
+"osm_ref": "way/247473472",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Crystal Paalace",
+"kind": "motel",
+"lat": 18.007777,
+"lng": -77.550179,
+"place": null,
+"osm_ref": "way/290293476",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Coyaba Beach Resort",
+"kind": "hotel",
+"lat": 18.520172,
+"lng": -77.872158,
+"place": null,
+"osm_ref": "way/309841736",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Negril Beach Resort & Spa",
+"kind": "hotel",
+"lat": 18.335056,
+"lng": -78.338603,
+"place": null,
+"osm_ref": "way/310149342",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Boardwalk Village",
+"kind": "hotel",
+"lat": 18.33237,
+"lng": -78.337487,
+"place": null,
+"osm_ref": "way/310190438",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jamaica Palace",
+"kind": "hotel",
+"lat": 18.174563,
+"lng": -76.41694,
+"place": null,
+"osm_ref": "way/314245563",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Royal Decameron Club",
+"kind": "hotel",
+"lat": 18.468826,
+"lng": -77.30387,
+"place": null,
+"osm_ref": "way/319384828",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Reggae Hostel",
+"kind": "hostel",
+"lat": 18.406918,
+"lng": -77.106897,
+"place": "Ocho Rios",
+"osm_ref": "way/321284941",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Guest House",
+"kind": "guest_house",
+"lat": 18.492062,
+"lng": -77.926245,
+"place": null,
+"osm_ref": "way/342619698",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shields Negril Villas",
+"kind": "hotel",
+"lat": 18.284359,
+"lng": -78.342887,
+"place": null,
+"osm_ref": "way/353899967",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Indies Hotel",
+"kind": "hotel",
+"lat": 18.009817,
+"lng": -76.790325,
+"place": "Kingston",
+"osm_ref": "way/353901504",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Porty Hostel",
+"kind": "hostel",
+"lat": 18.174614,
+"lng": -76.443878,
+"place": "Fairy Hill",
+"osm_ref": "way/356360332",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Courtyard by Marriott Kingston, Jamaica",
+"kind": "hotel",
+"lat": 18.003889,
+"lng": -76.790144,
+"place": "Kingston",
+"osm_ref": "way/361779769",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Finjam Cottages Bed & Breakfast",
+"kind": "hotel",
+"lat": 18.180679,
+"lng": -76.451963,
+"place": "Port Antonio",
+"osm_ref": "way/368225368",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sans Souci",
+"kind": "hotel",
+"lat": 18.417497,
+"lng": -77.067362,
+"place": null,
+"osm_ref": "way/369026772",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jamaica Inn",
+"kind": "hotel",
+"lat": 18.413287,
+"lng": -77.078334,
+"place": "Ocho Rios",
+"osm_ref": "way/369026776",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Oasis Hotel",
+"kind": "hotel",
+"lat": 18.40976,
+"lng": -77.103561,
+"place": null,
+"osm_ref": "way/369275484",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hibiscus Lodge Hotel",
+"kind": "hotel",
+"lat": 18.41234,
+"lng": -77.100055,
+"place": null,
+"osm_ref": "way/369279226",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Crystal Cove",
+"kind": "hotel",
+"lat": 18.411768,
+"lng": -77.08704,
+"place": null,
+"osm_ref": "way/369281456",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Ochi - Riviera Beachfront Tower",
+"kind": "hotel",
+"lat": 18.412731,
+"lng": -77.084688,
+"place": null,
+"osm_ref": "way/369281457",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Royal Plantation",
+"kind": "hotel",
+"lat": 18.41218,
+"lng": -77.081828,
+"place": null,
+"osm_ref": "way/369281458",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kaz Kreol Beach Lodge",
+"kind": "hotel",
+"lat": 18.414715,
+"lng": -77.073344,
+"place": null,
+"osm_ref": "way/369323767",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hibiscus Lodge",
+"kind": "hotel",
+"lat": 18.412458,
+"lng": -77.099391,
+"place": null,
+"osm_ref": "way/369546443",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Ochi Beach Club",
+"kind": "hotel",
+"lat": 18.411804,
+"lng": -77.086067,
+"place": null,
+"osm_ref": "way/369546812",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Royal Plantation",
+"kind": "hotel",
+"lat": 18.411319,
+"lng": -77.083294,
+"place": null,
+"osm_ref": "way/369546813",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Tim Bamboo",
+"kind": "hotel",
+"lat": 18.176493,
+"lng": -76.443221,
+"place": null,
+"osm_ref": "way/369554471",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Trident Hotel",
+"kind": "hotel",
+"lat": 18.183971,
+"lng": -76.423663,
+"place": null,
+"osm_ref": "way/369560770",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Paradise Inn",
+"kind": "hotel",
+"lat": 18.203815,
+"lng": -76.497734,
+"place": null,
+"osm_ref": "way/370607097",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Galina Breeze",
+"kind": "hotel",
+"lat": 18.395949,
+"lng": -76.892172,
+"place": null,
+"osm_ref": "way/370762758",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Casa Maria Hotel",
+"kind": "hotel",
+"lat": 18.386187,
+"lng": -76.896241,
+"place": null,
+"osm_ref": "way/370811438",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Beaches Resort",
+"kind": "hotel",
+"lat": 18.404165,
+"lng": -76.979908,
+"place": null,
+"osm_ref": "way/370910860",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Condos at the Ridge",
+"kind": "hotel",
+"lat": 18.40358,
+"lng": -77.107963,
+"place": null,
+"osm_ref": "way/371067835",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Paradiso",
+"kind": "hotel",
+"lat": 18.434978,
+"lng": -77.169434,
+"place": "Mammee Bay",
+"osm_ref": "way/371069324",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Jewel",
+"kind": "hotel",
+"lat": 18.430156,
+"lng": -77.164309,
+"place": null,
+"osm_ref": "way/371201896",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mammee Bay Hotel",
+"kind": "hotel",
+"lat": 18.427452,
+"lng": -77.167242,
+"place": "Mammee Bay",
+"osm_ref": "way/371213825",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mammee Bay Hotel",
+"kind": "hotel",
+"lat": 18.427506,
+"lng": -77.167674,
+"place": "Mammee Bay",
+"osm_ref": "way/371247425",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Piper's Cove Resort",
+"kind": "hotel",
+"lat": 18.46904,
+"lng": -77.316294,
+"place": null,
+"osm_ref": "way/371254366",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Silver Sands Villa Resort",
+"kind": "hotel",
+"lat": 18.484025,
+"lng": -77.527275,
+"place": null,
+"osm_ref": "way/371358777",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Holiday Inn Sun Spree Resort",
+"kind": "hotel",
+"lat": 18.522592,
+"lng": -77.857448,
+"place": null,
+"osm_ref": "way/371376916",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Crown Hotel",
+"kind": "hotel",
+"lat": 18.016005,
+"lng": -76.808213,
+"place": "Kingston",
+"osm_ref": "way/371379256",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Big Apple Hotel",
+"kind": "hotel",
+"lat": 18.488481,
+"lng": -77.924888,
+"place": null,
+"osm_ref": "way/371381487",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hillshire Hotel",
+"kind": "hotel",
+"lat": 18.492834,
+"lng": -77.919256,
+"place": null,
+"osm_ref": "way/371381678",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Doctor's Cave Beach Hotel",
+"kind": "hotel",
+"lat": 18.487206,
+"lng": -77.927771,
+"place": null,
+"osm_ref": "way/371389309",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Gloucestershire",
+"kind": "hotel",
+"lat": 18.48654,
+"lng": -77.928561,
+"place": null,
+"osm_ref": "way/371389312",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Wexford Hotel",
+"kind": "hotel",
+"lat": 18.482543,
+"lng": -77.929037,
+"place": "Montego Bay",
+"osm_ref": "way/371390428",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Gloriana",
+"kind": "hotel",
+"lat": 18.490516,
+"lng": -77.924868,
+"place": null,
+"osm_ref": "way/371399835",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Toby Resort",
+"kind": "hotel",
+"lat": 18.49064,
+"lng": -77.926986,
+"place": null,
+"osm_ref": "way/371399837",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Casa Blanca",
+"kind": "hotel",
+"lat": 18.485414,
+"lng": -77.929532,
+"place": null,
+"osm_ref": "way/371443848",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Altamont West Hotel",
+"kind": "hotel",
+"lat": 18.480594,
+"lng": -77.928902,
+"place": null,
+"osm_ref": "way/371444453",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Stones Beach House",
+"kind": "hotel",
+"lat": 18.480248,
+"lng": -77.928548,
+"place": null,
+"osm_ref": "way/371444454",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel A Grand View",
+"kind": "hotel",
+"lat": 18.488176,
+"lng": -77.924402,
+"place": null,
+"osm_ref": "way/371448002",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "El Greco Resort Hotel",
+"kind": "hotel",
+"lat": 18.485384,
+"lng": -77.927205,
+"place": null,
+"osm_ref": "way/371531351",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Harbour Way Hotel",
+"kind": "hotel",
+"lat": 18.47141,
+"lng": -77.923991,
+"place": null,
+"osm_ref": "way/371544871",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Four Seasons",
+"kind": "hotel",
+"lat": 18.007969,
+"lng": -76.794366,
+"place": null,
+"osm_ref": "way/371751170",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Dynasty Jamaica Hotel",
+"kind": "hotel",
+"lat": 17.969892,
+"lng": -77.355257,
+"place": null,
+"osm_ref": "way/371935157",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Alex's Guest House",
+"kind": "hotel",
+"lat": 18.006638,
+"lng": -77.382007,
+"place": null,
+"osm_ref": "way/371955901",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Junction Guest House",
+"kind": "motel",
+"lat": 18.006964,
+"lng": -77.587278,
+"place": null,
+"osm_ref": "way/372075529",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Max Value",
+"kind": "hotel",
+"lat": 18.054483,
+"lng": -77.698424,
+"place": null,
+"osm_ref": "way/372102100",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunset Beach Resort",
+"kind": "hotel",
+"lat": 18.462749,
+"lng": -77.945931,
+"place": null,
+"osm_ref": "way/372866898",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Anchorage",
+"kind": "hotel",
+"lat": 18.463769,
+"lng": -77.943282,
+"place": null,
+"osm_ref": "way/372866899",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ocean Pines",
+"kind": "hotel",
+"lat": 18.461308,
+"lng": -77.946106,
+"place": null,
+"osm_ref": "way/372867897",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Palm Bay Guest House",
+"kind": "guest_house",
+"lat": 18.440874,
+"lng": -77.926835,
+"place": null,
+"osm_ref": "way/372893605",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Palladium Jamaica Resort & Spa",
+"kind": "hotel",
+"lat": 18.457829,
+"lng": -78.151579,
+"place": null,
+"osm_ref": "way/373167522",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rhodes Beach Resort",
+"kind": "hotel",
+"lat": 18.379948,
+"lng": -78.301905,
+"place": null,
+"osm_ref": "way/373238745",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "DeMontevins Lodge Hotel (1881)",
+"kind": "hotel",
+"lat": 18.181778,
+"lng": -76.451076,
+"place": null,
+"osm_ref": "way/373340715",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ocean Crest Guest House",
+"kind": "guest_house",
+"lat": 18.183002,
+"lng": -76.45141,
+"place": "Port Antonio",
+"osm_ref": "way/373340733",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "S Hotel Jamaica",
+"kind": "hotel",
+"lat": 18.487468,
+"lng": -77.928747,
+"place": "Montego Bay",
+"osm_ref": "way/373417705",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Polkerris Bed and Breakfast",
+"kind": "hotel",
+"lat": 18.482067,
+"lng": -77.928108,
+"place": "Montego Bay",
+"osm_ref": "way/373426551",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Montego",
+"kind": "hotel",
+"lat": 18.493227,
+"lng": -77.915829,
+"place": null,
+"osm_ref": "way/373426637",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hilton Rose Hall Resort & Spa",
+"kind": "hotel",
+"lat": 18.521624,
+"lng": -77.810699,
+"place": null,
+"osm_ref": "way/373434062",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Iberostar Selection Rose Hall Suites",
+"kind": "hotel",
+"lat": 18.515307,
+"lng": -77.769364,
+"place": "Montego Bay",
+"osm_ref": "way/373442845",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Iberostar Waves Rose Hall Beach",
+"kind": "hotel",
+"lat": 18.5147,
+"lng": -77.766533,
+"place": "Montego Bay",
+"osm_ref": "way/373442849",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jewel Runaway Bay",
+"kind": "hotel",
+"lat": 18.463044,
+"lng": -77.328681,
+"place": null,
+"osm_ref": "way/373456759",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunspot Villa",
+"kind": "hotel",
+"lat": 18.464067,
+"lng": -77.325709,
+"place": null,
+"osm_ref": "way/373456768",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Turrasann",
+"kind": "hotel",
+"lat": 18.463805,
+"lng": -77.325984,
+"place": null,
+"osm_ref": "way/373456769",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Franklin D Resort",
+"kind": "hotel",
+"lat": 18.463818,
+"lng": -77.330427,
+"place": null,
+"osm_ref": "way/373456779",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Dreamin Villa",
+"kind": "hotel",
+"lat": 18.483838,
+"lng": -77.527641,
+"place": null,
+"osm_ref": "way/373509207",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sea Grapes Villa",
+"kind": "hotel",
+"lat": 18.46936,
+"lng": -77.402442,
+"place": null,
+"osm_ref": "way/373514365",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mais Oui Tennis And Spa Villa",
+"kind": "hotel",
+"lat": 18.475053,
+"lng": -77.44999,
+"place": "Discovery Bay",
+"osm_ref": "way/373514492",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel",
+"kind": "hotel",
+"lat": 18.412568,
+"lng": -77.102872,
+"place": null,
+"osm_ref": "way/373537883",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Negril",
+"kind": "hotel",
+"lat": 18.354867,
+"lng": -78.335836,
+"place": "Negril",
+"osm_ref": "way/373924879",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunset at the Palms",
+"kind": "hotel",
+"lat": 18.347414,
+"lng": -78.332323,
+"place": null,
+"osm_ref": "way/373931718",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Riu Palace Tropical Bay",
+"kind": "hotel",
+"lat": 18.34562,
+"lng": -78.33393,
+"place": null,
+"osm_ref": "way/373931723",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Pineapple Beach Negril",
+"kind": "hotel",
+"lat": 18.342429,
+"lng": -78.335199,
+"place": null,
+"osm_ref": "way/373938187",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hedonism II",
+"kind": "hotel",
+"lat": 18.338581,
+"lng": -78.340362,
+"place": null,
+"osm_ref": "way/373946845",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Seashore Bay Resort",
+"kind": "hotel",
+"lat": 18.330856,
+"lng": -78.336649,
+"place": null,
+"osm_ref": "way/373949793",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Negril Palms",
+"kind": "hotel",
+"lat": 18.306915,
+"lng": -78.337852,
+"place": null,
+"osm_ref": "way/373953876",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Negril Tree House Resort",
+"kind": "hotel",
+"lat": 18.305547,
+"lng": -78.338004,
+"place": null,
+"osm_ref": "way/373953877",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Beachcomber Club Resort",
+"kind": "hotel",
+"lat": 18.303303,
+"lng": -78.337159,
+"place": null,
+"osm_ref": "way/373956100",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandy Haven Resort",
+"kind": "hotel",
+"lat": 18.301184,
+"lng": -78.337303,
+"place": null,
+"osm_ref": "way/373956102",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cocola Palm Seaside Resort",
+"kind": "hotel",
+"lat": 18.300856,
+"lng": -78.337675,
+"place": null,
+"osm_ref": "way/373960031",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Charela Inn",
+"kind": "hotel",
+"lat": 18.299915,
+"lng": -78.337899,
+"place": null,
+"osm_ref": "way/373960034",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "White Sands Negril",
+"kind": "hotel",
+"lat": 18.298918,
+"lng": -78.337972,
+"place": null,
+"osm_ref": "way/373962367",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Nirvana on the Beach",
+"kind": "hotel",
+"lat": 18.298709,
+"lng": -78.338008,
+"place": null,
+"osm_ref": "way/373962368",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Roots Bamboo Beach Resort",
+"kind": "hotel",
+"lat": 18.294697,
+"lng": -78.338838,
+"place": null,
+"osm_ref": "way/373965455",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Pineapple",
+"kind": "hotel",
+"lat": 18.29193,
+"lng": -78.339526,
+"place": null,
+"osm_ref": "way/373965456",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Veraclub Negril",
+"kind": "hotel",
+"lat": 18.291307,
+"lng": -78.339719,
+"place": null,
+"osm_ref": "way/373965459",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Merrils Beach Resort II",
+"kind": "hotel",
+"lat": 18.290493,
+"lng": -78.340031,
+"place": null,
+"osm_ref": "way/373965463",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Legends Beach Hotel",
+"kind": "hotel",
+"lat": 18.28885,
+"lng": -78.340619,
+"place": null,
+"osm_ref": "way/373980006",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Beach House Villas",
+"kind": "hotel",
+"lat": 18.2858,
+"lng": -78.342104,
+"place": null,
+"osm_ref": "way/373980010",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Skylark Negril Beach Resort",
+"kind": "hotel",
+"lat": 18.307813,
+"lng": -78.337887,
+"place": null,
+"osm_ref": "way/374015963",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Travelers Hotel",
+"kind": "hotel",
+"lat": 18.284602,
+"lng": -78.342564,
+"place": null,
+"osm_ref": "way/374020596",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Country Country",
+"kind": "hotel",
+"lat": 18.306649,
+"lng": -78.338236,
+"place": null,
+"osm_ref": "way/374029767",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rayon Hotel",
+"kind": "hotel",
+"lat": 18.301261,
+"lng": -78.336309,
+"place": "Negril",
+"osm_ref": "way/374029895",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Spa Retreat Boutique Hotel",
+"kind": "hotel",
+"lat": 18.278054,
+"lng": -78.361341,
+"place": null,
+"osm_ref": "way/374114072",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Spa Retreat Resort",
+"kind": "hotel",
+"lat": 18.277723,
+"lng": -78.361558,
+"place": null,
+"osm_ref": "way/374114851",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Home Sweet Home Resort",
+"kind": "hotel",
+"lat": 18.275733,
+"lng": -78.363395,
+"place": null,
+"osm_ref": "way/374114853",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Blue Cave Castle",
+"kind": "hotel",
+"lat": 18.274582,
+"lng": -78.364695,
+"place": null,
+"osm_ref": "way/374114856",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Birchrunville",
+"kind": "hotel",
+"lat": 18.273722,
+"lng": -78.365291,
+"place": null,
+"osm_ref": "way/374114859",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rockhouse Hotel",
+"kind": "hotel",
+"lat": 18.265444,
+"lng": -78.366959,
+"place": null,
+"osm_ref": "way/374119306",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rock Cliff Hotel",
+"kind": "hotel",
+"lat": 18.263151,
+"lng": -78.366458,
+"place": null,
+"osm_ref": "way/374119313",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunset on the Cliffs",
+"kind": "hotel",
+"lat": 18.263323,
+"lng": -78.366494,
+"place": null,
+"osm_ref": "way/374119314",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Caves",
+"kind": "hotel",
+"lat": 18.250578,
+"lng": -78.361087,
+"place": null,
+"osm_ref": "way/374120210",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Moon Dance Cliffs",
+"kind": "hotel",
+"lat": 18.242912,
+"lng": -78.355717,
+"place": null,
+"osm_ref": "way/374120213",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cotton Tree Place Hotel",
+"kind": "hotel",
+"lat": 18.278583,
+"lng": -78.349349,
+"place": null,
+"osm_ref": "way/374139770",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Willowgate",
+"kind": "hotel",
+"lat": 18.273816,
+"lng": -78.364451,
+"place": null,
+"osm_ref": "way/374160355",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Lighthouse Inn 2",
+"kind": "hotel",
+"lat": 18.249286,
+"lng": -78.360196,
+"place": null,
+"osm_ref": "way/374163615",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Llantrissant Beachcliff Villa",
+"kind": "hotel",
+"lat": 18.279677,
+"lng": -78.352594,
+"place": null,
+"osm_ref": "way/374166792",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "New Moon Cottage",
+"kind": "guest_house",
+"lat": 18.275849,
+"lng": -78.362763,
+"place": null,
+"osm_ref": "way/374166809",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Good Value Inn",
+"kind": "hotel",
+"lat": 18.277549,
+"lng": -78.35702,
+"place": null,
+"osm_ref": "way/374166891",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Canton Grove Resort",
+"kind": "hotel",
+"lat": 18.273166,
+"lng": -78.364939,
+"place": null,
+"osm_ref": "way/374169152",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rockhouse Hotel & Spa",
+"kind": "hotel",
+"lat": 18.264892,
+"lng": -78.368126,
+"place": null,
+"osm_ref": "way/374169162",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Royale Hummingbird Resort",
+"kind": "hotel",
+"lat": 18.264043,
+"lng": -78.366311,
+"place": null,
+"osm_ref": "way/374176969",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villas Sur Mer",
+"kind": "hotel",
+"lat": 18.254236,
+"lng": -78.361506,
+"place": null,
+"osm_ref": "way/374176980",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Le Mirage Boutique Hotel",
+"kind": "hotel",
+"lat": 18.257661,
+"lng": -78.365365,
+"place": null,
+"osm_ref": "way/374177040",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Negril Escape Resort and Spa",
+"kind": "hotel",
+"lat": 18.258944,
+"lng": -78.365503,
+"place": null,
+"osm_ref": "way/374177239",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mystic Ridge Resort",
+"kind": "hotel",
+"lat": 18.404844,
+"lng": -77.109863,
+"place": "Ocho Rios",
+"osm_ref": "way/374192694",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "New Moon Cottage & Suites",
+"kind": "hotel",
+"lat": 18.276007,
+"lng": -78.363409,
+"place": "Negril",
+"osm_ref": "way/374198853",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Oasis Resort",
+"kind": "hotel",
+"lat": 18.264246,
+"lng": -78.364036,
+"place": null,
+"osm_ref": "way/374199591",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Hotel Commingle",
+"kind": "hotel",
+"lat": 18.222934,
+"lng": -78.127,
+"place": null,
+"osm_ref": "way/374356839",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandals Whitehouse",
+"kind": "hotel",
+"lat": 18.109461,
+"lng": -77.98919,
+"place": null,
+"osm_ref": "way/374511290",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "South Shore",
+"kind": "guest_house",
+"lat": 18.014282,
+"lng": -77.837809,
+"place": null,
+"osm_ref": "way/374516406",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Jamaica Pegasus Hotel",
+"kind": "hotel",
+"lat": 18.002967,
+"lng": -76.787838,
+"place": "Kingston",
+"osm_ref": "way/374977587",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunset Inn Hotel",
+"kind": "hotel",
+"lat": 18.002666,
+"lng": -76.786451,
+"place": null,
+"osm_ref": "way/374978333",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sun Island Jamaica",
+"kind": "hotel",
+"lat": 18.014883,
+"lng": -76.80775,
+"place": "Kingston",
+"osm_ref": "way/375257748",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rio Mad-den Guest House",
+"kind": "guest_house",
+"lat": 17.985271,
+"lng": -76.783814,
+"place": "Kingston",
+"osm_ref": "way/375436511",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Port Royal Hotel Marina & Spa",
+"kind": "hotel",
+"lat": 17.940066,
+"lng": -76.839523,
+"place": null,
+"osm_ref": "way/375460205",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Morant Villas",
+"kind": "hotel",
+"lat": 17.881093,
+"lng": -76.40635,
+"place": null,
+"osm_ref": "way/375592338",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Brown's Guest House",
+"kind": "guest_house",
+"lat": 17.868432,
+"lng": -76.356476,
+"place": null,
+"osm_ref": "way/375604707",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Aphrodite Hotel",
+"kind": "hotel",
+"lat": 17.996559,
+"lng": -76.797914,
+"place": "Kingston",
+"osm_ref": "way/375996124",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pulse Rooms",
+"kind": "guest_house",
+"lat": 18.011688,
+"lng": -76.789367,
+"place": "Kingston",
+"osm_ref": "way/438914438",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Drakes Cove",
+"kind": "guest_house",
+"lat": 17.861747,
+"lng": -76.342156,
+"place": null,
+"osm_ref": "way/446799255",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Nickels Garden Villas",
+"kind": "guest_house",
+"lat": 18.448485,
+"lng": -77.875608,
+"place": "Montego Bay",
+"osm_ref": "way/474709120",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mojala Guest House",
+"kind": "guest_house",
+"lat": 18.467509,
+"lng": -77.914173,
+"place": "Montego Bay",
+"osm_ref": "way/477954056",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Comfort Guest House",
+"kind": "guest_house",
+"lat": 18.467295,
+"lng": -77.913739,
+"place": "Montego Bay",
+"osm_ref": "way/477954064",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Palm Terrace",
+"kind": "hotel",
+"lat": 18.489295,
+"lng": -77.921033,
+"place": "Montego Bay",
+"osm_ref": "way/484080388",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Starlight Chalet",
+"kind": "chalet",
+"lat": 18.088357,
+"lng": -76.6869,
+"place": null,
+"osm_ref": "way/493732048",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hidden Paradise Hotel",
+"kind": "hotel",
+"lat": 18.290696,
+"lng": -78.338234,
+"place": null,
+"osm_ref": "way/506307241",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kuyaba",
+"kind": "hotel",
+"lat": 18.288638,
+"lng": -78.340699,
+"place": null,
+"osm_ref": "way/506552051",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rhodes Hall Plantation",
+"kind": "hotel",
+"lat": 18.380653,
+"lng": -78.301266,
+"place": null,
+"osm_ref": "way/507151836",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Big Ship",
+"kind": "hotel",
+"lat": 17.878958,
+"lng": -77.755977,
+"place": null,
+"osm_ref": "way/508295567",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ocean View Guesthouse",
+"kind": "guest_house",
+"lat": 17.87584,
+"lng": -77.759348,
+"place": null,
+"osm_ref": "way/508296101",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "MarBlue Hotel",
+"kind": "hotel",
+"lat": 17.8752,
+"lng": -77.758423,
+"place": null,
+"osm_ref": "way/508296313",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kudehya Guesthouse",
+"kind": "guest_house",
+"lat": 17.874909,
+"lng": -77.757897,
+"place": null,
+"osm_ref": "way/508296314",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Calabash Hotel",
+"kind": "hotel",
+"lat": 17.877416,
+"lng": -77.759881,
+"place": null,
+"osm_ref": "way/508297282",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Treasure Bay Guesthouse",
+"kind": "guest_house",
+"lat": 17.879112,
+"lng": -77.758149,
+"place": "Treasure Beach",
+"osm_ref": "way/508300998",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Luna Sea Inn",
+"kind": "hotel",
+"lat": 18.152152,
+"lng": -78.032529,
+"place": null,
+"osm_ref": "way/533612003",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shafston Great House",
+"kind": "guest_house",
+"lat": 18.166313,
+"lng": -78.009216,
+"place": null,
+"osm_ref": "way/533898248",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Linn Dith Studios",
+"kind": "guest_house",
+"lat": 18.020247,
+"lng": -76.774846,
+"place": null,
+"osm_ref": "way/540880003",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Alfred's Ocean Place",
+"kind": "hotel",
+"lat": 18.292346,
+"lng": -78.339381,
+"place": null,
+"osm_ref": "way/611562646",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Pineapple (Garden Side)",
+"kind": "hotel",
+"lat": 18.291516,
+"lng": -78.337973,
+"place": null,
+"osm_ref": "way/613068683",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Yellow Bird",
+"kind": "hotel",
+"lat": 18.290046,
+"lng": -78.340156,
+"place": null,
+"osm_ref": "way/613078814",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Merrils Beach Resort III",
+"kind": "hotel",
+"lat": 18.289665,
+"lng": -78.340341,
+"place": null,
+"osm_ref": "way/613079681",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jamaica Tamboo",
+"kind": "hotel",
+"lat": 18.289218,
+"lng": -78.340489,
+"place": null,
+"osm_ref": "way/613083413",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Coral Seas Beach Resort",
+"kind": "hotel",
+"lat": 18.283667,
+"lng": -78.343334,
+"place": null,
+"osm_ref": "way/613111977",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ansell's Thatchwalk Cottages",
+"kind": "hotel",
+"lat": 18.284042,
+"lng": -78.343098,
+"place": null,
+"osm_ref": "way/613112810",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shields Negril Villas",
+"kind": "hotel",
+"lat": 18.284388,
+"lng": -78.342924,
+"place": null,
+"osm_ref": "way/613113945",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Travelers Beach Resort",
+"kind": "hotel",
+"lat": 18.284681,
+"lng": -78.342761,
+"place": null,
+"osm_ref": "way/613115715",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Reggae Hostel",
+"kind": "hostel",
+"lat": 18.015561,
+"lng": -76.803424,
+"place": "Kingston 10",
+"osm_ref": "way/615986637",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Negril Beach Club Condos",
+"kind": "hotel",
+"lat": 18.285397,
+"lng": -78.342277,
+"place": null,
+"osm_ref": "way/618810088",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bourbon Beach Hotel",
+"kind": "hotel",
+"lat": 18.288088,
+"lng": -78.341408,
+"place": null,
+"osm_ref": "way/618838452",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunset at the Palms",
+"kind": "hotel",
+"lat": 18.347375,
+"lng": -78.332344,
+"place": null,
+"osm_ref": "way/626950889",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Palace Tropical Bay",
+"kind": "hotel",
+"lat": 18.345684,
+"lng": -78.334267,
+"place": "Negril",
+"osm_ref": "way/626952434",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Couples Negril",
+"kind": "hotel",
+"lat": 18.342566,
+"lng": -78.335466,
+"place": null,
+"osm_ref": "way/626953206",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Royalton Negril",
+"kind": "hotel",
+"lat": 18.340906,
+"lng": -78.33987,
+"place": null,
+"osm_ref": "way/626958816",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Point Village",
+"kind": "hotel",
+"lat": 18.339651,
+"lng": -78.343055,
+"place": null,
+"osm_ref": "way/626960427",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hedonism II",
+"kind": "hotel",
+"lat": 18.338272,
+"lng": -78.340944,
+"place": null,
+"osm_ref": "way/626962175",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Azul Beach Resort Negril",
+"kind": "hotel",
+"lat": 18.32821,
+"lng": -78.336372,
+"place": null,
+"osm_ref": "way/626972111",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ayurveda Resort",
+"kind": "hotel",
+"lat": 18.32965,
+"lng": -78.336618,
+"place": null,
+"osm_ref": "way/626979028",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Boardwalk Village",
+"kind": "hotel",
+"lat": 18.332341,
+"lng": -78.337277,
+"place": null,
+"osm_ref": "way/626979029",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Seashore Bay Resort",
+"kind": "hotel",
+"lat": 18.330808,
+"lng": -78.336816,
+"place": null,
+"osm_ref": "way/626980859",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Couples Swept Away",
+"kind": "hotel",
+"lat": 18.310439,
+"lng": -78.337847,
+"place": null,
+"osm_ref": "way/626985462",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Footprints on the Sand Hotel",
+"kind": "hotel",
+"lat": 18.308103,
+"lng": -78.337994,
+"place": null,
+"osm_ref": "way/626985463",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Negril Treehouse Resort",
+"kind": "hotel",
+"lat": 18.305328,
+"lng": -78.337638,
+"place": null,
+"osm_ref": "way/626992040",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Country Country Beach Cottages",
+"kind": "hotel",
+"lat": 18.30475,
+"lng": -78.337594,
+"place": null,
+"osm_ref": "way/626992419",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Crystal Waters Villas",
+"kind": "hotel",
+"lat": 18.304394,
+"lng": -78.337597,
+"place": null,
+"osm_ref": "way/626993365",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Beachcomber Club Villas and Rooms",
+"kind": "hotel",
+"lat": 18.303472,
+"lng": -78.337632,
+"place": null,
+"osm_ref": "way/627016024",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Idle Awhile Villas",
+"kind": "hotel",
+"lat": 18.302849,
+"lng": -78.337662,
+"place": null,
+"osm_ref": "way/628596000",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Firefly Beach Cottages and Suites",
+"kind": "hotel",
+"lat": 18.302104,
+"lng": -78.337684,
+"place": null,
+"osm_ref": "way/628596615",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sandy Haven Resort",
+"kind": "hotel",
+"lat": 18.301239,
+"lng": -78.337664,
+"place": null,
+"osm_ref": "way/628598385",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Idle Awhile the Beach",
+"kind": "hotel",
+"lat": 18.300364,
+"lng": -78.337717,
+"place": null,
+"osm_ref": "way/628599235",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Charela Inn Hotel",
+"kind": "hotel",
+"lat": 18.299794,
+"lng": -78.337798,
+"place": null,
+"osm_ref": "way/628600743",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Boat Bar and Cottages",
+"kind": "hotel",
+"lat": 18.297048,
+"lng": -78.338305,
+"place": null,
+"osm_ref": "way/628603843",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Fun Holiday Beach Hotel",
+"kind": "hotel",
+"lat": 18.295296,
+"lng": -78.338713,
+"place": null,
+"osm_ref": "way/628604797",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Woodstock Negril",
+"kind": "hotel",
+"lat": 18.294259,
+"lng": -78.338914,
+"place": null,
+"osm_ref": "way/628606864",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rainbow Arch Guesthouse",
+"kind": "hotel",
+"lat": 18.29923,
+"lng": -78.33791,
+"place": null,
+"osm_ref": "way/628615224",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Lazy Dayz",
+"kind": "hotel",
+"lat": 18.298361,
+"lng": -78.338512,
+"place": null,
+"osm_ref": "way/628616259",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mariposa Hide-Away",
+"kind": "hotel",
+"lat": 18.29729,
+"lng": -78.338249,
+"place": null,
+"osm_ref": "way/628618841",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Whistling Bird Negril",
+"kind": "hotel",
+"lat": 18.295873,
+"lng": -78.33855,
+"place": null,
+"osm_ref": "way/628621036",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rooms on the Beach",
+"kind": "hotel",
+"lat": 18.293801,
+"lng": -78.339039,
+"place": null,
+"osm_ref": "way/628622521",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bar-B-Barn Beach Hotel",
+"kind": "hotel",
+"lat": 18.287635,
+"lng": -78.341138,
+"place": null,
+"osm_ref": "way/628627380",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Barry's Rooms",
+"kind": "hotel",
+"lat": 18.287389,
+"lng": -78.341616,
+"place": null,
+"osm_ref": "way/628629460",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mom's Place",
+"kind": "hotel",
+"lat": 18.287232,
+"lng": -78.341097,
+"place": null,
+"osm_ref": "way/628629530",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Westport Cottages",
+"kind": "hotel",
+"lat": 18.282994,
+"lng": -78.342252,
+"place": null,
+"osm_ref": "way/628631004",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Coral Seas Garden Resort",
+"kind": "hotel",
+"lat": 18.286643,
+"lng": -78.339809,
+"place": null,
+"osm_ref": "way/628640505",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunrise Club",
+"kind": "hotel",
+"lat": 18.286884,
+"lng": -78.339516,
+"place": null,
+"osm_ref": "way/628641586",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pure Garden Resort Negril",
+"kind": "hotel",
+"lat": 18.287803,
+"lng": -78.339186,
+"place": null,
+"osm_ref": "way/628642536",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ledgends Beach Hotel (Garden Side)",
+"kind": "hotel",
+"lat": 18.288678,
+"lng": -78.339312,
+"place": null,
+"osm_ref": "way/628645193",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shamrock Classic Cottages",
+"kind": "hotel",
+"lat": 18.291339,
+"lng": -78.338554,
+"place": null,
+"osm_ref": "way/628654195",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Golden Sunset Villas",
+"kind": "hotel",
+"lat": 18.292017,
+"lng": -78.338116,
+"place": null,
+"osm_ref": "way/628658717",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Glistening Waters Hotel",
+"kind": "hotel",
+"lat": 18.482995,
+"lng": -77.627845,
+"place": null,
+"osm_ref": "way/665580141",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Casa de Shalom",
+"kind": "hotel",
+"lat": 18.41139,
+"lng": -77.077879,
+"place": null,
+"osm_ref": "way/682463466",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunset Resort and Villas",
+"kind": "hotel",
+"lat": 17.8785,
+"lng": -77.761795,
+"place": null,
+"osm_ref": "way/687856135",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rocksteady Cottage",
+"kind": "guest_house",
+"lat": 17.877201,
+"lng": -77.759138,
+"place": null,
+"osm_ref": "way/688890921",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pelican's reach",
+"kind": "guest_house",
+"lat": 17.865541,
+"lng": -77.739221,
+"place": null,
+"osm_ref": "way/699236889",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Milk River Mineral Bath and Spa",
+"kind": "hotel",
+"lat": 17.853461,
+"lng": -77.353,
+"place": null,
+"osm_ref": "way/744164402",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "AC Marriott Hotel",
+"kind": "hotel",
+"lat": 18.008458,
+"lng": -76.778509,
+"place": null,
+"osm_ref": "way/749448573",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Last Resort",
+"kind": "guest_house",
+"lat": 18.358248,
+"lng": -77.658603,
+"place": null,
+"osm_ref": "way/750787804",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Turtle House",
+"kind": "guest_house",
+"lat": 17.899057,
+"lng": -77.792467,
+"place": null,
+"osm_ref": "way/755543683",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mandeville Hotel",
+"kind": "hotel",
+"lat": 18.038706,
+"lng": -77.505961,
+"place": null,
+"osm_ref": "way/758445745",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Banana Shout",
+"kind": "hotel",
+"lat": 18.254805,
+"lng": -78.363827,
+"place": null,
+"osm_ref": "way/819215078",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bridge Palm Hotel",
+"kind": "hotel",
+"lat": 17.969003,
+"lng": -77.350744,
+"place": null,
+"osm_ref": "way/824983805",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Lobster Bowl",
+"kind": "hotel",
+"lat": 18.472898,
+"lng": -77.458547,
+"place": null,
+"osm_ref": "way/826303590",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "VIVIENNE'S GUEST HOUSE",
+"kind": "guest_house",
+"lat": 18.40252,
+"lng": -78.261522,
+"place": "Green Island",
+"osm_ref": "way/826444550",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "South Sea View Guest House",
+"kind": "hotel",
+"lat": 18.069399,
+"lng": -77.957252,
+"place": "Sandy Ground",
+"osm_ref": "way/826948350",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Blue Paloma Bed And Breakfast",
+"kind": "hotel",
+"lat": 18.446507,
+"lng": -78.175247,
+"place": "Lucea",
+"osm_ref": "way/827276803",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Villa Bella",
+"kind": "hotel",
+"lat": 18.159265,
+"lng": -77.488066,
+"place": null,
+"osm_ref": "way/828865531",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa La Cage",
+"kind": "hotel",
+"lat": 18.276564,
+"lng": -78.360425,
+"place": null,
+"osm_ref": "way/828880625",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Westender Inn",
+"kind": "hotel",
+"lat": 18.232209,
+"lng": -78.330997,
+"place": null,
+"osm_ref": "way/829661267",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jackie's on the Reef",
+"kind": "guest_house",
+"lat": 18.233324,
+"lng": -78.331988,
+"place": null,
+"osm_ref": "way/829668285",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Seastar Inn",
+"kind": "hotel",
+"lat": 18.25714,
+"lng": -78.361545,
+"place": "Negril",
+"osm_ref": "way/829678862",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ocean Crest Guest House",
+"kind": "guest_house",
+"lat": 18.177166,
+"lng": -76.450726,
+"place": null,
+"osm_ref": "way/829678957",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sea Cliff Hotel & Spa Ltd",
+"kind": "hotel",
+"lat": 18.081323,
+"lng": -76.296317,
+"place": null,
+"osm_ref": "way/829760809",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tranquility Villa",
+"kind": "guest_house",
+"lat": 18.171339,
+"lng": -76.453547,
+"place": null,
+"osm_ref": "way/829766400",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Geejam",
+"kind": "hotel",
+"lat": 18.174195,
+"lng": -76.407229,
+"place": "Port Antonio",
+"osm_ref": "way/829768898",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Frenchman's Cove Resort",
+"kind": "hotel",
+"lat": 18.175081,
+"lng": -76.400338,
+"place": null,
+"osm_ref": "way/829768924",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pimento Lodge Resort",
+"kind": "hotel",
+"lat": 18.098523,
+"lng": -76.315155,
+"place": null,
+"osm_ref": "way/829773927",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Seaviewvilla",
+"kind": "guest_house",
+"lat": 18.184682,
+"lng": -76.428996,
+"place": "Port Antonio",
+"osm_ref": "way/829891914",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Golf View Hotel",
+"kind": "hotel",
+"lat": 18.042248,
+"lng": -77.511773,
+"place": null,
+"osm_ref": "way/830838294",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Bluebird Villa",
+"kind": "hotel",
+"lat": 18.447983,
+"lng": -78.053176,
+"place": null,
+"osm_ref": "way/831693632",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Anticipation Villa",
+"kind": "hotel",
+"lat": 18.44771,
+"lng": -78.055302,
+"place": null,
+"osm_ref": "way/831693634",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Three Finger Jack Hotel",
+"kind": "hotel",
+"lat": 17.926241,
+"lng": -76.644195,
+"place": null,
+"osm_ref": "way/831921308",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Brytan Villa",
+"kind": "hotel",
+"lat": 17.879722,
+"lng": -77.763539,
+"place": null,
+"osm_ref": "way/832349905",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Irie Rest",
+"kind": "apartment",
+"lat": 17.892236,
+"lng": -77.781435,
+"place": null,
+"osm_ref": "way/832352842",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tan Tan Beach",
+"kind": "hotel",
+"lat": 17.903845,
+"lng": -77.795696,
+"place": null,
+"osm_ref": "way/832353533",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mer's Perch",
+"kind": "guest_house",
+"lat": 17.893747,
+"lng": -77.78062,
+"place": null,
+"osm_ref": "way/832353735",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Elegance",
+"kind": "guest_house",
+"lat": 17.891146,
+"lng": -77.779575,
+"place": "Calabash Bay",
+"osm_ref": "way/832411132",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Port of Call Hotel",
+"kind": "hotel",
+"lat": 18.01016,
+"lng": -77.834738,
+"place": "Black River",
+"osm_ref": "way/832553310",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Pelican",
+"kind": "guest_house",
+"lat": 17.888806,
+"lng": -77.778234,
+"place": null,
+"osm_ref": "way/832608897",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Welcomming Vibes",
+"kind": "guest_house",
+"lat": 17.887445,
+"lng": -77.763016,
+"place": "treasure beach",
+"osm_ref": "way/832954031",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shakespeare Cottage",
+"kind": "guest_house",
+"lat": 17.8855,
+"lng": -77.766676,
+"place": null,
+"osm_ref": "way/833130546",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ultimate Freedom Bed and Breakfast",
+"kind": "guest_house",
+"lat": 18.056714,
+"lng": -77.687441,
+"place": null,
+"osm_ref": "way/834010013",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Viento",
+"kind": "hotel",
+"lat": 18.42355,
+"lng": -77.046954,
+"place": null,
+"osm_ref": "way/834194599",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tower Cloisters Apartments",
+"kind": "hotel",
+"lat": 18.421916,
+"lng": -77.044219,
+"place": null,
+"osm_ref": "way/834243456",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Summerhill Villa",
+"kind": "hotel",
+"lat": 18.517396,
+"lng": -77.838988,
+"place": "Montego Bay",
+"osm_ref": "way/834583910",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Reggae Moon Guest House",
+"kind": "guest_house",
+"lat": 18.462066,
+"lng": -77.679915,
+"place": "Falmouth",
+"osm_ref": "way/834898724",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Castaways Villa",
+"kind": "hotel",
+"lat": 18.482584,
+"lng": -77.531718,
+"place": "Duncans",
+"osm_ref": "way/835118030",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Crystal Villa Silver Sands Trelawny",
+"kind": "hotel",
+"lat": 18.48331,
+"lng": -77.530869,
+"place": null,
+"osm_ref": "way/835118502",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Summertime Villa",
+"kind": "hotel",
+"lat": 18.482661,
+"lng": -77.526531,
+"place": null,
+"osm_ref": "way/835481635",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Beach Haven Villa",
+"kind": "hotel",
+"lat": 18.482276,
+"lng": -77.525338,
+"place": "Silver Sands",
+"osm_ref": "way/835481642",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shaw Park Beach Hotel",
+"kind": "hotel",
+"lat": 18.414471,
+"lng": -77.074839,
+"place": null,
+"osm_ref": "way/835544426",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tensing Pen Resort",
+"kind": "hotel",
+"lat": 18.256169,
+"lng": -78.365174,
+"place": null,
+"osm_ref": "way/835842131",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mount Edge Guest House",
+"kind": "guest_house",
+"lat": 18.068966,
+"lng": -76.713185,
+"place": "St. Andrew",
+"osm_ref": "way/836966095",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kingston Cottage",
+"kind": "guest_house",
+"lat": 18.014061,
+"lng": -76.757778,
+"place": null,
+"osm_ref": "way/837148496",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "ROK Hotel Kingston, Tapestry Collection by Hilton",
+"kind": "hotel",
+"lat": 17.964342,
+"lng": -76.792638,
+"place": "Kingston",
+"osm_ref": "way/837201130",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "One32 GuestHouse",
+"kind": "guest_house",
+"lat": 18.032791,
+"lng": -76.780858,
+"place": "Kingston",
+"osm_ref": "way/837205518",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Shirley Retreat Hotel",
+"kind": "hotel",
+"lat": 18.016695,
+"lng": -76.782729,
+"place": "Kingston",
+"osm_ref": "way/837293667",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "The Blue House Boutique Bed & Breakfast Inn",
+"kind": "hotel",
+"lat": 18.414603,
+"lng": -77.065116,
+"place": "Ocho Rios",
+"osm_ref": "way/837374986",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Christar Villas",
+"kind": "hotel",
+"lat": 18.020654,
+"lng": -76.772174,
+"place": null,
+"osm_ref": "way/837511305",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Jakes Hotel Villa and Spa",
+"kind": "hotel",
+"lat": 17.879604,
+"lng": -77.763161,
+"place": null,
+"osm_ref": "way/837822143",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Belleh23 Kingston Creative Guesthouse",
+"kind": "guest_house",
+"lat": 18.039333,
+"lng": -76.793893,
+"place": "Kingston",
+"osm_ref": "way/838378409",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Flower Hill Villa",
+"kind": "hotel",
+"lat": 18.518343,
+"lng": -77.847162,
+"place": "Montego Ba",
+"osm_ref": "way/838572101",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Spring Farm",
+"kind": "guest_house",
+"lat": 18.517892,
+"lng": -77.847486,
+"place": null,
+"osm_ref": "way/838573320",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sun Palace Resorts",
+"kind": "hotel",
+"lat": 18.504798,
+"lng": -77.862348,
+"place": "Montego Bay",
+"osm_ref": "way/839182919",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Lime Tree Farm",
+"kind": "guest_house",
+"lat": 18.005339,
+"lng": -76.657957,
+"place": null,
+"osm_ref": "way/840235812",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Seacrest Beach Hotel",
+"kind": "hotel",
+"lat": 18.448373,
+"lng": -77.224361,
+"place": null,
+"osm_ref": "way/841445801",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sea Haven",
+"kind": "hotel",
+"lat": 18.468383,
+"lng": -77.401501,
+"place": null,
+"osm_ref": "way/841751782",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cariblue Hotel & Scuba Resort",
+"kind": "hotel",
+"lat": 18.520925,
+"lng": -77.867987,
+"place": null,
+"osm_ref": "way/841897027",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Eddie's Tigress Resort",
+"kind": "hotel",
+"lat": 18.276855,
+"lng": -78.359201,
+"place": null,
+"osm_ref": "way/841983630",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Coral Cove Wellness Retreat",
+"kind": "hotel",
+"lat": 18.222589,
+"lng": -78.276812,
+"place": null,
+"osm_ref": "way/842009856",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Silver Creek Resort",
+"kind": "hotel",
+"lat": 18.454939,
+"lng": -77.324415,
+"place": null,
+"osm_ref": "way/842562150",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Sonate",
+"kind": "hotel",
+"lat": 18.454598,
+"lng": -77.326857,
+"place": "Runaway Bay",
+"osm_ref": "way/842562164",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunflower Resort & Villas",
+"kind": "hotel",
+"lat": 18.456008,
+"lng": -77.326775,
+"place": null,
+"osm_ref": "way/842562188",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cindy Villa",
+"kind": "hotel",
+"lat": 18.456136,
+"lng": -77.335669,
+"place": "Runaway Bay",
+"osm_ref": "way/842571334",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Silver Palms Hotel",
+"kind": "hotel",
+"lat": 18.424766,
+"lng": -77.159197,
+"place": "Ocho Rios",
+"osm_ref": "way/844584500",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Rabbi's Chabad House",
+"kind": "hotel",
+"lat": 18.519409,
+"lng": -77.839064,
+"place": "Montego Bay",
+"osm_ref": "way/845434815",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ladywood Villa & Cottage Rooms by Russell Villas",
+"kind": "hotel",
+"lat": 18.51836,
+"lng": -77.842045,
+"place": "Montego Bay",
+"osm_ref": "way/845453017",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Spring Farm",
+"kind": "guest_house",
+"lat": 18.518002,
+"lng": -77.84914,
+"place": null,
+"osm_ref": "way/845476415",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Negril Luxury Apartments",
+"kind": "hotel",
+"lat": 18.276884,
+"lng": -78.351213,
+"place": "Negril",
+"osm_ref": "way/845590875",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Villa Sweet Villa",
+"kind": "hotel",
+"lat": 18.515838,
+"lng": -77.86065,
+"place": "Ironshore",
+"osm_ref": "way/851548254",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Fisherman's Inn",
+"kind": "hotel",
+"lat": 18.4929,
+"lng": -77.656494,
+"place": null,
+"osm_ref": "way/853753937",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tamarind Tree Hotel",
+"kind": "hotel",
+"lat": 18.46484,
+"lng": -77.318448,
+"place": null,
+"osm_ref": "way/854141896",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "WHITEHOUSE HILLSIDE GUESTHOUSE LIMITED",
+"kind": "hotel",
+"lat": 18.094842,
+"lng": -77.968674,
+"place": "Westmoreland",
+"osm_ref": "way/860991027",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Kibo Hotel",
+"kind": "hotel",
+"lat": 18.223569,
+"lng": -78.136061,
+"place": "Savanna-La-Mar",
+"osm_ref": "way/866679225",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Breathless Montego Bay Resort & Spa",
+"kind": "hotel",
+"lat": 18.459941,
+"lng": -77.946728,
+"place": "Montego Freeport",
+"osm_ref": "way/1008817993",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "City View Hotel",
+"kind": "hotel",
+"lat": 18.065326,
+"lng": -76.809577,
+"place": null,
+"osm_ref": "way/1008820213",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Deja Resort",
+"kind": "hotel",
+"lat": 18.486613,
+"lng": -77.928703,
+"place": "Montego Bay",
+"osm_ref": "way/1008824217",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hermosa Cove",
+"kind": "hotel",
+"lat": 18.413777,
+"lng": -77.093276,
+"place": "Pineapple",
+"osm_ref": "way/1008829500",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Mockingbird Hill",
+"kind": "hotel",
+"lat": 18.171678,
+"lng": -76.413969,
+"place": null,
+"osm_ref": "way/1008833115",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Moxons Beach Club",
+"kind": "hotel",
+"lat": 18.407509,
+"lng": -76.989206,
+"place": null,
+"osm_ref": "way/1008881097",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Reggae",
+"kind": "hotel",
+"lat": 18.516126,
+"lng": -77.885468,
+"place": "Montego Bay",
+"osm_ref": "way/1008884127",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Palace Jamaica",
+"kind": "hotel",
+"lat": 18.516524,
+"lng": -77.883882,
+"place": "Montego Bay",
+"osm_ref": "way/1008904106",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Royal Decameron Cornwall Beach",
+"kind": "hotel",
+"lat": 18.488469,
+"lng": -77.928612,
+"place": "Montego Bay",
+"osm_ref": "way/1008908662",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Mandeview Hotel",
+"kind": "hotel",
+"lat": 18.031776,
+"lng": -77.524724,
+"place": "Balvenie Heights",
+"osm_ref": "way/1008917224",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Catcha Falling Star",
+"kind": "hotel",
+"lat": 18.255028,
+"lng": -78.364511,
+"place": null,
+"osm_ref": "way/1009547247",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Prospect Estate and Villas",
+"kind": "hotel",
+"lat": 18.418753,
+"lng": -77.059941,
+"place": null,
+"osm_ref": "way/1009565764",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "San Bar Villa",
+"kind": "hotel",
+"lat": 18.173481,
+"lng": -76.389606,
+"place": "Drapers",
+"osm_ref": "way/1009568681",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Palladium Jamaica Resort & Spa",
+"kind": "hotel",
+"lat": 18.457355,
+"lng": -78.151613,
+"place": null,
+"osm_ref": "way/1082303425",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Cashaw Cabin",
+"kind": "chalet",
+"lat": 17.879116,
+"lng": -77.754903,
+"place": "Treasure Beach",
+"osm_ref": "way/1214959619",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "JOIA Rose Hall by Iberostar",
+"kind": "hotel",
+"lat": 18.515197,
+"lng": -77.770421,
+"place": "Montego Bay",
+"osm_ref": "way/1421970621",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Montego Bay",
+"kind": "hotel",
+"lat": 18.517719,
+"lng": -77.88165,
+"place": "Montego Bay",
+"osm_ref": "way/1425767080",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Palace Aquarelle",
+"kind": "hotel",
+"lat": 18.485137,
+"lng": -77.612698,
+"place": "Falmouth",
+"osm_ref": "way/1428974590",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "La Sirena",
+"kind": "guest_house",
+"lat": 17.89195,
+"lng": -77.782327,
+"place": null,
+"osm_ref": "way/1448192216",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Two Seasons Guest House",
+"kind": "guest_house",
+"lat": 17.890899,
+"lng": -77.771702,
+"place": null,
+"osm_ref": "way/1448197995",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Ashanti Village Guest House",
+"kind": "guest_house",
+"lat": 17.887441,
+"lng": -77.771674,
+"place": null,
+"osm_ref": "way/1448213702",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "nice and easy guest house",
+"kind": "guest_house",
+"lat": 17.888507,
+"lng": -77.771123,
+"place": null,
+"osm_ref": "way/1453782670",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Altamont Court Hotel",
+"kind": "hotel",
+"lat": 18.003001,
+"lng": -76.786858,
+"place": "Kingston",
+"osm_ref": "relation/13505782",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Eden Gardens Wellness Resort & Spa",
+"kind": "hotel",
+"lat": 18.010514,
+"lng": -76.778953,
+"place": "Kingston",
+"osm_ref": "relation/13506064",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Knutsford Court Hotel",
+"kind": "hotel",
+"lat": 18.007514,
+"lng": -76.792355,
+"place": "Kingston",
+"osm_ref": "relation/13506799",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Royal Decameron Montego Beach",
+"kind": "hotel",
+"lat": 18.489982,
+"lng": -77.927903,
+"place": "Montego Bay",
+"osm_ref": "relation/13506884",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Secrets Wild Orchid Montego Bay",
+"kind": "hotel",
+"lat": 18.458615,
+"lng": -77.950817,
+"place": null,
+"osm_ref": "relation/13507008",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Sunscape Splash Montego Bay",
+"kind": "hotel",
+"lat": 18.463036,
+"lng": -77.945827,
+"place": null,
+"osm_ref": "relation/13507052",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Milbrooks Resort",
+"kind": "hotel",
+"lat": 18.515398,
+"lng": -77.84176,
+"place": "Montego Bay",
+"osm_ref": "relation/13507158",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tropics View Jamaica",
+"kind": "hotel",
+"lat": 18.034793,
+"lng": -77.533839,
+"place": null,
+"osm_ref": "relation/13507247",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Tranquility Cove",
+"kind": "hotel",
+"lat": 18.422411,
+"lng": -77.046749,
+"place": null,
+"osm_ref": "relation/13516679",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Reefside Villa",
+"kind": "hotel",
+"lat": 18.422675,
+"lng": -77.043932,
+"place": null,
+"osm_ref": "relation/13516944",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Belmont Villa",
+"kind": "hotel",
+"lat": 18.176238,
+"lng": -76.395953,
+"place": null,
+"osm_ref": "relation/13517122",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Laughing Waters Villa",
+"kind": "hotel",
+"lat": 18.421885,
+"lng": -77.14928,
+"place": null,
+"osm_ref": "relation/13517125",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Grand Lido Negril",
+"kind": "hotel",
+"lat": 18.277407,
+"lng": -78.351832,
+"place": null,
+"osm_ref": "relation/13517542",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Golden Shore Resort",
+"kind": "hotel",
+"lat": 17.874349,
+"lng": -76.37718,
+"place": null,
+"osm_ref": "relation/13517583",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Hotel Riu Negril",
+"kind": "hotel",
+"lat": 18.355131,
+"lng": -78.337474,
+"place": null,
+"osm_ref": "relation/18411869",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Couples Swept Away",
+"kind": "hotel",
+"lat": 18.311393,
+"lng": -78.337474,
+"place": "Westmoreland",
+"osm_ref": "relation/18819251",
+"source": "OpenStreetMap contributors, ODbL"
+},
+{
+"country_code": "JM",
+"name": "Unico 1877 - Montego Bay",
+"kind": "hotel",
+"lat": 18.5181,
+"lng": -77.783514,
+"place": null,
+"osm_ref": "relation/19966410",
+"source": "OpenStreetMap contributors, ODbL"
+}
+]

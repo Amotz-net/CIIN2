@@ -144,7 +144,8 @@ export default function RoleLayout() {
               <div className="cc-strap">{strap}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-              <Clock org={org?.name} role={ROLE_LABELS[role]} />
+              <Clock org={profile?.properties?.name && !impersonating ? profile.properties.name : org?.name}
+                     role={profile?.properties?.name && !impersonating ? 'Property manager' : ROLE_LABELS[role]} />
               {isPlatformAdmin && <ViewAs profile={profile} viewAsId={viewAsId} onChange={chooseViewAs} />}
             </div>
           </div>

@@ -17,7 +17,10 @@ const LEVEL_LEGEND = [{ type: 'fill', color: '#D9736A', label: 'Offshore level: 
 const WINDOW_DAYS = { '1–2 days': [1, 2], '2–4 days': [2, 4], '3–5 days': [3, 5] }
 
 export function HotelConsole({ profile, onNavigate }) {
-  const d = useConsole(profile, { scope: 'org', weather: true })
+  // An owner may hold several properties: all of them, or one at a time.
+  // A property manager is already confined to theirs by the database.
+  const [property, setProperty] = useState(null)
+  const d = useConsole(profile, { scope: 'org', weather: true, property })
   const [busy, setBusy] = useState(false)
   const arr = arrivalText(d.landfall)
   const mine = d.open.filter(m => stage(m).key === 'owner')
@@ -38,6 +41,13 @@ export function HotelConsole({ profile, onNavigate }) {
   }
 
   return (
+    <>
+    {d.properties.length > 1 && <div className="k-filters" style={{ marginBottom: 12, alignItems: 'center' }}>
+      <span className="k-hint">Showing</span>
+      <select className="k-select" value={property || ''} onChange={e => setProperty(e.target.value || null)}>
+        <option value="">All {d.properties.length} properties</option>
+        {d.properties.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
+    </div>}
     <Console
       kpis={<>
         <Kpi icon="waves" label="Arrival window" value={arr.value} sub={arr.sub} tone={arr.tone} />
@@ -100,6 +110,7 @@ export function HotelConsole({ profile, onNavigate }) {
         </Panel>
       </div>
     </Console>
+    </>
   )
 }
 

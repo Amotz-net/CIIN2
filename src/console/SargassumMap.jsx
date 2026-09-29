@@ -130,7 +130,7 @@ const pinHtml = (kind, count) => {
 //   layers    [{key,label,color}] toggles; keys: sargassum, segments, vectors, or a marker kind
 //   legend    [{type:'fill'|'line'|'dash'|'pin', color, label, kind}]
 export function SargassumMap({ title, note, raster = null, views = [], segments = [], markers = [], vectors = [],
-                               layers = [], legend = [], height = 430, timeline = true, onField, focus = null }) {
+                               layers = [], legend = [], height = 430, timeline = true, onField, focus = null, points = [] }) {
   const el = useRef(null), map = useRef(null), group = useRef(null), field = useRef(null)
   const [on, setOn] = useState(() => Object.fromEntries(layers.map(l => [l.key, l.off ? false : true])))
   const [view, setView] = useState(views[0]?.key)
@@ -215,7 +215,7 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
   }, [playing])
 
   // Beaches, organisations, arrows
-  const drawKey = JSON.stringify([segments.map(s => [s.id, s.color, s.tag]), markers.map(m => [m.lat, m.lng, m.kind, m.label, m.count]), vectors, on])
+  const drawKey = JSON.stringify([segments.map(s => [s.id, s.color, s.tag]), markers.map(m => [m.lat, m.lng, m.kind, m.label, m.count]), vectors, on, points.length, points[0]?.label])
   useEffect(() => {
     if (!ready || !group.current || !map.current) return
     const L = window.L; group.current.clearLayers()
@@ -229,6 +229,11 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
       } else L.circleMarker(at, { radius: 8, color: '#fff', weight: 2, fillColor: col, fillOpacity: 1 }).addTo(group.current)
       L.marker(at, { interactive: false, icon: L.divIcon({ className: '', iconSize: [0, 0],
         html: `<div class="k-maplabel"><b>${s.name}</b>${s.tag ? `<span style="color:${col}">${s.tag}</span>` : ''}</div>` }) }).addTo(group.current)
+    })
+    // Catalogue entries: many, so drawn small. A hollow dot is an approximate position.
+    points.filter(p => shown(p.kind)).forEach(p => {
+      L.circleMarker([p.lat, p.lng], { radius: p.r || 4.5, color: p.color, weight: 1.5, fillColor: p.color, fillOpacity: p.hollow ? 0.08 : 0.9 })
+        .addTo(group.current).bindPopup(`<b>${p.label}</b>${p.note ? `<br/><span style="color:#9AA6A3">${p.note}</span>` : ''}`)
     })
     markers.filter(m => shown(m.kind)).forEach(m => {
       const mk = L.marker([m.lat, m.lng], { icon: L.divIcon({ className: '', iconSize: [30, 30], iconAnchor: [15, 15], html: pinHtml(m.kind, m.count) }) })
@@ -260,7 +265,8 @@ export function SargassumMap({ title, note, raster = null, views = [], segments 
           <button key={l.key} className={'k-tog' + (shown(l.key) ? ' on' : '')} style={{ '--c': l.color || '#57C4AE' }}
                   aria-pressed={shown(l.key)} onClick={() => setOn(o => ({ ...o, [l.key]: !shown(l.key) }))}><i />{l.label}</button>))}</div>}
         {legend.length > 0 && <div className="k-map-legend">{legend.map((g, i) => (
-          <span key={i}>{g.type === 'pin' ? <i className="pin" style={{ background: (KIND[g.kind] || [])[0] || g.color }} />
+          <span key={i}>{g.type === 'dot' ? <i className="dot" style={{ borderColor: g.color, background: g.hollow ? 'transparent' : g.color }} />
+            : g.type === 'pin' ? <i className="pin" style={{ background: (KIND[g.kind] || [])[0] || g.color }} />
             : g.type === 'fill' ? <i className="fill" style={{ background: g.color }} />
             : <i className="line" style={{ borderTop: `2px ${g.type === 'dash' ? 'dashed' : 'solid'} ${g.color}` }} />}{g.label}</span>))}</div>}
         {views.length > 1 && <div className="k-map-views">{views.map(v => (

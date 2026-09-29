@@ -114,6 +114,7 @@ export default function AcceptInvite() {
           <p className="muted" style={{ marginTop: 0 }}>
             You've been invited to join <b>{invite.organizations?.name}</b> as{' '}
             <span className="pill">{invite.organizations?.role}</span>{' '}
+            {invite.property_name && <>for the property <b>{invite.property_name}</b>{' '}</>}
             {invite.level === 'org_admin' && <span className="pill amber">org admin</span>}
           </p>
           <form onSubmit={accept}>
