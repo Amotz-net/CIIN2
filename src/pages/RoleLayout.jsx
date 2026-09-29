@@ -5,6 +5,7 @@ import { ViewAs, ViewAsBanner } from '../components/ViewAs.jsx'
 import { Tour } from '../components/Tour.jsx'
 import { CommandConsole, AdminConsole } from '../console/consolesA.jsx'
 import { Icon } from '../console/kit.jsx'
+import { Alerts } from '../console/Alerts.jsx'
 import { hasTour } from '../lib/tour.js'
 import { useAuth } from '../lib/auth.jsx'
 import { ROLE_VIEWS, ROLE_LABELS } from '../lib/roleViews.js'
@@ -100,7 +101,8 @@ export default function RoleLayout() {
   // A section from the previous role (e.g. 'knowledge') may not exist in this
   // one's nav — fall back rather than render a blank screen.
   const requested = section || defaultSection(role)
-  const active = items.some(i => i.key === requested) ? requested : items[0].key
+  // Notifications is a page every role has; it is not one of the role's tabs.
+  const active = requested === 'alerts' ? 'alerts' : items.some(i => i.key === requested) ? requested : items[0].key
   const go = (sec) => nav('/app/' + sec)
   const [title, strap] = ROLE_TITLE[adminMode ? (active === 'admin' ? 'admin' : 'command') : role] || ['Dashboard', '']
   const RoleView = ROLE_VIEWS[role]
@@ -121,7 +123,7 @@ export default function RoleLayout() {
         ))}
         <div style={{ flex: 1 }} />
         <div className="rail-rule" />
-        <a className="rail-item" onClick={() => go(ACT_ON[role] || items[0].key)}>
+        <a className={'rail-item' + (active === 'alerts' ? ' active' : '')} onClick={() => go('alerts')}>
           <span className="rail-ic"><Icon name="bell" size={20} /></span><span className="rail-lbl">Notifications</span>
           {waiting > 0 && <span className="rail-badge">{waiting}</span>}
         </a>
@@ -152,7 +154,8 @@ export default function RoleLayout() {
 
           {impersonating && <ViewAsBanner org={viewAsOrg} onExit={() => chooseViewAs(null)} />}
 
-          {adminMode && active === 'overview' ? <CommandConsole profile={effective} onNavigate={go} />
+          {active === 'alerts' ? <Alerts profile={profile} onNavigate={go} actOn={ACT_ON[role] || items[0].key} />
+           : adminMode && active === 'overview' ? <CommandConsole profile={effective} onNavigate={go} />
            : adminMode && active === 'admin' ? <AdminConsole profile={effective}
                onOpen={(t) => (t.orgs ? nav('/admin/orgs') : t.org && chooseViewAs(t.org))} />
            : !RoleView ? <div className="card"><p className="muted">No dashboard for this role.</p></div>

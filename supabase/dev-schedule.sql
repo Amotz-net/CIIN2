@@ -21,3 +21,14 @@ select cron.schedule('ciin_remind_hourly', '12 * * * *', $cron$
     timeout_milliseconds := 120000
   );
 $cron$);
+
+-- The daily summary, at 11:00 UTC: six in the morning in Jamaica.
+-- Stop it with:  select cron.unschedule('ciin_summary_daily');
+select cron.schedule('ciin_summary_daily', '0 11 * * *', $cron$
+  select net.http_post(
+    url := 'https://oycflvlmfdosnmnhmguh.supabase.co/functions/v1/summary',
+    headers := '{"Content-Type":"application/json"}'::jsonb,
+    body := '{}'::jsonb,
+    timeout_milliseconds := 120000
+  );
+$cron$);

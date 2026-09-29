@@ -26,6 +26,12 @@ export const DB={
           {id:'sa2',sample_ref:'S-CP-JAM-NEG01-0021',batch_id:'b1',mission_id:'m1',org_id:HUB,lab_org_id:LAB,taken_at:ago(50),sent_at:ago(49),received_at:ago(40),status:'received',note:null}],
  batches:[b('b1',HUB,'CP-JAM-NEG01-0021',82,null,2.5,14,'screened',60,'m1'),b('b2',HUB,'CP-JAM-NEG01-0022',90,null,4,55,'screened',40,'m1'),b('b3',HUB,'CP-JAM-NEG01-0023',30,null,1,12,'screened',25,'m1'),
   b('b10',BUY,'CP-JAM-BUY-0051',28,1.2,0.8,10,'confirmed',80),b('b9',LAB,'CP-JAM-LAB-0043',30,1.4,1,12,'confirmed',40)],
+ alert_prefs:[{profile_id:'u1',phone:'+18765550123',sms:true,whatsapp:false,summary:true}],
+ alerts:[
+  {id:'a1',profile_id:'u1',subject:'Overdue: Long Bay — main frontage not cleared after 48 hours',body:'OVERDUE. 48 hours have passed since this landing and no removal has been signed off.',level:'urgent',channel:'email',status:'sent',created_at:ago(2)},
+  {id:'a2',profile_id:'u1',subject:'Overdue: Long Bay — main frontage not cleared after 48 hours',body:'CIIN URGENT',level:'urgent',channel:'sms',status:'not_configured',detail:'No SMS service is set up.',created_at:ago(2)},
+  {id:'a3',profile_id:'u1',subject:'Clean-up proposed for Long Bay — main frontage',body:'NEG01 Recovery Hub proposes the following clean-up visit.',level:'action',channel:'email',status:'sent',created_at:ago(20)},
+  {id:'a4',profile_id:'u1',subject:'NEG01 Recovery Hub reports this clean-up visit as completed',body:'For information.',level:'info',channel:'summary',status:'held',created_at:ago(5)}],
  invoices:[], cost_rates:[{id:'r1',org_id:HUB,unit:'truck',amount:480,effective_to:null}], load_summaries:[], invitations:[], agent_proposals:[{id:'pr3',mission_id:'m3',created_at:ago(3)}],
  profiles:[{id:'u1',full_name:'Owner',level:'org_admin',property_id:null,org_id:H}],
  grading_rules:[r('arsenic_inorganic','A','<=',null,2),r('arsenic_inorganic','B','between',2,40),r('arsenic_total','C','>',40,null),r('foreign_matter','A','<=',null,2),r('foreign_matter','B','between',2,5),r('age_hours','A','<=',null,48),r('age_hours','B','between',48,72)],

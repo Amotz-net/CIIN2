@@ -7,5 +7,5 @@ instead of sending them. Satellite and regional feeds are real.
     npx vite --port 5180
     open http://localhost:5180/dev-preview/index.html?v=hotel
 
-`v` is one of: command, admin, gov, hotel, hub, buyer, lab, props.
+`v` is one of: command, admin, gov, hotel, hub, buyer, lab, props, alerts.
 Not part of the built site.

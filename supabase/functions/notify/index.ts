@@ -54,10 +54,10 @@ Deno.serve(async (req) => {
       const facts = `Beach: ${r.beach_segments?.name}\nProperty: ${owner.name}\nLanded: ${when(r.landed_at)}\nExtent: ${r.extent}`
         + (r.note ? `\nFrom the property: ${r.note}` : '') + `\nRemoval due by: ${when(due)}`
       log.push(...await alertPeople(admin, { orgs: await orgsIn(admin, owner.country_code, 'recovery_hub') },
-        { audience: 'hub', kind: 'landing', ref: id, mission: r.mission_id, subject: `Sargassum has landed at ${r.beach_segments?.name}`,
+        { audience: 'hub', level: 'urgent', kind: 'landing', ref: id, mission: r.mission_id, subject: `Sargassum has landed at ${r.beach_segments?.name}`,
           body: `${owner.name} reports that sargassum has landed. After about 48 hours it rots and loses its value.\n\n${facts}\n\nAccept the mission if you can respond, and send the property your dates.` }))
       log.push(...await alertPeople(admin, { orgs: await orgsIn(admin, owner.country_code, 'government') },
-        { audience: 'government', kind: 'landing', ref: id, mission: r.mission_id, subject: `Landing reported at ${r.beach_segments?.name}`,
+        { audience: 'government', level: 'info', kind: 'landing', ref: id, mission: r.mission_id, subject: `Landing reported at ${r.beach_segments?.name}`,
           body: `For your information. No decision is needed from you.\n\n${facts}` }))
     }
 
@@ -74,11 +74,11 @@ Deno.serve(async (req) => {
           body: `${hub.name} has recorded a removal on your frontage. Sign it off if it is right, or say what is wrong.\n\n${facts}` }))
       else {
         log.push(...await alertPeople(admin, { orgs: [hub.id] },
-          { audience: 'hub', kind: event, ref: id, mission: r.mission_id,
+          { audience: 'hub', level: event === 'removal_signed' ? 'info' : 'action', kind: event, ref: id, mission: r.mission_id,
             subject: event === 'removal_signed' ? `${owner.name} signed off the removal at ${where}` : `${owner.name} disputes the removal at ${where}`,
             body: `${event === 'removal_signed' ? 'The record is now agreed by both sides.' : 'The property does not agree with the record. A correction is made by recording the removal again.'}\n\n${facts}` }))
         if (event === 'removal_disputed') log.push(...await alertPeople(admin, { orgs: await orgsIn(admin, owner.country_code, 'government') },
-          { audience: 'government', kind: event, ref: id, mission: r.mission_id, subject: `Removal disputed at ${where}`,
+          { audience: 'government', level: 'info', kind: event, ref: id, mission: r.mission_id, subject: `Removal disputed at ${where}`,
             body: `The property and the hub do not agree on what was removed.\n\n${facts}` }))
       }
     }
@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
         { audience: 'lab', kind: event, ref: id, mission: s.mission_id, subject: `Sample on its way: ${s.sample_ref}`,
           body: `${sender.name} has sent you a sample. Please record it as received when it arrives.\n\n${facts}` }))
       if (event === 'sample_received') log.push(...await alertPeople(admin, { orgs: [sender.id] },
-        { audience: 'hub', kind: event, ref: id, mission: s.mission_id, subject: `${lab.name} has received sample ${s.sample_ref}`,
+        { audience: 'hub', level: 'info', kind: event, ref: id, mission: s.mission_id, subject: `${lab.name} has received sample ${s.sample_ref}`,
           body: `The laboratory has the sample.\n\n${facts}` }))
       if (event === 'sample_resulted') {
         const over = Number(s.arsenic_inorganic) > ARSENIC_LIMIT || Number(s.batches?.arsenic_total) > ARSENIC_LIMIT

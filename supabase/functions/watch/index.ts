@@ -24,6 +24,7 @@
 // =====================================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { alertPeople } from '../_shared/mail.ts'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -53,40 +54,21 @@ async function call(base: string, key: string, path: string, body: unknown) {
   }
 }
 
-// Send one email through Resend. Returns the status to record.
-async function send(to: string, subject: string, text: string) {
-  const key = Deno.env.get('RESEND_API_KEY')
-  if (!key) return { status: 'not_configured', detail: 'No email service key is set.' }
-  try {
-    const r = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: Deno.env.get('ALERT_FROM') ?? 'CIIN alerts <onboarding@resend.dev>', to: [to], subject, text }),
-    })
-    if (r.ok) return { status: 'sent', detail: null }
-    return { status: 'failed', detail: `${r.status} ${(await r.text()).slice(0, 200)}` }
-  } catch (e) {
-    return { status: 'failed', detail: String(e).slice(0, 200) }
-  }
-}
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors })
   try {
     const base = Deno.env.get('SUPABASE_URL')!
     const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const app = Deno.env.get('APP_URL') ?? 'https://ciin-dev.vercel.app'
     const admin = createClient(base, key)
     const dry = new URL(req.url).searchParams.get('dry') === '1'
 
-    const { data: segments } = await admin.from('beach_segments').select('id, org_id, name, lat, lng, length_m, path')
+    const { data: segments } = await admin.from('beach_segments').select('id, org_id, property_id, name, lat, lng, length_m, path')
     const withCoords = (segments ?? []).filter(s => s.lat && s.lng)
     if (!withCoords.length) return json({ ok: true, checked: 0, raised: 0, note: 'No beach has coordinates.' })
 
-    const [{ data: orgs }, { data: bases }, { data: people }] = await Promise.all([
+    const [{ data: orgs }, { data: bases }] = await Promise.all([
       admin.from('organizations').select('id, name, role, country_code, approved'),
       admin.from('segment_baselines').select('*').eq('afai_window', '7D'),
-      admin.from('profiles').select('id, full_name, org_id'),
     ])
     const orgById = new Map((orgs ?? []).map(o => [o.id, o]))
     const baseBy = new Map((bases ?? []).map(b => [b.segment_id, b]))
@@ -169,23 +151,17 @@ Deno.serve(async (req) => {
         ['owner', owner ? [owner] : [], `Sargassum alert: ${seg.name} is ${level} offshore`,
           `CIIN has raised a recovery mission for your frontage.\n\n${facts}\n\n${health
             ? 'Because the level is severe or above, the coastal authority will decide first. You will then be asked to grant access.'
-            : 'Nothing happens on your property until you grant access.'}\n\nReview it: ${app}/app/overview\n\n${caveat}`],
+            : 'Nothing happens on your property until you grant access.'}\n\n${caveat}`],
         ['hub', hubs, `Recovery mission open: ${seg.name}`,
-          `A recovery mission is open in your country.\n\n${facts}\nProperty: ${owner?.name ?? 'unknown'}\n\nAccept it if you can respond. Work starts only after the property grants access.\n\nOpen it: ${app}/app/overview\n\n${caveat}`],
+          `A recovery mission is open in your country.\n\n${facts}\nProperty: ${owner?.name ?? 'unknown'}\n\nAccept it if you can respond. Work starts only after the property grants access.\n\n${caveat}`],
         ['government', health ? gov : [], `Decision needed: ${seg.name} is ${level} offshore`,
-          `The offshore level at ${seg.name} is ${level}. CIIN treats this as a public-health risk, so the mission waits for your decision.\n\n${facts}\nProperty: ${owner?.name ?? 'unknown'}\n\nCIIN does not measure air quality. Confirm conditions on site.\n\nDecide: ${app}/app/overview\n\n${caveat}`],
+          `The offshore level at ${seg.name} is ${level}. CIIN treats this as a public-health risk, so the mission waits for your decision.\n\n${facts}\nProperty: ${owner?.name ?? 'unknown'}\n\nCIIN does not measure air quality. Confirm conditions on site.\n\n${caveat}`],
       ]
       for (const [audience, list, subject, body] of audiences) {
-        for (const o of list) {
-          for (const p of (people ?? []).filter(x => x.org_id === o.id)) {
-            const { data: u } = await admin.auth.admin.getUserById(p.id)
-            const email = u?.user?.email
-            const res = email ? await send(email, subject, `Hello ${p.full_name || ''},\n\n${body}`) : { status: 'failed', detail: 'no email address on the account' }
-            await admin.from('alerts').insert({ mission_id: mission.id, org_id: o.id, profile_id: p.id, audience, subject, body,
-              status: res.status, detail: res.detail, sent_at: res.status === 'sent' ? new Date().toISOString() : null })
-            sentLog.push({ audience, org: o.name, status: res.status })
-          }
-        }
+        if (!list.length) continue
+        // Severe or above is urgent for everyone; government is only ever asked when it is.
+        sentLog.push(...await alertPeople(admin, { orgs: list.map((o: any) => o.id), property: audience === 'owner' ? seg.property_id : null },
+          { audience, level: health ? 'urgent' : 'action', kind: 'mission_raised', ref: mission.id, mission: mission.id, subject, body }))
       }
 
       raised.push({ beach: seg.name, mission: mission.id, level, density, tonnes, government_decides: health, hubs: hubs.map(h => h.name) })

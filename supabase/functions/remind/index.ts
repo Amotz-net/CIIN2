@@ -81,10 +81,10 @@ Deno.serve(async (req) => {
                                          [48, 'landing_48h', 'OVERDUE. 48 hours have passed since this landing and no removal has been signed off.']] as [number, string, string][]) {
         if (!older(l.landed_at, hours)) continue
         const subject = hours === 48 ? `Overdue: ${l.beach_segments?.name} not cleared after 48 hours` : `12 hours left to clear ${l.beach_segments?.name}`
-        await fire({ orgs: hubTarget }, { audience: 'hub', kind, ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
-        await fire({ orgs: [owner.id], property: l.beach_segments?.property_id }, { audience: 'owner', kind: kind + '_owner', ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
-        await fire({ orgs: gov }, { audience: 'government', kind: kind + '_gov', ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
-        if (hours === 48) await fire({ admins: true }, { audience: 'admin', kind: kind + '_admin', ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
+        await fire({ orgs: hubTarget }, { audience: 'hub', level: 'urgent', kind, ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
+        await fire({ orgs: [owner.id], property: l.beach_segments?.property_id }, { audience: 'owner', level: 'urgent', kind: kind + '_owner', ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
+        await fire({ orgs: gov }, { audience: 'government', level: hours === 48 ? 'urgent' : 'action', kind: kind + '_gov', ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
+        if (hours === 48) await fire({ admins: true }, { audience: 'admin', level: 'urgent', kind: kind + '_admin', ref: l.id, mission: l.mission_id, subject, body: `${lead}\n\n${facts}` })
       }
     }
 
