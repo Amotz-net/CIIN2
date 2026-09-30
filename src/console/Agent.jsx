@@ -80,25 +80,40 @@ function Layers({ profile, role }) {
   </>)
 }
 
-export function AgentButton({ profile, role, rail = false }) {
-  const [open, setOpen] = useState(false)
+// The agent's own screen: the recommendation, the six layers, what was read,
+// and the reasoning frozen against each mission it raised.
+export function AgentPage({ profile, role }) {
+  return (
+    <div className="k-console">
+      <div className="k-agent-page">
+        <div className="k-panel"><div className="k-agent-head"><span className="k-agent-mark"><Icon name="agent" size={24} /></span>
+          <div><b>CIIN Agent</b><small>Six layers over grounded facts. It recommends; people decide.</small></div></div>
+          <Layers profile={profile} role={role} />
+        </div>
+        <Proposals profile={profile} />
+      </div>
+    </div>
+  )
+}
+
+function Proposals({ profile }) {
+  const [rows, setRows] = useState(null)
   useEffect(() => {
-    if (!open) return
-    const esc = e => e.key === 'Escape' && setOpen(false)
-    window.addEventListener('keydown', esc); return () => window.removeEventListener('keydown', esc)
-  }, [open])
-  return (<>
-    {rail
-      ? <a className={'rail-item rail-agent' + (open ? ' active' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Open the CIIN agent">
-          <span className="rail-ic"><Icon name="agent" size={20} /></span><span className="rail-lbl">Agent</span><i className="rail-dot" /></a>
-      : <button className={'k-agent-btn' + (open ? ' on' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Open the CIIN agent">
-          <Icon name="agent" size={20} /><span>Agent</span><i />
-        </button>}
-    {open && <div className="k-agent-veil" onClick={() => setOpen(false)} />}
-    {open && <aside className="k-agent" role="dialog" aria-label="CIIN agent">
-      <header><span className="k-agent-mark"><Icon name="agent" size={22} /></span><div><b>CIIN Agent</b><small>Six layers over grounded facts</small></div>
-        <button className="k-agent-x" onClick={() => setOpen(false)} aria-label="Close">×</button></header>
-      <div className="k-agent-body"><Layers profile={profile} role={role} /></div>
-    </aside>}
-  </>)
+    supabase.from('agent_proposals').select('id, mission_id, recommendation, confidence, narration, ai_model, feed_as_of, created_at, missions(title, status)')
+      .order('created_at', { ascending: false }).limit(12).then(({ data }) => setRows(data ?? []))
+  }, [profile?.org_id])
+  return (
+    <div className="k-panel">
+      <div className="k-panel-h"><h3>What it said when each mission was raised<small>frozen at the time</small></h3></div>
+      {rows === null ? <Empty>Loading…</Empty> : rows.length ? rows.map(r => (
+        <div key={r.id} className="k-prop">
+          <div className="k-visit-t"><b>{r.missions?.title || 'Mission'}</b><Chip tone={r.confidence === 'high' ? 'red' : 'amber'}>confidence {r.confidence}</Chip></div>
+          <p>{r.narration || r.recommendation}</p>
+          <small>{new Date(r.created_at).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+            {r.ai_model ? ` · written by ${r.ai_model}` : ' · rules only'}{r.feed_as_of?.band ? ` · satellite ${String(r.feed_as_of.band).slice(0, 10)}` : ''}
+            {r.missions?.status ? ` · mission now ${r.missions.status.replace(/_/g, ' ')}` : ''}</small>
+        </div>)) : <Empty>No mission has been raised by the agent yet, so nothing is on record.</Empty>}
+      <p className="k-agent-note">Each entry is what the agent put in front of people at the moment the mission was raised. It is never edited afterwards.</p>
+    </div>
+  )
 }

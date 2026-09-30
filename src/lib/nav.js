@@ -57,6 +57,8 @@ export const ROLE_TITLE = {
   finance:        ['Finance Desk', 'Underwrite against verified performance.'],
   command:        ['Command Centre', 'Coastal intelligence • Response coordination • Biomass recovery'],
   admin:          ['Regional Administration', 'Coordinate the network. Resolve exceptions. Govern access.'],
+  agent:          ['CIIN Agent', 'Six layers over grounded facts. It recommends; people decide.'],
+  alerts:         ['Notifications', 'What CIIN has sent you, and how to be reached.'],
 }
 
 // Where each role goes to act on what is waiting for it.

@@ -6,7 +6,7 @@ import { Tour } from '../components/Tour.jsx'
 import { CommandConsole, AdminConsole } from '../console/consolesA.jsx'
 import { Icon } from '../console/kit.jsx'
 import { Alerts } from '../console/Alerts.jsx'
-import { AgentButton } from '../console/Agent.jsx'
+import { AgentPage } from '../console/Agent.jsx'
 import { hasTour } from '../lib/tour.js'
 import { useAuth } from '../lib/auth.jsx'
 import { ROLE_VIEWS, ROLE_LABELS } from '../lib/roleViews.js'
@@ -103,9 +103,9 @@ export default function RoleLayout() {
   // one's nav — fall back rather than render a blank screen.
   const requested = section || defaultSection(role)
   // Notifications is a page every role has; it is not one of the role's tabs.
-  const active = requested === 'alerts' ? 'alerts' : items.some(i => i.key === requested) ? requested : items[0].key
+  const active = ['alerts', 'agent'].includes(requested) ? requested : items.some(i => i.key === requested) ? requested : items[0].key
   const go = (sec) => nav('/app/' + sec)
-  const [title, strap] = ROLE_TITLE[adminMode ? (active === 'admin' ? 'admin' : 'command') : role] || ['Dashboard', '']
+  const [title, strap] = ROLE_TITLE[['agent', 'alerts'].includes(active) ? active : adminMode ? (active === 'admin' ? 'admin' : 'command') : role] || ['Dashboard', '']
   const RoleView = ROLE_VIEWS[role]
   const admin = isOrgAdmin(profile)
 
@@ -124,7 +124,8 @@ export default function RoleLayout() {
         ))}
         <div style={{ flex: 1 }} />
         <div className="rail-rule" />
-        <AgentButton profile={effective} role={role} rail />
+        <a className={'rail-item rail-agent' + (active === 'agent' ? ' active' : '')} onClick={() => go('agent')}>
+          <span className="rail-ic"><Icon name="agent" size={20} /></span><span className="rail-lbl">Agent</span><i className="rail-dot" /></a>
         <a className={'rail-item' + (active === 'alerts' ? ' active' : '')} onClick={() => go('alerts')}>
           <span className="rail-ic"><Icon name="bell" size={20} /></span><span className="rail-lbl">Notifications</span>
           {waiting > 0 && <span className="rail-badge">{waiting}</span>}
@@ -157,7 +158,8 @@ export default function RoleLayout() {
 
           {impersonating && <ViewAsBanner org={viewAsOrg} onExit={() => chooseViewAs(null)} />}
 
-          {active === 'alerts' ? <Alerts profile={profile} onNavigate={go} actOn={ACT_ON[role] || items[0].key} />
+          {active === 'agent' ? <AgentPage profile={effective} role={role} />
+           : active === 'alerts' ? <Alerts profile={profile} onNavigate={go} actOn={ACT_ON[role] || items[0].key} />
            : adminMode && active === 'overview' ? <CommandConsole profile={effective} onNavigate={go} />
            : adminMode && active === 'admin' ? <AdminConsole profile={effective}
                onOpen={(t) => (t.orgs ? nav('/admin/orgs') : t.org && chooseViewAs(t.org))} />
