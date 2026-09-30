@@ -124,6 +124,7 @@ export default function RoleLayout() {
         ))}
         <div style={{ flex: 1 }} />
         <div className="rail-rule" />
+        <AgentButton profile={effective} role={role} rail />
         <a className={'rail-item' + (active === 'alerts' ? ' active' : '')} onClick={() => go('alerts')}>
           <span className="rail-ic"><Icon name="bell" size={20} /></span><span className="rail-lbl">Notifications</span>
           {waiting > 0 && <span className="rail-badge">{waiting}</span>}
@@ -147,7 +148,7 @@ export default function RoleLayout() {
               <div className="cc-strap">{strap}</div>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}><AgentButton profile={effective} role={role} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <Clock org={profile?.properties?.name && !impersonating ? profile.properties.name : org?.name}
                      role={profile?.properties?.name && !impersonating ? 'Property manager' : ROLE_LABELS[role]} /></div>
               {isPlatformAdmin && <ViewAs profile={profile} viewAsId={viewAsId} onChange={chooseViewAs} />}

@@ -44,10 +44,16 @@ function Layers({ profile, role }) {
     const { data, error } = await supabase.functions.invoke('agent', { body: facts })
     setOut(error ? { ok: false, reason: error.message } : { ...data, at: new Date() }); setBusy(false)
   }
-  // Run once the readings are in, so the agent is not asked to reason over half a picture.
-  useEffect(() => { if (!d.loading && d.feedsDone && !out && !busy) run() }, [d.loading, d.feedsDone])
+  // Reason as soon as the records are in, then once more when the satellite
+  // and current readings have all arrived, so the picture completes itself.
+  const ran = useState({ first: false, full: false })[0]
+  useEffect(() => {
+    if (d.loading || busy) return
+    if (!ran.first) { ran.first = true; run(); return }
+    if (d.feedsDone && !ran.full) { ran.full = true; run() }
+  }, [d.loading, d.feedsDone, busy])
 
-  if (!out) return <Empty>{d.loading ? 'Gathering what you are allowed to see…' : d.feedsDone ? 'Reasoning…' : 'Reading the satellite and the currents…'}</Empty>
+  if (!out) return <Empty>{d.loading ? 'Gathering what you are allowed to see…' : 'Reasoning…'}</Empty>
   if (!out.ok) return <Empty>The agent is unavailable{out.reason ? ` (${out.reason})` : ''}.</Empty>
   return (<>
     <div className="k-agent-rec">
@@ -68,13 +74,13 @@ function Layers({ profile, role }) {
       </button>) })}
     <div className="k-agent-f">
       <button className="k-btn ghost sm" disabled={busy} onClick={run}>{busy ? 'Reasoning…' : 'Run again'}</button>
-      <span>{out.at ? 'Last run ' + out.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span>
+      <span>{!d.feedsDone ? 'Still reading the satellite and the currents; will run again when they arrive.' : out.at ? 'Last run ' + out.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span>
     </div>
     <p className="k-agent-note">The agent recommends. It decides nothing, dispatches nobody and never prefers a hub. It sees only what your account is allowed to see.</p>
   </>)
 }
 
-export function AgentButton({ profile, role }) {
+export function AgentButton({ profile, role, rail = false }) {
   const [open, setOpen] = useState(false)
   useEffect(() => {
     if (!open) return
@@ -82,9 +88,12 @@ export function AgentButton({ profile, role }) {
     window.addEventListener('keydown', esc); return () => window.removeEventListener('keydown', esc)
   }, [open])
   return (<>
-    <button className={'k-agent-btn' + (open ? ' on' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Open the CIIN agent">
-      <Icon name="agent" size={20} /><span>Agent</span><i />
-    </button>
+    {rail
+      ? <a className={'rail-item rail-agent' + (open ? ' active' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Open the CIIN agent">
+          <span className="rail-ic"><Icon name="agent" size={20} /></span><span className="rail-lbl">Agent</span><i className="rail-dot" /></a>
+      : <button className={'k-agent-btn' + (open ? ' on' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open} aria-label="Open the CIIN agent">
+          <Icon name="agent" size={20} /><span>Agent</span><i />
+        </button>}
     {open && <div className="k-agent-veil" onClick={() => setOpen(false)} />}
     {open && <aside className="k-agent" role="dialog" aria-label="CIIN agent">
       <header><span className="k-agent-mark"><Icon name="agent" size={22} /></span><div><b>CIIN Agent</b><small>Six layers over grounded facts</small></div>
