@@ -3,7 +3,7 @@
   --teal:#57C4AE;--amber:#E0A94F;--red:#D9736A;--green:#6FC08C;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,'Segoe UI',system-ui,sans-serif;font-size:14px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Manrope,'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5}
 a{color:var(--teal);text-decoration:none;cursor:pointer}
 .center{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .muted{color:var(--mute)}
@@ -603,3 +603,38 @@ b.tone-green,span.tone-green,b.tone-amber,span.tone-amber,b.tone-red,span.tone-r
 @media (max-width:1100px){.k-layers{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:820px){.k-agent-hero{grid-template-columns:1fr}.k-layers{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.k-layer2,.k-agent-rec{transition:none}.k-working i{animation:none}}
+
+/* =====================================================================
+   Type. Five styles and nothing else:
+     Display  Outfit 500 · 48/1.05 · −2%      the page title
+     Heading  Outfit 500 · 24/1.2 · −1.5%     section and panel titles (18 inside panels)
+     Eyebrow  Manrope 600 · 11 · +16% caps     small labels above figures
+     Body     Manrope 400 · 16/1.65            reading text
+     Data     Manrope 500 · 13 · tabular       figures in tables
+   ===================================================================== */
+:root{--f-display:Outfit,Manrope,system-ui,sans-serif;--f-body:Manrope,'Segoe UI',system-ui,sans-serif;--dusk:#9AA6A3}
+.t-display,.cc-brand,.logo-lg,.rail-logo{font-family:var(--f-display);font-weight:500;letter-spacing:-.02em;line-height:1.05}
+.cc-brand{font-size:40px;text-transform:none}
+.cc-brand i{margin:0 6px}
+.t-heading,h1,h2,h3,.k-panel-h h3,.card h2,.cc-title,.k-rail-h,.k-agent-h,.k-agent-head b,.k-notice-t b,.k-lead b,.k-exc-b b{font-family:var(--f-display);font-weight:500;letter-spacing:-.015em;line-height:1.2;text-transform:none}
+h1{font-size:24px}h2,.card h2{font-size:20px}
+.k-panel-h h3,.cc-title{font-size:18px}
+.k-rail-h,.k-agent-h{font-size:18px;letter-spacing:-.015em}
+.k-panel-h h3 small{font-family:var(--f-body);font-weight:400;letter-spacing:0;font-size:12px}
+.cc-strap,.k-agent-head small{font-family:var(--f-body)}
+.t-eyebrow,.k-kpi-l,.cc-k,.k-k,.stat-k,.k-fact>span,.k-table th,.k-col-h small,.k-globe-state,.viewas-lbl,.cc-org small,.k-visit-d span,.k-mini-h small,.tour-count,.k-layer-x em,.k-agent-rec>span,.k-sub-eyebrow,.k-stage>span,.k-step>span,.k-notice-t small,.cc-clock small{
+  font-family:var(--f-body);font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dusk);line-height:1.3}
+.k-kpi-l{font-size:11px}
+.t-body,p,.k-empty,.k-src,.k-agent-note,.k-notice-b,.k-notes>div,.k-agent-rec p,.tour-card p,.lede,.muted p{font-family:var(--f-body);font-weight:400}
+.k-agent-rec p{font-size:16px;line-height:1.65}
+.tour-card p{font-size:15px;line-height:1.65}
+.t-data,.k-table td,.k-tick,.stat-v,.cc-num,.k-fact b,.k-num,.cc-s,.k-kpi-s,.k-visit-b>span,.k-clock>span{font-family:var(--f-body);font-weight:500;font-size:13px;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.k-table td{font-size:13px}
+.k-kpi-v,.cc-v,.stat-v,.k-clock-t,.k-visit-d b,.k-tile b,.k-score>b,.lf-num,.k-grade{font-family:var(--f-display);font-weight:500;letter-spacing:-.02em}
+.k-kpi-v{font-size:30px}
+.k-btn,.btn,.seg button,.k-tog,.cc-tog,.k-map-views button,.stat{font-family:var(--f-body)}
+.k-btn{font-weight:600}
+.rail-item{font-family:var(--f-body);font-weight:500}
+.theme-command .rail-item.active{font-weight:600}
+.k-kpi-v .k-tick,.cc-v .k-tick,.k-clock-t{font-size:inherit;font-family:inherit;font-weight:inherit}
+.k-clock-t{font-family:var(--f-display);font-size:17px}
