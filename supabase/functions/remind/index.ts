@@ -7,7 +7,7 @@
 //   mission, no hub accepted      6 h -> hubs        12 h -> CIIN admin
 //                                24 h -> government and the property: public safety
 //   offshore high for 3 days, no landing reported -> government; property asked to confirm
-//   government decision waiting   6 h -> government  12 h -> CIIN admin
+//   government decision waiting  12 h -> government and CIIN admin
 //   clean-up dates unanswered    12 h -> property
 //   landing not yet removed      36 h -> hub, property, government
 //                                48 h -> the same, and CIIN admin (overdue), naming the hubs that did not respond
@@ -46,9 +46,10 @@ Deno.serve(async (req) => {
       const pool = (pools ?? []).filter((p: any) => p.mission_id === m.id)
       const hubOwned = owner.role === 'recovery_hub'
       if (m.status === 'proposed' && m.authority_required) {
-        if (older(m.created_at, 6)) await fire({ orgs: await orgsIn(admin, owner.country_code, 'government') },
-          { audience: 'government', kind: 'gov_decision_6h', ref: m.id, mission: m.id, subject: `Reminder: decision needed on ${m.title}`,
-            body: `This mission has waited more than 6 hours for a government decision. The offshore level is ${m.alert_level ?? 'severe'}.\n\nProperty: ${owner.name}` })
+        // The original alert was urgent; one reminder, to government itself, at 12 hours.
+        if (older(m.created_at, 12)) await fire({ orgs: await orgsIn(admin, owner.country_code, 'government') },
+          { audience: 'government', kind: 'gov_decision_12h_gov', ref: m.id, mission: m.id, subject: `Reminder: decision needed on ${m.title}`,
+            body: `This mission has waited 12 hours for a government decision. The offshore level is ${m.alert_level ?? 'severe'}.\n\nProperty: ${owner.name}` })
         if (older(m.created_at, 12)) await fire({ admins: true },
           { audience: 'admin', kind: 'gov_decision_12h', ref: m.id, mission: m.id, subject: `No government decision after 12 hours: ${m.title}`,
             body: `Government in ${owner.country_code} has not decided this mission.\n\nProperty: ${owner.name}` })

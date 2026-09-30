@@ -4,10 +4,10 @@ import { IDS } from './fixture.js'
 const React = (await import('react')).default
 const { createRoot } = await import('react-dom/client')
 await import('../src/styles.css')
-const A = await import('../src/console/consolesA.jsx'), B = await import('../src/console/consolesB.jsx'), P = await import('../src/console/Properties.jsx'), N = await import('../src/console/Alerts.jsx'), G = await import('../src/console/Agent.jsx')
+const A = await import('../src/console/consolesA.jsx'), B = await import('../src/console/consolesB.jsx'), P = await import('../src/console/Properties.jsx'), N = await import('../src/console/Alerts.jsx'), G = await import('../src/console/Agent.jsx'), R = await import('../src/console/GovReports.jsx')
 const which = new URLSearchParams(location.search).get('v') || 'hotel'
 const MAP = { command: [A.CommandConsole, IDS.PLAT, 'government'], admin: [A.AdminConsole, IDS.PLAT, 'government'], gov: [A.GovConsole, IDS.GOV, 'government'],
-  hotel: [B.HotelConsole, IDS.H, 'hotel'], hub: [B.HubConsole, IDS.HUB, 'recovery_hub'], buyer: [B.BuyerConsole, IDS.BUY, 'buyer'], lab: [B.LabConsole, IDS.LAB, 'university_lab'], props: [P.Properties, IDS.H, 'hotel'], alerts: [N.Alerts, IDS.H, 'hotel'], agent: [G.AgentPage, IDS.GOV, 'government'] }
+  hotel: [B.HotelConsole, IDS.H, 'hotel'], hub: [B.HubConsole, IDS.HUB, 'recovery_hub'], buyer: [B.BuyerConsole, IDS.BUY, 'buyer'], lab: [B.LabConsole, IDS.LAB, 'university_lab'], props: [P.Properties, IDS.H, 'hotel'], alerts: [N.Alerts, IDS.H, 'hotel'], agent: [G.AgentPage, IDS.GOV, 'government'], reports: [R.GovReports, IDS.GOV, 'government'] }
 const [C, org, role] = MAP[which]
 const h = React.createElement
 createRoot(document.getElementById('root')).render(h('div', { className: 'theme-command', style: { minHeight: '100vh' } }, h('div', { className: 'wrap wide' },

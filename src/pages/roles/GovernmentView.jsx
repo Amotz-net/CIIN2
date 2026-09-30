@@ -11,7 +11,7 @@ import { SegmentOutlook } from '../../components/SegmentOutlook.jsx'
 import { RoleReports } from './Reports.jsx'
 import { Landfall } from '../../components/Landfall.jsx'
 import { GovConsole } from '../../console/consolesA.jsx'
-import { OffshoreLandfall } from '../../console/OffshoreLandfall.jsx'
+import { GovReports } from '../../console/GovReports.jsx'
 
 // Government dashboard — the jurisdiction/funder-facing view.
 // Reads operational data across ALL orgs in its country (RLS 0011), overlays
@@ -153,7 +153,6 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
 
       {S('regional') && <>
       <div style={{ gridColumn: '1 / -1' }}><Regional profile={profile} /></div>
-      <OffshoreLandfall profile={profile} />
       <SegmentOutlook segments={segments} />
       </>}
 
@@ -211,6 +210,7 @@ export function GovernmentView({ profile, section = 'overview', onNavigate = () 
       </div>
       )}
 
+      {S('reports') && <div style={{ gridColumn: '1 / -1' }}><GovReports profile={profile} admin={!!profile?.is_platform_admin} /></div>}
       {S('reports') && <RoleReports role="government" profile={profile} />}
     </div>
   )

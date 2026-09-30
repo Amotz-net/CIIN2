@@ -99,25 +99,6 @@ export function Regional({ profile }) {
       <div style={{ gridColumn: '1 / -1' }}><CommandCentre profile={profile} mapOnly /></div>
 
       <div className="card" style={{ gridColumn: '1 / -1' }}>
-        <h2>Caribbean today <span className="pill" style={{ fontSize: 10 }}>satellite</span></h2>
-        <div className="dash-grid" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(170px,1fr))' }}>
-          <Big v={fmt(last?.t)} unit="t" label={`Greater Caribbean · ${change == null ? '' : (change >= 0 ? '+' : '') + change.toFixed(1) + '% on the day before'}`} />
-          <Big v={fmt(csLast?.t)} unit="t" label="Caribbean Sea" />
-          <Big v={fmt(mine?.t)} unit="t" label={`${country} waters · ranked ${rank} of ${zones.length}`} />
-          <Big v={lvl ? lvl.label : '—'} tone={lvl?.tone} label={density == null ? 'no scale' : `${density.toFixed(3)} t/km² across ${country}'s zone`} />
-        </div>
-        <div className="muted" style={{ fontSize: 11, marginTop: 8 }}>
-          Satellite figures are issued once a day. CIIN checks for a new issue every hour
-          {d.fetched_at && <> · last checked {new Date(d.fetched_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</>}{' '}
-          <button className="btn ghost sm" style={{ padding: '3px 9px', fontSize: 11 }} disabled={busy} onClick={() => setTick(t => t + 1)}>
-            {busy ? 'Checking…' : 'Check now'}</button>
-        </div>
-        <Src>Wet sargassum biomass from MODIS at 1 km, {d.series?.as_of}. The {country} level compares today's density with
-          the 75th, 90th, 95th and 99th percentiles of SATsum's monthly record for {country}, 2010–2025; a daily figure against
-          a monthly scale is approximate. Source: SATsum / SIMAR, CONABIO, CC BY 4.0.</Src>
-      </div>
-
-      <div className="card" style={{ gridColumn: '1 / -1' }}>
         <h2>{regionName}: daily biomass <span className="pill grey" style={{ fontSize: 10 }}>{d.series?.as_of}</span></h2>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
           <div className="seg">{REGIONS.map(([k, n]) => <button key={k} className={region === k ? 'on' : ''} onClick={() => setRegion(k)}>{n}</button>)}</div>

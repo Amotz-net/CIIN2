@@ -226,12 +226,6 @@ export function AdminConsole({ profile, onOpen }) {
               <td><Chip tone={f.st[1]}>{f.st[0]}</Chip></td><td>{f.at ? shortDate(f.at) : '—'}</td></tr>)}
           </tbody></table>
         </Panel>
-        <div className="k-stack">
-          <Panel title="Human approval gates">
-            {GATES.map(g => <div key={g.name} className="k-gate"><Icon name={g.icon} size={19} /><span>{g.name}</span><Chip tone={g.tone} solid>{g.rule}</Chip><small>{g.covers}</small></div>)}
-          </Panel>
-          <Panel title="Programme milestones"><Steps steps={PROGRAMME} /></Panel>
-        </div>
       </div></>}>
       <SargassumMap title="Regional network" raster={REGION_BOX} views={REGION_VIEW} markers={useMemo(() => networkMarkers(d), [d.beaches, d.orgs])} points={points} height={400} timeline={false}
         layers={[...CAT_LAYERS, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C', off: true }]}
@@ -333,32 +327,13 @@ export function GovConsole({ profile, onNavigate, reviews = [] }) {
         legend={[{ type: 'fill', color: '#D9736A', label: 'Offshore level: severe' }, { type: 'fill', color: '#E0A94F', label: 'Offshore level: high' }, { type: 'fill', color: '#6FC08C', label: 'Offshore level: low' },
                  { type: 'dash', color: '#EAF0EF', label: 'Drift, 24 hours' }, { type: 'pin', kind: 'mission', label: 'Open mission' }, { type: 'fill', color: '#F08A3C', label: 'Sargassum afloat, beyond 20 km' }]} />
       <LandingClock d={d} title="Landings and the 48-hour clock" />
-      <Panel title="Dynamic risk trend" action={<span className="k-hint">Offshore readings · not a measurement of the beach</span>}>
-        <div className="k-three tight">
-          <div><div className="k-mini-h"><Icon name="leaf" size={16} />Offshore biomass <small>{w?.name || ''}</small></div><Spark rows={offshore} color="var(--amber)" x0="−30 d" x1="Now" /></div>
-          <div><div className="k-mini-h"><Icon name="alert" size={16} />{d.country} waters <small>tonnes afloat</small></div><Spark rows={waters} color="var(--red)" x0="−30 d" x1="Now" /></div>
-          <div><div className="k-mini-h"><Icon name="scale" size={16} />Recovered <small>cumulative tonnes</small></div><Spark rows={recovered} color="var(--green)" x0="first batch" x1="latest" /></div>
-        </div>
-      </Panel>
-      <Panel title="Risk scores" action={<span className="k-hint">0 to 100 · higher is worse</span>}>
-        <div className="k-three tight">{SCORES.map(([k, name, basis]) => { const v = d.scores[k]?.value, tone = v == null ? 'grey' : v >= 66 ? 'red' : v >= 33 ? 'amber' : 'green'; return (
-          <div key={k} className={'k-score tone-' + tone}><div className="k-mini-h">{name} <small>{d.scores[k]?.tier}</small></div>
-            <b>{v ?? '—'}<small>/100</small></b><div className="k-prog"><i style={{ width: (v ?? 0) + '%' }} /></div><span>{basis}.</span></div>) })}</div>
-      </Panel>
-      <Panel title="Listed beaches by parish" action={<span className="k-hint">{d.listed.length} beaches · {d.listed.filter(b => b.lat == null).length} not yet located</span>}>
-        {parishes.length ? <table className="k-table"><thead><tr><th>Parish</th><th>Beaches</th><th>Licensed</th><th>On the map</th></tr></thead><tbody>
-          {parishes.map(p => <tr key={p.parish}><td>{p.parish}</td><td>{p.n}</td><td>{p.licensed}</td><td>{p.located} of {p.n}</td></tr>)}
-        </tbody></table> : <Empty>No beach list is loaded for this country yet.</Empty>}
-        <Source>NEPA Jamaica Beach Guide. The list gives no positions. Where OpenStreetMap has a beach of the same name, that is the position. Otherwise the beach is placed on the shore nearest the bay, village or landmark that carries its name, which can be a kilometre or two from the beach itself. Click a dot to see what it was matched to.</Source>
-      </Panel>
-      <BeachRules d={d} profile={profile} />
-      <Panel title="Removals" action={<span className="k-hint">What was taken, by whom, and where it went</span>}><RemovalList d={d} limit={5} /></Panel>
       <Panel title="Agency actions">
-        {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Clean-up dates</th><th>Next action</th><th>Status</th></tr></thead><tbody>
+        {d.open.length ? <table className="k-table"><thead><tr><th>Sector</th><th>Responding</th><th>Clean-up dates</th><th>Removed</th><th>Next action</th><th>Status</th></tr></thead><tbody>
           {d.open.map(m => { const s = stage(m), seg = d.beaches.find(b => b.id === m.segment_id), pool = d.pools[m.id] || []
             return <tr key={m.id}><td><span className={'k-dot tone-' + (seg?.level?.tone || 'grey')} />{seg?.name || m.title}</td>
               <td>{pool.length ? pool.map(p => p.hub_name).join(', ') : hubOwned(m) ? d.orgName(m.org_id) : 'No hub yet'}</td>
-              <td>{visitLabel(d.visits.filter(v => v.mission_id === m.id && v.status !== 'cancelled').sort((a, b) => a.arrives_at.localeCompare(b.arrives_at))[0])}</td><td>{s.next}</td><td><Chip tone={s.tone}>{s.label}</Chip></td></tr> })}
+              <td>{visitLabel(d.visits.filter(v => v.mission_id === m.id && v.status !== 'cancelled').sort((a, b) => a.arrives_at.localeCompare(b.arrives_at))[0])}</td>
+              <td>{(() => { const rs = d.removals.filter(r => r.mission_id === m.id); const t = rs.reduce((s, r) => s + Number(r.tonnes || 0), 0); return rs.length ? `${fmt(t)} t · ${rs.filter(r => r.status === 'signed').length} of ${rs.length} signed` : '—' })()}</td><td>{s.next}</td><td><Chip tone={s.tone}>{s.label}</Chip></td></tr> })}
         </tbody></table> : <Empty>No open missions in this jurisdiction.</Empty>}
       </Panel>
     </Console>

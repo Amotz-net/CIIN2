@@ -168,7 +168,6 @@ export function HotelView({ profile, section = 'overview', onNavigate = () => {}
           responding network, scoped to this property so it opens on its coast
           rather than the whole region. */}
       {S('overview') && <div style={{ gridColumn: '1 / -1' }}><HotelConsole profile={profile} onNavigate={onNavigate} /></div>}
-      {S('overview') && <SegmentOutlook segments={segments} />}
       {S('properties') && <div style={{ gridColumn: '1 / -1' }}><Properties profile={profile} /></div>}
       {S('forecast') && <CoastMap orgId={orgId} height={460} title="Your coast" />}
       {S('forecast') && <SegmentOutlook segments={segments} />}

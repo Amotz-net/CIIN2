@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
           { audience: 'hub', kind: event, ref: id, mission: s.mission_id, subject: `Result returned for sample ${s.sample_ref}`,
             body: `The batch has been re-graded on the confirmed value. Its permitted uses follow from the grade.\n\n${facts}${result}` }))
         if (over) log.push(...await alertPeople(admin, { orgs: await orgsIn(admin, sender.country_code, 'government') },
-          { audience: 'government', kind: 'arsenic_over_limit', ref: id, mission: s.mission_id, subject: `Arsenic above ${ARSENIC_LIMIT} mg/kg: sample ${s.sample_ref}`,
+          { audience: 'government', level: 'info', kind: 'arsenic_over_limit', ref: id, mission: s.mission_id, subject: `Arsenic above ${ARSENIC_LIMIT} mg/kg: sample ${s.sample_ref}`,
             body: `A batch has tested above the ceiling and is for controlled disposal only.\n\n${facts}${result}` }))
       }
     }

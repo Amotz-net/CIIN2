@@ -17,7 +17,6 @@ const LEVEL_LEGEND = [{ type: 'fill', color: '#D9736A', label: 'Offshore level: 
 /* ------------------------------------------------------------------ */
 /* Hotel Operations                                                    */
 /* ------------------------------------------------------------------ */
-const WINDOW_DAYS = { '1–2 days': [1, 2], '2–4 days': [2, 4], '3–5 days': [3, 5] }
 
 export function HotelConsole({ profile, onNavigate }) {
   // An owner may hold several properties: all of them, or one at a time.
@@ -74,17 +73,13 @@ export function HotelConsole({ profile, onNavigate }) {
                 <button className="k-btn ghost" disabled={busy} onClick={() => decide(lead, 'declined')}>Decline</button></div>
             </> : <button className="k-btn ghost wide" onClick={() => onNavigate('management')}>Open sargassum management</button>}
           </> : <Empty>No mission is open on your frontage.</Empty>}
+          {d.missions.length > 0 && <div className="k-mini-h" style={{ marginTop: 12 }}><Icon name="building" size={16} />Access decisions</div>}
+          {d.missions.slice(0, 4).map(m => <div key={m.id} className="k-gate"><span style={{ flex: 1 }}>{m.title}</span>
+            <Chip tone={m.access_state === 'granted' ? 'green' : m.access_state === 'declined' ? 'red' : m.access_state === 'pending' ? 'amber' : 'teal'}>{nice(m.access_state)}</Chip></div>)}
+          <Source>No health advisory has been issued. CIIN does not measure air quality and draws no clinical conclusions.
+            {d.worst?.level ? ` Offshore level is ${d.worst.level.label.toLowerCase()}: ${d.worst.level.means}.` : ''}</Source>
         </Panel>
         <SiteAccessEdit d={d} />
-        <Panel title="Access decisions">
-          {d.missions.length ? d.missions.slice(0, 4).map(m => <div key={m.id} className="k-gate"><Icon name="building" size={19} /><span>{m.title}</span>
-            <Chip tone={m.access_state === 'granted' ? 'green' : m.access_state === 'declined' ? 'red' : m.access_state === 'pending' ? 'amber' : 'teal'}>{nice(m.access_state)}</Chip></div>)
-            : <Empty>No access decisions on record.</Empty>}
-          <button className="k-btn teal wide" onClick={() => onNavigate('management')}>Manage access</button>
-        </Panel>
-        <Notice icon="alert" tone="red" title="Health advisory" lines={['No advisory has been issued.',
-          d.worst?.level ? `Offshore level is ${d.worst.level.label.toLowerCase()}: ${d.worst.level.means}.` : 'Offshore level not yet read.',
-          'CIIN does not measure air quality. No clinical conclusions are drawn here.']} />
       </>}>
       <SargassumMap title="Your coastline" note="observed, last 72 hours" raster={REGION_BOX} views={mapViews(d.code, pts)} focus="island"
         segments={d.beaches} vectors={d.vectors} layers={[{ key: 'segments', label: 'Beaches', color: '#57C4AE' }, { key: 'vectors', label: 'Drift', color: '#EAF0EF' }, { key: 'sargassum', label: 'Sargassum', color: '#F08A3C' }]}
@@ -92,18 +87,11 @@ export function HotelConsole({ profile, onNavigate }) {
       {activeLandings(d).length > 0 && <LandingClock d={d} />}
       <HotelSchedule d={d} />
       <Panel title="Removal records" action={<span className="k-hint">Sign off what was taken from your frontage</span>}><RemovalList d={d} mode="sign" /></Panel>
-      <Panel title="Beach access forecast" action={<span className="k-hint">Indicative · next 72 hours</span>}>
-        {d.beaches.length ? <div className="k-fc">
-          <div className="k-fc-axis"><span /><div>{['Now', '+24h', '+48h', '+72h'].map((t, i) => <i key={t} style={{ left: (i / 3) * 100 + '%' }}>{t}</i>)}</div></div>
-          {d.beaches.map(b => {
-            const span = WINDOW_DAYS[b.drift?.arrival_window], base = b.level?.hex || '#3C454E'
-            const up = LEVELS[Math.min(4, Math.max(0, b.rank) + 1)].hex
-            return <div key={b.id} className="k-fc-row"><span>{b.name}</span><div className="k-fc-bar" style={{ background: base }}>
-              {span && span[0] < 3 && <i style={{ left: (span[0] / 3) * 100 + '%', width: ((Math.min(3, span[1]) - span[0]) / 3) * 100 + '%', background: up }} title={`Arrival window ${b.drift.arrival_window}`} />}
-            </div></div> })}
-          <div className="k-legendline" style={{ marginTop: 8 }}>{LEVELS.slice(0, 4).map(l => <span key={l.key}><i style={{ borderTop: `6px solid ${l.hex}`, width: 12 }} />{l.label}</span>)}</div>
-          <Source>Each bar is the beach's offshore level today. The raised section is the arrival window from the ocean current, one level higher: a possibility, not a prediction.</Source>
-        </div> : <Empty>No beach with coordinates on record.</Empty>}
+      <Panel title="Offshore trend" action={<span className="k-hint">Last 30 days · 20 to 40 km offshore · not the beach</span>}>
+        <div className="k-three tight">{d.beaches.filter(b => b.band?.series?.length).map(b => <div key={b.id}>
+          <div className="k-mini-h">{b.name} <small>{b.level ? b.level.label : ''}</small></div>
+          <Spark rows={b.band.series.map(s => ({ v: s.gap ? null : s.density }))} color={b.level?.hex || 'var(--teal)'} height={90} x0="−30 d" x1="Now" /></div>)}
+          {!d.beaches.some(b => b.band?.series?.length) && <Empty>{d.feedsDone ? 'No clear satellite series for your beaches yet.' : 'Reading the satellite…'}</Empty>}</div>
       </Panel>
       <div className="k-two">
         <Panel title="Collection progress" note={lead?.title}>
