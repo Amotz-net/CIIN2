@@ -575,3 +575,31 @@ b.tone-green,span.tone-green,b.tone-amber,span.tone-amber,b.tone-red,span.tone-r
 .k-prop p{margin:5px 0 4px;color:#C3CCCA;line-height:1.5}
 .k-prop small{color:var(--mute);font-size:11px}
 @media (max-width:1000px){.k-agent-page{grid-template-columns:1fr}}
+/* ---- agent page ---- */
+.k-agent-hero{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:center}
+.k-globe{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px}
+.k-globe-state{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mute);font-weight:700;transition:color .4s}
+.k-globe-state.on{color:var(--teal)}
+.k-agent-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.k-agent-rec{transition:opacity .5s,transform .5s}
+.k-agent-rec.wait{opacity:.45}
+.k-agent-rec.in{opacity:1}
+.k-agent-rec p{font-size:17px;line-height:1.45}
+.k-layers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.k-layer2{display:flex;flex-direction:column;gap:8px;text-align:left;background:#2A3138;border:1px solid #3C454E;border-radius:10px;padding:14px;color:var(--ink);font-family:inherit;cursor:pointer;min-height:150px;
+  transition:opacity .45s ease,transform .45s ease,border-color .2s}
+.k-layer2.wait{opacity:.35;transform:translateY(8px);cursor:default}
+.k-layer2.in{opacity:1;transform:none}
+.k-layer2.in:hover,.k-layer2.on{border-color:var(--teal)}
+.k-layer2-h{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.k-layer2-h div{display:flex;flex-direction:column;min-width:0}
+.k-layer2-h b{font-size:14px}
+.k-layer2-h small{font-size:11px;color:var(--mute)}
+.k-layer2 p{margin:0;font-size:13px;line-height:1.5;color:#C3CCCA}
+.k-working{display:inline-flex;gap:3px}
+.k-working i{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:k-dots 1.1s ease-in-out infinite}
+.k-working i:nth-child(2){animation-delay:.18s}.k-working i:nth-child(3){animation-delay:.36s}
+@keyframes k-dots{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media (max-width:1100px){.k-layers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:820px){.k-agent-hero{grid-template-columns:1fr}.k-layers{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.k-layer2,.k-agent-rec{transition:none}.k-working i{animation:none}}

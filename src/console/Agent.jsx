@@ -4,6 +4,7 @@ import { Chip, Empty, Icon, fmt } from './kit.jsx'
 import { useConsole } from './useConsole.js'
 import { activeLandings, clockOf } from './Coordination.jsx'
 import { stage } from './mission.js'
+import { Globe } from './Globe.jsx'
 
 // The agent, one click away on every screen.
 // Six layers, each saying one thing it can support and naming where it came
@@ -20,7 +21,7 @@ const SCOPE = { hotel: 'org', recovery_hub: 'hub' }
 
 function Layers({ profile, role }) {
   const d = useConsole(profile, { scope: SCOPE[role] || 'all' })
-  const [out, setOut] = useState(null), [busy, setBusy] = useState(false), [open, setOpen] = useState(null)
+  const [out, setOut] = useState(null), [busy, setBusy] = useState(false), [open, setOpen] = useState(null), [shown, setShown] = useState(0)
   const facts = useMemo(() => {
     const spare = h => Math.max(0, Number(h.capacity_t || 0) - Object.values(d.pools).flat().filter(p => p.org_id === h.id && p.accepted)
       .reduce((s, p) => s + Number(d.missions.find(m => m.id === p.mission_id && !['completed', 'rejected'].includes(m.status))?.tonnes || 0), 0))
@@ -40,7 +41,7 @@ function Layers({ profile, role }) {
   }, [d.beaches, d.landings, d.open, d.pools, d.orgs, d.removals, d.samples, d.waterLevel])
 
   async function run() {
-    setBusy(true)
+    setBusy(true); setShown(0)
     const { data, error } = await supabase.functions.invoke('agent', { body: facts })
     setOut(error ? { ok: false, reason: error.message } : { ...data, at: new Date() }); setBusy(false)
   }
@@ -52,32 +53,56 @@ function Layers({ profile, role }) {
     if (!ran.first) { ran.first = true; run(); return }
     if (d.feedsDone && !ran.full) { ran.full = true; run() }
   }, [d.loading, d.feedsDone, busy])
+  // The layers come up one at a time once an answer is back.
+  useEffect(() => {
+    if (!out?.ok || busy) return
+    if (shown >= (out.agents?.length ?? 0) + 1) return
+    const id = setTimeout(() => setShown(n => n + 1), 260); return () => clearTimeout(id)
+  }, [out, busy, shown])
 
-  if (!out) return <Empty>{d.loading ? 'Gathering what you are allowed to see…' : 'Reasoning…'}</Empty>
-  if (!out.ok) return <Empty>The agent is unavailable{out.reason ? ` (${out.reason})` : ''}.</Empty>
-  return (<>
-    <div className="k-agent-rec">
-      <span>Recommendation · confidence {out.confidence}</span>
-      <p>{out.narration || out.recommendation}</p>
-      <small>{out.ai ? `Written by ${out.model} over the six statements below. Check it against them.`
-        : out.ai_status === 'no_key' ? 'From rules only. No language model is connected on this environment.'
-        : `From rules only. The language model did not answer${out.reason ? ` (${out.reason})` : ''}.`}</small>
+  const working = busy || d.loading || !out
+  const layers = out?.ok ? out.agents : Object.keys(LAYER).map(k => ({ agent: k }))
+  const ready = out?.ok && !busy
+
+  return (
+    <div className="k-agent-hero-wrap">
+      <div className="k-agent-hero">
+        <div className="k-globe"><Globe busy={working} size={280} />
+          <div className={'k-globe-state' + (working ? ' on' : '')}>{d.loading ? 'Gathering what you may see' : busy ? 'Reasoning over the facts' : !d.feedsDone ? 'Waiting for satellite readings' : 'Watching'}</div></div>
+        <div className="k-agent-side">
+          <div className="k-agent-head"><span className="k-agent-mark"><Icon name="agent" size={24} /></span>
+            <div><b>CIIN Agent</b><small>Six layers over grounded facts. It recommends; people decide.</small></div></div>
+          {!out ? <div className="k-agent-rec wait"><span>Recommendation</span><p>…</p></div>
+           : !out.ok ? <Empty>The agent is unavailable{out.reason ? ` (${out.reason})` : ''}.</Empty>
+           : <div className={'k-agent-rec' + (ready && shown > layers.length ? ' in' : ' wait')}>
+              <span>Recommendation · confidence {out.confidence}</span>
+              <p>{out.narration || out.recommendation}</p>
+              <small>{out.ai ? `Written by ${out.model} over the six statements below. Check it against them.`
+                : out.ai_status === 'no_key' ? 'From rules only. No language model is connected on this environment.'
+                : `From rules only. The language model did not answer${out.reason ? ` (${out.reason})` : ''}.`}</small>
+            </div>}
+          <div className="k-agent-f">
+            <button className="k-btn ghost sm" disabled={working} onClick={run}>{busy ? 'Reasoning…' : 'Run again'}</button>
+            <span>{!d.feedsDone ? 'Runs again by itself when the readings arrive.' : out?.at ? 'Last run ' + out.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="k-agent-h">Agent layers</div>
+      <div className="k-layers">
+        {layers.map((a, i) => { const [ic, does] = LAYER[a.agent] || ['grid', '']; const live = ready && i < shown
+          return (
+            <button key={a.agent} className={'k-layer2' + (live ? ' in' : ' wait') + (open === i ? ' on' : '')} disabled={!live} onClick={() => setOpen(open === i ? null : i)}>
+              <div className="k-layer2-h"><span className="k-layer-n">{String(i + 1).padStart(2, '0')}</span><span className="k-layer-ic"><Icon name={ic} size={22} /></span>
+                <div><b>{a.agent}</b><small>{does}</small></div>
+                {live ? <Chip tone={TIER[a.tier] || 'grey'}>{a.tier || 'record'}</Chip> : <span className="k-working"><i /><i /><i /></span>}</div>
+              <p>{live ? a.says : (working ? 'Working…' : 'Waiting for the run to finish…')}</p>
+              {open === i && live && <span className="k-layer-x"><em>Reads</em>{a.reads}<em>Source</em>{a.source}</span>}
+            </button>) })}
+      </div>
+      <p className="k-agent-note">The agent recommends. It decides nothing, dispatches nobody and never prefers a hub. It sees only what your account is allowed to see.</p>
     </div>
-    <div className="k-agent-h">Agent layers</div>
-    {(out.agents || []).map((a, i) => { const [ic, does] = LAYER[a.agent] || ['grid', '']; return (
-      <button key={a.agent} className={'k-layer' + (open === i ? ' on' : '')} onClick={() => setOpen(open === i ? null : i)}>
-        <span className="k-layer-n">{i + 1}</span>
-        <span className="k-layer-ic"><Icon name={ic} size={20} /></span>
-        <span className="k-layer-b"><b>{a.agent}<small>{does}</small></b><span>{a.says}</span>
-          {open === i && <span className="k-layer-x"><em>Reads</em>{a.reads}<em>Source</em>{a.source}</span>}</span>
-        <Chip tone={TIER[a.tier] || 'grey'}>{a.tier || 'record'}</Chip>
-      </button>) })}
-    <div className="k-agent-f">
-      <button className="k-btn ghost sm" disabled={busy} onClick={run}>{busy ? 'Reasoning…' : 'Run again'}</button>
-      <span>{!d.feedsDone ? 'Still reading the satellite and the currents; will run again when they arrive.' : out.at ? 'Last run ' + out.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : ''}</span>
-    </div>
-    <p className="k-agent-note">The agent recommends. It decides nothing, dispatches nobody and never prefers a hub. It sees only what your account is allowed to see.</p>
-  </>)
+  )
 }
 
 // The agent's own screen: the recommendation, the six layers, what was read,
@@ -85,13 +110,8 @@ function Layers({ profile, role }) {
 export function AgentPage({ profile, role }) {
   return (
     <div className="k-console">
-      <div className="k-agent-page">
-        <div className="k-panel"><div className="k-agent-head"><span className="k-agent-mark"><Icon name="agent" size={24} /></span>
-          <div><b>CIIN Agent</b><small>Six layers over grounded facts. It recommends; people decide.</small></div></div>
-          <Layers profile={profile} role={role} />
-        </div>
-        <Proposals profile={profile} />
-      </div>
+      <div className="k-panel"><Layers profile={profile} role={role} /></div>
+      <Proposals profile={profile} />
     </div>
   )
 }
